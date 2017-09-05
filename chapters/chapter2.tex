@@ -4,13 +4,19 @@ The test suite assembled in the previous chapter is a great way for a software d
 
 It's a boring, tedious, and repetitious task that can be the entire career of a test engineer. However, as any test automator will know, tasks which are boring, tedious, and repetitious are ripe targets for computer automation, and the task of scenario authorship is no different.
 
+This chapter will outline a method for adapting the existing test suite explored in the previous chapter, using a tool of our own authorship named Yeager, to enable the computer to generate scenarios automatically. Yeager is an MIT-open sourced python version 3 module, with source available at \url{https://github.com/elementc/yeager}. It provides a python annotation and a set of utility functions. Usage of Yeager's state transition annotation allows testers to quickly and easily map an existing suite of test code onto a state machine, in the form of a graph. This graph can then be traversed using the utility functions, thereby generating new test scenarios from the existing code.
+
 \section{Software As A State Machine}
-Consider the system under test, Monica. As a relationship management web site, it has a few obvious states it can be in: logged out and on the landing page, logged in and on the dashboard, viewing a list of contacts, viewing a list of journal entries, or viewing the settings page. This maps nicely to the page objects we defined in the previous chapter. Actions on those page objects assume a current state (eg, we're logged in and on the dashboard) and after executions theoretically are in a new state which may or may not be the same state (eg, the \texttt{Dashboard.click\_contacts\_button()} method transitions from the dashboard to the contacts list). In fact, most modern programs can be looked at as systems composed of a finite set of states (pages, in this case) with some state transitions (links) and a data context (the stuff you've already typed into the system in those states).
+Consider the system under test, Monica. As a relationship management web site, it has a few obvious states it can be in: logged out and on the landing page, logged in and on the dashboard, viewing a list of contacts, viewing a list of journal entries, or viewing the settings page. This maps nicely to the page objects we defined in the previous chapter. Actions on those page objects assume a current state (eg, we're logged in and on the dashboard) and after execution theoretically are in a new state which may or may not be the same state (eg, the \texttt{Dashboard.click\_contacts\_button()} method transitions from the dashboard to the contacts list). In fact, most modern programs can be looked at as systems composed of a finite set of states (pages, in this case) with some state transitions (links) and a data context (the stuff you've already typed into the system in those states).
 
 \subsection{States in Our Example System}
-Let's consider Monica's states which are already built into our test suite.
+Let's consider Monica's pages, which are already built into our test suite, to be states.
 
 We have: the login page (\texttt{Login}) and logging in takes us to the \texttt{Dashboard} which has tabs for the \texttt{Contacts} list and the \texttt{Journal} log. There's also a \texttt{Settings} page which has subpages for \texttt{Import}, \texttt{Export}, \texttt{Users}, and \texttt{Tags}.
+
+The Dashboard and Contacts list both let us \texttt{AddAContact}, while the Journal tab lets us \texttt{AddAJournalEntry}. From a given \texttt{Contact}, one can \texttt{AddASignificantOther}, \texttt{AddAChild}, \texttt{UpdateJobInformation}, \texttt{AddANote}, \texttt{AddAnActivity}, \texttt{AddAReminder}, \texttt{AddAGift}, and \texttt{AddADebt}.
+
+For the purpose of our discussions, these pages will constitute the entire set of states in the system under test. Conveniently, each of them is a python class.
 
 \subsection{State Transitions As Actions In Our Example System}
 identifies actions developed in chapter 1 as lines connecting dots in this graph we're looking at
@@ -19,7 +25,7 @@ identifies actions developed in chapter 1 as lines connecting dots in this graph
 overview of the system as a whole, fully rendered and illustrated
 
 \subsection{Graph Connectedness}
-"Is it possible to get from here to here" and other questions, probably will introduce Dijkstra.
+"Is it possible to get from here to here?" and other questions, probably will introduce Dijkstra.
 
 \subsection{Capturing Contextual State}
 Yeah, getting past the login screen is cool, but there's other outside influences on the output of the program than just which page we're on
@@ -85,7 +91,7 @@ how to limit the number of times a particular state should be visited (for insta
 tbd during Yeager development
 
 \subsection{Executing Test Plans}
-python -m yeager run yplan.py
+\texttt{python -m yeager run yplan.py}
 
 \subsection{Interpreting Results And Logs}
 what do logs look like anyways?
