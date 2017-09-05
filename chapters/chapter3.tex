@@ -1,0 +1,73 @@
+%%--------------------Chapter 3------------------------
+\chapter{High Volume Automated Testing And Long Sequence Regression Testing In Context}
+This is probably an article unto itself. This lends a "why" to the development of Yeager.
+
+\section{A Note On The Recorded History Of High Volume Automated Testing}
+what we know about HiVAT
+
+\subsection{High Volume Automated Testing Has Been Invented Six Times}
+and here's where we list all the inventors we can find.
+\citep{miller1990empirical}
+
+\subsection{Every Industrial Inventor Thinks It's A Trade Secret}
+which is why I'm apologizing that this is sourced from a bunch of talks and interviews and less-than-academic sourcing.
+
+\subsection{A Call For HiVAT Documentation and Academic Consideration}
+so that the next poor sap who writes about it isn't going to have to do so much archaeology.
+
+\section{Anatomy Of A High Volume Automated Test}
+Let's look at the different legos we can play with
+
+\subsection{Driver: What Actions Are Taken}
+how to generate things. random entirely? random from list? build and run?
+
+\subsection{Interface: Black Box vs. White Box (And Shades Of Grey)}
+are you acting on the disassembled source or are you acting on the running end-user program, or something in between (like sending http requests to a ui-based app)
+
+\subsection{Oracle: Determining Correct Behaviour}
+how do you know things are going ok?
+
+\subsection{Logger: Figuring Out What Happened}
+how does the test report the results?
+
+\subsection{Testing Context: Cornering vs. Surveying vs. Abusing}
+what are you trying to do with this HiVAT anyways
+
+\subsection{Scalability: Parallelized vs. Sequential}
+how are you breaking down the work (and why should you care)
+
+\section{The High Volume Test Automation Family Tree}
+let's walk through some well-documented techniques
+
+\subsection{Long Sequence Regression Testing}
+uh, this is the one we're talking about \citep{lee1996principles}
+
+\subsection{API Testing}
+i'm not sure if this belongs but i've seen it on some lists
+
+\subsection{Exhaustive Testing}
+ditto
+
+\subsection{"Fuzzing" And Other Monkey-Based Testing}
+ "throw a fuzzer at it and see what happens"
+
+\subsection{Load-Based Testing}
+put one of the above techniques in a thread pool of a million or so
+
+\subsection{Testing In Production (Safely!)}
+Microsoft does this, siphons some user input from Bing to the live search engine and the next version of the search engine, comparing output from both versions. Sometimes users get output from the test version, even.
+
+\subsection{A/B Testing}
+An aggressive version of TIP invented by marketers to compare multiple versions of the same ad campaign.
+
+\subsection{Synthetic HiVAT Techniques}
+This is where I will wildly speculate about techniques not listed in above subsections (and therefore not discovered in literature review), but would make sense to implement in a context, as built from combinations of the building blocks listed in the Anatomy section.
+
+\section{High Volume Automated Testing Benefits and Drawbacks}
+  this section might be merged into the above section simply due to the uniqueness of benefits and drawbacks among all the various HiVAT techniques. If, however, trends are apparent, they'll be discussed here.
+
+\section{The Case For Long Sequence Regression Testing}
+  if there's something you could call a "conclusion", it's probably here. LSRT is a powerful, easy-to-adopt form of HiVAT in some scenarios, with otherwise-elusive bug discovery an eminently attainable outcome.
+
+\section{Scenarios For Yeager Adoption}
+A shameless ad for different ways Yeager can be adopted by different groups (a subsection per scenario)

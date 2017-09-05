@@ -1,0 +1,45 @@
+%%-----------Chapters start-------------------------------------
+%%-----------Chapter 1------------------------------------------
+\chapter{A Concise Overview of A Python Regression Test Suite For a Web Application}
+This chapter is more of a how-to guide for writing a selenium web test, but it establishes the scenario used in chapter 2 so it's critical to paint a broad enough picture.
+
+\section{Technologies}
+this is where we discuss the tools we're using
+
+\subsection{Selenium}
+an open source project, meant for testing but used elsewhere, to expose scriptable interactions with web browsers. \citep{holmes2006automating, bruns2009web, razak2011agile, wang2009build, kaur2013comparative, kongsli2007security, artzi2011framework}
+
+\subsection{Python Test Runners}
+pytest vs unittest vs nose etc \citep{nielsen2014python, pajankar2017python}
+\subsection{Developer Tools and Resources}
+Web Inspector, probably others\citep{odell2014browser}
+
+\section{Architecture}
+How web application tests are built
+
+\subsection{Page Objects}
+object oriented way of encapsulating all the things you can do on one page in a class \citep{liu2000object, kung2000object, leotta2013improving, marchetto2008state}
+
+\subsection{DOM Identifiers And Other Constants}
+discussion of how we tie python abstractions to web page elements \citep{gupta2003dom,DOMStand78, nicholus2016understanding}
+
+\subsection{Test Sequences}
+how individual tests are built as a sequence of page object actions \citep{leotta2013capture}
+
+\section{Building The Test Suite}
+how to build the base test suite for the particular SUT we're discussing. may cite the boilerplate, \citep{GitHubma29}.
+
+\subsection{Planning A Set Of Tests}
+walkthrough of how to identify and abstract the list of program features to test, including building a list of actions to write \citep{nguyen2001testing}
+
+\subsection{Determining DOM Object Identifiers}
+how to use a web inspector while manually walking through the program
+
+\subsection{Scripting Actions}
+how to build the action sequences
+
+\subsection{Asserting Validity}
+assert() 101
+
+\subsection{Assembling The Final Test Scripts}
+building (and running) a suite
