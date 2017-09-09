@@ -1,7 +1,11 @@
 %%-----------Chapters start-------------------------------------
 %%-----------Chapter 1------------------------------------------
 \chapter{A Concise Overview of A Python Regression Test Suite For a Web Application}
-This chapter is more of a how-to guide for writing a selenium web test, but it establishes the scenario used in chapter 2 so it's critical to paint a broad enough picture.
+This thesis proposes a general-purpose python module for the implementation of high volume automated tests. To properly discuss the nuanced uses of the module, it is first critical to establish a "typical" industrial usage scenario.
+
+To that end, this chapter describes the state of the art in the web test automation field, and walks through the construction of a web test suite for a popular open source relationship management site, Monica, available for use from the website \url{https://monicahq.org} as well for self-hosting from \url{https://github.com/monicahq/monica}. Later chapters will discuss implementation of the module for high volume long sequence regression testing as well as the industrial and academic context surrounding the practice of high volume automated testing.
+
+The test suite discussed in this chapter is published in its entirety online at \url{https://github.com/elementc/monica-tests-traditional}. They are written against the 0.6.5 release of the Monica software, and may be run using Python 3.
 
 \section{Technologies}
 this is where we discuss the tools we're using
