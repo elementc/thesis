@@ -8,13 +8,20 @@ To that end, this chapter describes the state of the art in the web test automat
 The test suite discussed in this chapter is published in its entirety online at \url{https://github.com/elementc/monica-tests-traditional}. They are written against the 0.6.5 release of the Monica software, and may be run using Python 3.
 
 \section{Technologies}
-this is where we discuss the tools we're using
+There are a considerable number of tools and libraries used in the development and execution of web application tests. Regardless of actual platform, there must be at least a browser driver, a test runner, and probably some set of inspection tools. As later chapters will use a Python library, the following Python-friendly libraries have been selected.
 
 \subsection{Selenium}
-an open source project, meant for testing but used elsewhere, to expose scriptable interactions with web browsers. \citep{holmes2006automating, bruns2009web, razak2011agile, wang2009build, kaur2013comparative, kongsli2007security, artzi2011framework}
+The Selenium open source project is a library which permits the programatic control of a web browser. This library is ostensibly designed for automated testing purposes, but it may be used in any case where automated browser interaction is critical, including secretarial desktop automation, the development of testing tools, malicious purposes, and niche industrial purposes. It has a number of supported platforms, including Python and a purpose-built IDE. The general usage operational cycle is:
+\begin{enumerate}
+\item Instantiate a browser driver, selecting the type of web browser to be driven.
+\item Load specific URLs using the driver's \texttt{get} method.
+\item Query the loaded page using the driver's \texttt{find\_element} methods.
+\item Interact with page components using the element objects and associated methods returned from the above step.
+\end{enumerate}\citep{holmes2006automating, bruns2009web, razak2011agile, wang2009build, kaur2013comparative, kongsli2007security, artzi2011framework}
 
 \subsection{Python Test Runners}
-pytest vs unittest vs nose etc \citep{nielsen2014python, pajankar2017python}
+Test runners are executables that load test suites, execute selected subsets, and then report results. There are a number of different test runners in the Python ecosystem, varying in their usage, provided test libraries, and reporting capabilities. Common test runners like pytest and nose live in the Python package archive, and have many users. However, there is a test runner built into the Python standard library named unittest. In the interest of keeping the dependencies of this test suite down (and taking advantage of familiar, high quality documentation), we have selected the unittest library for the runner of this test suite. \citep{nielsen2014python, pajankar2017python}
+
 \subsection{Developer Tools and Resources}
 Web Inspector, probably others\citep{odell2014browser}
 
