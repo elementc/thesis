@@ -23,7 +23,7 @@ The Selenium open source project is a library which permits the programatic cont
 Test runners are executables that load test suites, execute selected subsets, and then report results. There are a number of different test runners in the Python ecosystem, varying in their usage, provided test libraries, and reporting capabilities. Common test runners like pytest and nose live in the Python package archive, and have many users. However, there is a test runner built into the Python standard library named unittest. In the interest of keeping the dependencies of this test suite down (and taking advantage of familiar, high quality documentation), we have selected the unittest library for the runner of this test suite. \citep{nielsen2014python, pajankar2017python}
 
 \subsection{Developer Tools and Resources}
-Web Inspector, probably others\citep{odell2014browser}
+Test authors need to be able to inspect the web application under test from the UI perspective in order to effectively use Selenium. Historically, a web debugger such as Firefox's Firebug tool has been used to fill this requirement. In modern web development, however, the debugger and inspector are built directly into the desktop web browser. These are all roughly equivalent in capability, but for the purposes of this document we'll use terminology consistent with Google Chrome's Inspector toolkit, which can be accessed with the F12 key.\citep{odell2014browser}
 
 \section{Architecture}
 How web application tests are built
