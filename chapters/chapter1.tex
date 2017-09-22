@@ -26,13 +26,13 @@ Test runners are executables that load test suites, execute selected subsets, an
 Test authors need to be able to inspect the web application under test from the UI perspective in order to effectively use Selenium. Historically, a web debugger such as Firefox's Firebug tool has been used to fill this requirement. In modern web development, however, the debugger and inspector are built directly into the desktop web browser. These are all roughly equivalent in capability, but for the purposes of this document we'll use terminology consistent with Google Chrome's Inspector toolkit, which can be accessed with the F12 key.\citep{odell2014browser}
 
 \section{Architecture}
-How web application tests are built
+A typical web application test suite is built from three components: a collection of page object models, a configuration set, and a set of test sequence scripts.
 
 \subsection{Page Objects}
 object oriented way of encapsulating all the things you can do on one page in a class \citep{liu2000object, kung2000object, leotta2013improving, marchetto2008state}
 
-\subsection{DOM Identifiers And Other Constants}
-discussion of how we tie python abstractions to web page elements \citep{gupta2003dom,DOMStand78, nicholus2016understanding}
+\subsection{Configuration}
+How test configuration is stored and loaded. \citep{gupta2003dom,DOMStand78, nicholus2016understanding}
 
 \subsection{Test Sequences}
 how individual tests are built as a sequence of page object actions \citep{leotta2013capture}
