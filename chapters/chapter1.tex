@@ -26,22 +26,22 @@ Test runners are executables that load test suites, execute selected subsets, an
 Test authors need to be able to inspect the web application under test from the UI perspective in order to effectively use Selenium. Historically, a web debugger such as Firefox's Firebug tool has been used to fill this requirement. In modern web development, however, the debugger and inspector are built directly into the desktop web browser. These are all roughly equivalent in capability, but for the purposes of this document we'll use terminology consistent with Google Chrome's Inspector toolkit, which can be accessed with the F12 key.\citep{odell2014browser}
 
 \section{Architecture}
-A typical web application test suite is built from three components: a collection of page object models, a configuration set, and a set of test sequence scripts.
+A typical web application test suite is built from three components: a collection of page object models, a set of configuration parameters, and a set of test sequence scripts. In most cases, these will be stored in similarly named directories (/pages/, /config/, and /tests/).
 
 \subsection{Page Objects}
-object oriented way of encapsulating all the things you can do on one page in a class \citep{liu2000object, kung2000object, leotta2013improving, marchetto2008state}
+To abstract out much of the low level work associated with interacting with the system under test, a typical usage case is to write a Python class for each "page" of the web application, and for each class to have a function related to each of the low level interactions, eg setting a field to a value or pulling a string from the page title. In the constructor of the page object, common sanity checks are often run to ensure the system is in a good state. \citep{liu2000object, kung2000object, leotta2013improving, marchetto2008state}
 
 \subsection{Configuration}
-How test configuration is stored and loaded. \citep{gupta2003dom,DOMStand78, nicholus2016understanding}
+It is common for different environments to have different credentials and settings, for instance, a continuous integration server might deploy with one set of passwords while a developer workstation has another and a user acceptance test server has a third set. To that end, it is critical that such variances are captured corectly, often in a configuration file or by reading correct values from execution environment variables. This may also be sensitive to certain differences in environments, for instance the need to skip verification of emails by system or application of different sets of mock interfaces.
 
 \subsection{Test Sequences}
-how individual tests are built as a sequence of page object actions \citep{leotta2013capture}
+With page interfaces well defined and a suite of configuration details available, actual test authorship becomes fairly simple, with files conformant to the selected test runner's interface being filled with sequences of fairly easy to understand, high-level steps. Most of the time, a test script will be authored for each user story in the requirements of the system under test. Scenario-based tests is usually the easiest for novice programmers to write, but advanced methods may include detailed tours of the system or even exhausive tests of certain featue sets in isolation: test scripts for each of a calendar, a mail client, a presentation tool, and a contacts manager in an office productivity suite.\citep{leotta2013capture}
 
 \section{Building The Test Suite}
-how to build the base test suite for the particular SUT we're discussing. may cite the boilerplate, \citep{GitHubma29}.
+This section is still under development and depends of the completion of the "traditional" test suite for monica. It may need additional restructuring or refocusing depending on what the committee thinks, but in general this will at least detail the test authorship process. \citep{GitHubma29}. %TODO: FillMe
 
 \subsection{Planning A Set Of Tests}
-walkthrough of how to identify and abstract the list of program features to test, including building a list of actions to write \citep{nguyen2001testing}
+walkthrough of how to identify and abstract the list of program features to test, including building a list of actions to write \citep{nguyen2001testing} %TODO: FillMe
 
 \subsection{Determining DOM Object Identification Methods}
 In order to be able to construct a proper page action, it is critical that our test code is able to interact with the right specific parts of the page under test. In Selenium, we use the driver's \texttt{find\_element\_by\_*} methods to do so. There are methods for finding page elements by many methods, including html ID, html name, link text and partial link text, css selectors, and several other more unique methods like an xpath string or just the tag's name. All of these methods are convenience wrappers for a base method named find\_element that takes a special constant from the \texttt{selenium.webdriver.common.by.By} class, such as \texttt{By.ID} or \texttt{By.CSS\_SELECTOR}.
@@ -103,7 +103,7 @@ Here's a python example:
 login_sel = (By.CSS_SELECTOR, "button.btn.btn-primary:nth-of-type(1)")
 login_button = driver.find_element(*login_sel)
 \end{verbatim}
-}
+} \citep{gupta2003dom,DOMStand78, nicholus2016understanding}
 
 
 \subsection{Scripting Actions}
@@ -127,7 +127,7 @@ def log_in_correctly(self):
 }
 
 \subsection{Asserting Validity}
-assert() 101
+assert() 101 %TODO: FillMe
 
 \subsection{Assembling The Final Test Scripts}
-building (and running) a suite
+building (and running) a suite %TODO: FillMe

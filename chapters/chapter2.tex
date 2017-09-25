@@ -23,79 +23,79 @@ The Dashboard and Contacts list both let us \texttt{AddAContact}, while the Jour
 For the purpose of our discussions, these pages will constitute the entire set of states in the system under test. Conveniently, each of them is a python class.
 
 \subsection{State Transitions As Actions In Our Example System}
-A graph consists of a set of nodes and a set of edges. If our nodes are the states the system under test may be in, the edges are the actions that may be taken from those states, possibly resulting in a state transition.
+A graph consists of a set of nodes and a set of edges. If our nodes are the states the system under test may be in, the edges are the actions that may be taken from those states, possibly resulting in a state transition. It is certainly possible for an edge to be a loop connecting the starting state to itself. In the particular case of testing web applications, note that though it's reasonable top author a page object model with each method corresponding to an edge, this is not an assumption that is necessary to make, and would-be Yeager adopters may choose to lump lower-level page object methods into clusters of function calls in new functions and treat those higher-level functions as edges instead. %TODO: FillMe
 
 \subsection{Our Example System, Illustrated}
-overview of the system as a whole, fully rendered and illustrated
+overview of the system as a whole, fully rendered and illustrated %TODO: FillMe
 
 \subsection{Graph Connectedness}
-"Is it possible to get from here to here?" and other questions, probably will introduce Dijkstra.
+"Is it possible to get from here to here?" and other questions, probably will introduce Dijkstra. %TODO: FillMe
 
 \subsection{Capturing Contextual State}
-Yeah, getting past the login screen is cool, but there's other outside influences on the output of the program than just which page we're on
+Yeah, getting past the login screen is cool, but there's other outside influences on the output of the program than just which page we're on %TODO: FillMe
 
 \subsection{Taking A Walk On The Graph: Long Sequence Testing}
-introduce the concept of long sequence testing
+introduce the concept of long sequence testing %TODO: FillMe
 
 \section{Yeager State Transition Annotations}
-how to use yeager: mark up your existing code
+how to use yeager: mark up your existing code %TODO: FillMe
 
 \subsection{State Identifiers}
-how to declare a state, formally
+Anything that can be a Python dictionary key can serve as a state identifier. For simplicity's sake we use strings, but as long as Python will allow it, so will Yeager. Enterprising Yeager hackers may use the actual Python page object model class from the test suite to be adapted, often in combination with a custom random walk algorithm and the use of Python's reflection toolkit.%TODO: FillMe
 
 \subsection{Basic State Transition Annotations (The 0-arg Case)}
-how to declare that a particular function is a transition from one declared state to another
+how to declare that a particular function is a transition from one declared state to another %TODO: FillMe
 
 \subsection{Using The Yeager Connectedness Tester}
-how to check that yeager can see your states and transitions
+how to check that yeager can see your states and transitions %TODO: FillMe
 
 \section{Yeager Test Harnesses}
-in more advanced scenarios, we need to assist Yeager's execution
+in more advanced scenarios, we need to assist Yeager's execution %TODO: FillMe
 
 \subsection{Application Configuration}
-where to put data yeager always needs
+where to put data yeager always needs %TODO: FillMe
 
 \subsection{Test Setup and Entry Point}
-pulling a LSRT run up by its bootstraps, and what point on the graph the test starts at.
+pulling a LSRT run up by its bootstraps, and what point on the graph the test starts at. %TODO: FillMe
 
 \subsection{Exit Point}
-many scenarios won't deal with this, but how to note ways tests can end successfully.
+many scenarios won't deal with this, but how to note ways tests can end successfully. %TODO: FillMe
 
 \subsection{Application Context Storage}
-sometimes a test needs more information than just what state we're in. this overviews how to store things relevant to tests (who's expected to be logged in, how many emails they have, how many contacts, etc for an email client app)
+sometimes a test needs more information than just what state we're in. this overviews how to store things relevant to tests (who's expected to be logged in, how many emails they have, how many contacts, etc for an email client app) %TODO: FillMe
 
 \subsection{Test Method Helpers}
-special args to an annotation that specify a caller which pulls data from App Context Storage
+special args to an annotation that specify a caller which pulls data from App Context Storage %TODO: FillMe
 
 \subsection{Yeager-Only Assertions}
-hooks provided for each state transition which can make additonal assertions not in the original test
+hooks provided for each state transition which can make additonal assertions not in the original test %TODO: FillMe
 
 \subsection{The Yeager Logger}
-how to know what happened
+Yeager doesn't make any particular assumptions about the logging toolkit that you use. It uses standard output to print log data, but it can be configured to use any arbitrary function the user supplies instead. For Long Sequence Regression Testing, it is very important to log with vigor, as a failure is often the result of many consecutive steps instead of one instant. %TODO: FillMe
 
 \subsection{Advanced State Transition Annotations (With Context From Harness)}
-using the stuff from above to enable more rich/complex state transitions
+using the stuff from above to enable more rich/complex state transitions %TODO: FillMe
 
 \section{Yeager Test Plans}
-the bread and butter, informing the test generator what you're wanting to do
+the bread and butter, informing the test generator what you're wanting to do %TODO: FillMe
 
 \subsection{Run-To-Crash vs. Run-Finitely}
-discussion of a couple scenarios the tester may wish to choose between
+discussion of a couple scenarios the tester may wish to choose between %TODO: FillMe
 
 \subsection{Controlling The Path: Blacklists}
-how to inform a test to NOT go to certain states
+how to inform a test to NOT go to certain states %TODO: FillMe
 
 \subsection{Controlling The Path: Weights}
-how to inform a test to prefer (or shun) certain states
+how to inform a test to prefer (or shun) certain states %TODO: FillMe
 
 \subsection{Controlling The Path: Visitation Limits}
-how to limit the number of times a particular state should be visited (for instance, dont go to the logout state in this run, stay logged in)
+how to limit the number of times a particular state should be visited (for instance, dont go to the logout state in this run, stay logged in) %TODO: FillMe
 
 \subsection{Additional Configuration}
-tbd during Yeager development
+tbd during Yeager development %TODO: FillMe
 
 \subsection{Executing Test Plans}
-\texttt{python -m yeager run yplan.py}
+\texttt{python -m yeager run yplan.py} %TODO: FillMe
 
 \subsection{Interpreting Results And Logs}
-what do logs look like anyways?
+what do logs look like anyways? %TODO: FillMe
