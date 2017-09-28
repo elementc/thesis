@@ -44,10 +44,38 @@ how to use yeager: mark up your existing code %TODO: FillMe
 Anything that can be a Python dictionary key can serve as a state identifier. For simplicity's sake we use strings, but as long as Python will allow it, so will Yeager. Enterprising Yeager hackers may use the actual Python page object model class from the test suite to be adapted, often in combination with a custom random walk algorithm and the use of Python's reflection toolkit.%TODO: FillMe
 
 \subsection{Basic State Transition Annotations (The 0-arg Case)}
-how to declare that a particular function is a transition from one declared state to another %TODO: FillMe
+The fastest way to get started with using Yeager is to define a function which takes no arguments for each of the state transitions you wish to use in the test. These will probably be short snippets from the traditional-style test sequences. Then, for each of these functions, you should use the \texttt{yeager.annotations.state\_transition} annotation to mark the transition of that function. Here's an example using some of our Monica test code from the previous chapter:
+
+{\tt
+\begin{verbatim}
+from selenium import webdriver
+from pages.login import LoginPage
+from pages.dashboard import DashboardPage
+from yeager.annotations import state_transition
+driver = None
+
+@state_transition(None, "login-page")
+def open():
+    global driver
+    driver = webdriver.Chrome()
+    driver.get("https://app.monicahq.com/")
+
+@state_transition("login-page", "dashboard-page")
+def log_in():
+    login = LoginPage(driver)
+    login.log_in_correctly()
+
+@state_transition("dashboard-page", "login-page")
+def log_out():
+    dashboard = DashboardPage(driver)
+    dashboard.log_out()
+\end{verbatim}
+}
+
+Note that we use the Python \texttt{None} constant as a reference to the uninitialized system. Yeager treates \texttt{None} as a special node in the implied state model our annotations provide: it's assumed to be the entry point.
 
 \subsection{Using The Yeager Connectedness Tester}
-how to check that yeager can see your states and transitions %TODO: FillMe
+Yeager provides a utility function to check for misconfigured annotations. The function, \texttt{yeager.orphaned\_states}, takes one optional argument (the starting state, it defaults to \texttt{None}), and returns a list of all states that yeager knows about but doesn't know how to get to.
 
 \section{Yeager Test Harnesses}
 in more advanced scenarios, we need to assist Yeager's execution %TODO: FillMe
@@ -56,7 +84,7 @@ in more advanced scenarios, we need to assist Yeager's execution %TODO: FillMe
 where to put data yeager always needs %TODO: FillMe
 
 \subsection{Test Setup and Entry Point}
-pulling a LSRT run up by its bootstraps, and what point on the graph the test starts at. %TODO: FillMe
+To actually start taking a walk on the state model, simply call yeager's \texttt{walk} function with an integer representing how many steps to take.
 
 \subsection{Exit Point}
 many scenarios won't deal with this, but how to note ways tests can end successfully. %TODO: FillMe
