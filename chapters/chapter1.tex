@@ -127,7 +127,9 @@ def log_in_correctly(self):
 }
 
 \subsection{Asserting Validity}
-assert() 101 %TODO: FillMe
+Consider what an assertion (the \texttt{assert} statement in python) does: it takes one mandatory argument, a statement that boils down to true or false, and if the statement evaluates to anything but true, the system halts immediately with a message (an optional second argument or a default one) as to what assertion failed and in what way. They explicate and then enforce contracts in programming systems and are a staple of high quality programming. Since contracts are a core part of a test, much of the actual important work of a test suite consists of well-placed assertions about the state of the system under test.
+
+Within the page object model, two key places for the insertion of assertions becomes apparent: first, at the initialization of the page object model itself, and second, as necessary during action execution.%TODO: FillMe
 
 \subsection{Assembling The Final Test Scripts}
 building (and running) a suite %TODO: FillMe
