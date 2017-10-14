@@ -23,7 +23,7 @@ The Dashboard and Contacts list both let us \texttt{AddAContact}, while the Jour
 For the purpose of our discussions, these pages will constitute the entire set of states in the system under test. Conveniently, each of them is a python class.
 
 \subsection{State Transitions As Actions In Our Example System}
-A graph consists of a set of nodes and a set of edges. If our nodes are the states the system under test may be in, the edges are the actions that may be taken from those states, possibly resulting in a state transition. It is certainly possible for an edge to be a loop connecting the starting state to itself. In the particular case of testing web applications, note that though it's reasonable top author a page object model with each method corresponding to an edge, this is not an assumption that is necessary to make, and would-be Yeager adopters may choose to lump lower-level page object methods into clusters of function calls in new functions and treat those higher-level functions as edges instead. %TODO: FillMe
+A graph consists of a set of nodes and a set of edges. If our nodes are the states the system under test may be in, the edges are the actions that may be taken from those states, possibly resulting in a state transition. It is certainly possible for an edge to be a loop connecting the starting state to itself. In the particular case of testing web applications, note that though it's reasonable to author a page object model with each method corresponding to an edge, this is not an assumption that is necessary to make, and would-be Yeager adopters may choose to lump lower-level page object methods into clusters of function calls in new functions and treat those higher-level functions as edges instead.
 
 \subsection{Our Example System, Illustrated}
 overview of the system as a whole, fully rendered and illustrated %TODO: FillMe
@@ -43,48 +43,50 @@ how to use yeager: mark up your existing code %TODO: FillMe
 \subsection{State Identifiers}
 Anything that can be a Python dictionary key can serve as a state identifier. For simplicity's sake we use strings, but as long as Python will allow it, so will Yeager. Enterprising Yeager hackers may use the actual Python page object model class from the test suite to be adapted, often in combination with a custom random walk algorithm and the use of Python's reflection toolkit.%TODO: FillMe
 
-\subsection{Basic State Transition Annotations (The 0-arg Case)}
-The fastest way to get started with using Yeager is to define a function which takes no arguments for each of the state transitions you wish to use in the test. These will probably be short snippets from the traditional-style test sequences. Then, for each of these functions, you should use the \texttt{yeager.annotations.state\_transition} annotation to mark the transition of that function. Here's an example using some of our Monica test code from the previous chapter:
+\subsection{Basic State Transition Annotations}
+The fastest way to get started with using Yeager is to define a function for each of the state transitions you wish to use in the test. These will probably be short snippets from the traditional-style test sequences. Then, for each of these functions, you should use the \texttt{yeager.annotations.state\_transition} annotation to mark the transition of that function. Here's an example using some of our Monica test code from the previous chapter:
 
 {\tt
 \begin{verbatim}
-from selenium import webdriver
 from pages.login import LoginPage
 from pages.dashboard import DashboardPage
 from yeager.annotations import state_transition
-driver = None
 
 @state_transition(None, "login-page")
-def open():
-    global driver
+def open(driver):
     driver = webdriver.Chrome()
     driver.get("https://app.monicahq.com/")
 
 @state_transition("login-page", "dashboard-page")
-def log_in():
+def log_in(driver):
     login = LoginPage(driver)
     login.log_in_correctly()
 
 @state_transition("dashboard-page", "login-page")
-def log_out():
+def log_out(driver):
     dashboard = DashboardPage(driver)
     dashboard.log_out()
 \end{verbatim}
 }
 
-Note that we use the Python \texttt{None} constant as a reference to the uninitialized system. Yeager treates \texttt{None} as a special node in the implied state model our annotations provide: it's assumed to be the entry point.
+Note that we use the Python \texttt{None} constant as a reference to the uninitialized system. Yeager treats \texttt{None} as a special node in the implied state model our annotations provide: it's assumed to be the entry point.
 
 \subsection{Using The Yeager Connectedness Tester}
-Yeager provides a utility function to check for misconfigured annotations. The function, \texttt{yeager.orphaned\_states}, takes one optional argument (the starting state, it defaults to \texttt{None}), and returns a list of all states that yeager knows about but doesn't know how to get to.
+Yeager provides a utility function to check for misconfigured annotations. The function, \texttt{yeager.orphaned\_states}, takes one optional argument (the starting state, it defaults to \texttt{None}), and returns a list of all states that yeager knows about but doesn't know how to get to. The inverse, the known states, is also provided as a utility function with the same optional argument, as \texttt{yeager.reachable\_states}. Though the orphaned states function is useful for debugging, it can be used in other automated ways, for instance as a test coverage check or a way to automate \texttt{walk()} calls with each of the "orphaned" states actually being new entry points. These are hacker's utility tools, and can be used as such.
 
 \section{Yeager Test Harnesses}
 in more advanced scenarios, we need to assist Yeager's execution %TODO: FillMe
 
-\subsection{Application Configuration}
-where to put data yeager always needs %TODO: FillMe
+%\subsection{Application Configuration}
+%where to put data yeager always needs %TDO: FillMe
+% NOTE: THIS SECTION HAS BEEN COMmented out because yeager is presently 0-conf. It may go away soon.
 
 \subsection{Test Setup and Entry Point}
-To actually start taking a walk on the state model, simply call yeager's \texttt{walk} function with an integer representing how many steps to take.
+It's up to testers to generate python scripts that start up and execute a yeager test, but the process is very easy.
+
+The first step is to cause the python interpreter to parse all of the relevant yeager annotations. In simple test scripts, it's enough to simply write the test code and annotations at the top of the file, but in large test suites, it may be necessary to simply import those python files at the top of the yeager test script instead. Critically, yeager annotation metadata exists as long as the python interpreter instance does, so it doesn't matter what modules or other structure applies to the code the yeager annotations are spread around in. If it has been parsed, yeager knows about it.
+
+To actually start taking a walk on the state model, simply call yeager's \texttt{walk} function with an integer representing how many steps to take. 
 
 \subsection{Exit Point}
 many scenarios won't deal with this, but how to note ways tests can end successfully. %TODO: FillMe

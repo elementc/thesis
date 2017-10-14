@@ -86,7 +86,7 @@ While selecting by the id field is comparatively simple (application authors may
 
 This button is critical, it must be clicked in order to complete a login! However, it lacks a unique ID. It is tempting to use the \texttt{By.LINK\_TEXT} selection method since it has a fairly concise body text ("Login"), but this won't work since it's a \texttt{<button>} tag and not an \texttt{<a>} (anchor, a hyperlink base) tag. The next logical option is to select by class, the class attribute of html being whitespace-separated tags which are not guaranteed to be unique. If the software is designed to use classes in a way that relevant tags will be unique, this is an option, but it is not typical. In this case, the button has the btn and btn-primary classes, an identically styled button would have the same set of classes. This, then, is a candidate for improvement in the system under test, to at least provide a cleaner testing interface in the form of a unique id or class on this button, but in the interim we can fall back to HTML's built-in selection system, the CSS selector.
 
-A CSS selector is a string confomrant to the CSS selection grammar \citep{Selector54} which enables detailed selection of DOM element or elements. It can combine an element's tag, id, class, parents, children, even positon. For the purposes of this login button's selection, we require the following features of candidate elements:
+A CSS selector is a string confomrant to the CSS selection grammar \citep{Selector54} which enables detailed selection of DOM element or elements. It can combine an element's tag, id, class, parents, children, or even position. For the purposes of this login button's selection, we require the following features of candidate elements:
 \begin{itemize}
 \item Tag named button
 \item Classes btn and btn-primary
@@ -127,9 +127,18 @@ def log_in_correctly(self):
 }
 
 \subsection{Asserting Validity}
-Consider what an assertion (the \texttt{assert} statement in python) does: it takes one mandatory argument, a statement that boils down to true or false, and if the statement evaluates to anything but true, the system halts immediately with a message (an optional second argument or a default one) as to what assertion failed and in what way. They explicate and then enforce contracts in programming systems and are a staple of high quality programming. Since contracts are a core part of a test, much of the actual important work of a test suite consists of well-placed assertions about the state of the system under test.
+Consider what an assertion (the \texttt{assert} statement in python) does: it takes one mandatory argument, a statement that boils down to true or false, and if the statement evaluates to anything but true, the system halts immediately with a message (an optional second argument or a default one) as to what assertion failed and in what way. They explicate and then enforce contracts in programming systems and are a staple of high quality programming.
 
-Within the page object model, two key places for the insertion of assertions becomes apparent: first, at the initialization of the page object model itself, and second, as necessary during action execution.%TODO: FillMe
+Since contracts are a core part of a test, much of the actual important work of a test suite consists of well-placed assertions about the state of the system under test. While the assert statement is the most obvious and common way to designate an assertion, any snippet of code which does not change the state of the running test and raises an exception if some assumption is not true can fulfill the same purpose- I call these "assert-alikes". For instance, if a Selenium webdriver find\_element fails to find the element described, it simply raises an exception. There's no need to do something complex like
+{\tt
+\begin{verbatim}
+ dash = self.driver.find_element(*self.dashboard_sel) or False
+ assert dash, "Couldn't find the dashboard."
+\end{verbatim}
+}
+when, for the purposes of asserting some page element is present, the element finding call itself (\texttt{self.driver.find\_element(*self.dashboard\_sel)}) can stand alone.
+
+Within the page object model, two key places for the insertion of assertions becomes apparent: first, at the initialization of the page object model itself, and second, as necessary during action execution. In the \texttt{monica\-tests\-traditional} repository, page object models are derived from a PageBase class in the page\_base.py file. This includes an overridable function, \texttt{self.initial\_status}, which is called in the lowest inherited class definition- and can be selectively chained upwards- after object construction is complete. This method is filled with a number of assertions and assertion-alikes for the given page object model at the expected starting state in that page. Methods on the page object mdoel also include assertions as necessary to verify successful operation, including constructing and returning a page model for a new page when a method causes a transition for that new page- therefore triggering the new page's initial\_status method all over again.
 
 \subsection{Assembling The Final Test Scripts}
 building (and running) a suite %TODO: FillMe
