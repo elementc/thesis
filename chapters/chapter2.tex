@@ -34,8 +34,12 @@ overview of the system as a whole, fully rendered and illustrated %TODO: FillMe
 \subsection{Capturing Contextual State}
 Yeah, getting past the login screen is cool, but there's other outside influences on the output of the program than just which page we're on %TODO: FillMe
 
-\subsection{Taking A Walk On The Graph: Long Sequence Testing}
-introduce the concept of long sequence testing %TODO: FillMe
+\subsection{Taking A Walk On The Graph}
+Imagine standing on a giant picture of the program under test's state graph, at the starting point. You are able to walk along the lines in the directions they are drawn to new points but you can't walk backwards against their direction of travel. It's a strange looking environment for sure, many of the nodes you might stand on have leaving edges that just loop back to where they started. Existing test scripts are like following directions along this map, "from A, go to B, turn right at C, stop at D" and so on. These pre-planned scripts are a great way to make sure you visit the whole map at least once.
+
+But, imagine that you had a lot of time to kill and had already done all of your maps for the day. An interesting way to spend your time might be to go wandering: wherever you are, pick one of the paths before you at random and walk that way. Keep flipping coins or rolling n-sided dice and walking and you might eventually trigger a secret passage in the labyrinth you've been wandering. Well, that or crash the program under test. How exciting!
+
+Contrived thought experiments aside, the notion of wandering around a program is a useful one for testing. First, it simulates human usage a little more realistically than many test scenarios (how many users actually start from a freshly booted computer, load up and login to the dashboard, create one record, search for that record, delete that record, then log out?). Second, such a process can be of any arbitrary length which, while also contributing to a more realistic usage simulation (consider that the author's instance of the Atom text editor and the GNOME desktop environment has been open on ths laptop since August), permits test managers to use as much of the technique as they want to- wandering the program under test for a few hours on their laptop during a conference call or over a month on a virtual machine hosted in a cloud somewhere.
 
 \section{Yeager State Transition Annotations}
 how to use yeager: mark up your existing code %TODO: FillMe
