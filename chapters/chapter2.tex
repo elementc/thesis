@@ -25,14 +25,14 @@ For the purpose of our discussions, these pages will constitute the entire set o
 \subsection{State Transitions As Actions In Our Example System}
 A graph consists of a set of nodes and a set of edges. If our nodes are the states the system under test may be in, the edges are the actions that may be taken from those states, possibly resulting in a state transition. It is certainly possible for an edge to be a loop connecting the starting state to itself. In the particular case of testing web applications, note that though it's reasonable to author a page object model with each method corresponding to an edge, this is not an assumption that is necessary to make, and would-be Yeager adopters may choose to lump lower-level page object methods into clusters of function calls in new functions and treat those higher-level functions as edges instead.
 
-\subsection{Our Example System, Illustrated}
-overview of the system as a whole, fully rendered and illustrated %TODO: FillMe
+% \subsection{Our Example System, Illustrated}
+% overview of the system as a whole, fully rendered and illustrated %TODO: FillMe
 
 \subsection{Graph Connectedness}
 "Is it possible to get from here to here?" and other questions, probably will introduce Dijkstra. %TODO: FillMe
 
 \subsection{Capturing Contextual State}
-Before embarking on the journey of test automation that follows, it is important to consider for a moment the entirety of the software system. More than just software, a system includes the entire context of the software's execution, from the software itself, to the contents of the database, to the number of active system threads, to the ambient temperature of the room the system is running in. Some of these are impossible to control for in a testing environment, it's unreasonable to unseat your CPU cooler to attempt to replicate a bug related to your cousin's dust-clogged Pentium II for instance, but others are %TODO: FillMe
+Before embarking on the journey of high volume test automation that follows, it is important to consider for a moment the entirety of the software system. More than just software, a system includes the entire context of the software's execution, from the software itself, to the contents of the database, to the number of active system threads, to the ambient temperature of the room the system is running in. Some of these are impossible to control for in a testing environment: it's unreasonable to unseat your CPU cooler to attempt to replicate a bug related to your cousin's dust-clogged Pentium II for instance. Others are possible to configure with initialization scripts and virtualization to a degree, for instance always having the same base OS image and environment variables, or always having the same amount of RAM and number of CPU cores. Still more can be controlled for using database snapshots and well-documented test data. Regardless, remembering these variables, which are external to the code but internal to the system under test, is critical to the development exercises in this chapter.
 
 \subsection{Taking A Walk On The Graph}
 Imagine standing on a giant picture of the program under test's state graph, at the starting point. You are able to walk along the lines in the directions they are drawn to new points but you can't walk backwards against their direction of travel. It's a strange looking environment for sure, many of the nodes you might stand on have leaving edges that just loop back to where they started. Existing test scripts are like following directions along this map, "from A, go to B, turn right at C, stop at D" and so on. These pre-planned scripts are a great way to make sure you visit the whole map at least once.
@@ -86,12 +86,12 @@ It's up to testers to generate python scripts that start up and execute a yeager
 
 The first step is to cause the python interpreter to parse all of the relevant yeager annotations. In simple test scripts, it's enough to simply write the test code and annotations at the top of the file, but in large test suites, it may be necessary to simply import those python files at the top of the yeager test script instead. Critically, yeager annotation metadata exists as long as the python interpreter instance does, so it doesn't matter what modules or other structure applies to the code the yeager annotations are spread around in. If it has been parsed, yeager knows about it.
 
-To actually start taking a walk on the state model, simply call yeager's \texttt{walk} function with an integer representing how many steps to take.
+To actually start taking a walk on the state model, simply call yeager's \texttt{walk} function.
 
-% \subsection{Exit Point}
-% many scenarios won't deal with this, but how to note ways tests can end successfully. %TODO: FillMe
+\subsection{Walk Options and Execution}
+The function \texttt{yeager.walk} takes some special arguments that determine how a test will eventually come to an end. If a tester just wants to go walking until they tell it to stop, they can call it with no args and it will run until the test is killed. If a tester wants to just take a fixed number of steps, they can pass that as a naked integer or kwarg named count to \texttt{walk} and it will run for that many steps and then return. If a tester doesn't care about how long a test runs, and only wants to run until the program gets to some particular state, using the kwarg \texttt{exit\_state} with the desired end state will cause the walk call to return as soon as yeager wanders to that state. And, finally, if a tester wishes to start the walking from a state other than the default starting state of \texttt{None}, they may do so by supplying the kwarg \texttt{start\_state} with the desired starting state.
 
-\subsection{Application Context Storage}
+\subsection{Application Context}
 sometimes a test needs more information than just what state we're in. this overviews how to store things relevant to tests (who's expected to be logged in, how many emails they have, how many contacts, etc for an email client app) %TODO: FillMe
 
 \subsection{Test Method Helpers}
@@ -101,7 +101,7 @@ special args to an annotation that specify a caller which pulls data from App Co
 hooks provided for each state transition which can make additonal assertions not in the original test %TODO: FillMe
 
 \subsection{Logging in Yeager}
-Yeager doesn't make any particular assumptions about the logging toolkit that you use. It uses standard output to print log data, but it can be configured to use any arbitrary function the user supplies instead. For Long Sequence Regression Testing, it is very important to log with vigor, as a failure is often the result of many consecutive steps instead of one instant. %TODO: FillMe
+Yeager doesn't make any particular assumptions about the logging toolkit that you use. It uses standard output to print log data. For Long Sequence Regression Testing, it is very important to log with vigor, as a failure is often the result of many consecutive steps instead of one instant. %TODO: FillMe
 
 \subsection{Advanced State Transition Annotations (With Context From Harness)}
 using the stuff from above to enable more rich/complex state transitions %TODO: FillMe
