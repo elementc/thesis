@@ -4,7 +4,7 @@ The test suite assembled in the previous chapter is a great way for a software d
 
 It's a boring, tedious, and repetitious task that can be the entire career of a test engineer. However, as any test automator will know, tasks which are boring, tedious, and repetitious are ripe targets for computer automation, and the task of scenario authorship is no different.
 
-This chapter will outline a method for adapting the existing test suite explored in the previous chapter, using a tool of our own authorship named Yeager, to enable the computer to generate scenarios automatically. Yeager is an MIT-open sourced python version 3 module, with source available at \url{https://github.com/elementc/yeager}. It provides a python annotation and a set of utility functions. Usage of Yeager's state transition annotation allows testers to quickly and easily map an existing suite of test code onto a state machine, in the form of a graph. This graph can then be traversed using the utility functions, thereby generating new test scenarios from the existing code.
+This chapter will outline a method for adapting the existing test suite explored in the previous chapter, using a tool of our own authorship named yeager, to enable the computer to generate scenarios automatically. Yeager is an MIT-open sourced python version 3 module, with source available at \url{https://github.com/elementc/yeager}. It provides a python annotation and a set of utility functions. Usage of yeager's state transition annotation allows testers to quickly and easily map an existing suite of test code onto a state machine, in the form of a graph. This graph can then be traversed using the utility functions, thereby generating new test scenarios from the existing code.
 
 The resultant adapted test suite is published online at \url{https://github.com/elementc/monica-tests-yeagerized} for your convenience.
 
@@ -23,7 +23,7 @@ The Dashboard and Contacts list both let us \texttt{AddAContact}, while the Jour
 For the purpose of our discussions, these pages will constitute the entire set of states in the system under test. Conveniently, each of them is a python class.
 
 \subsection{State Transitions As Actions In Our Example System}
-A graph consists of a set of nodes and a set of edges. If our nodes are the states the system under test may be in, the edges are the actions that may be taken from those states, possibly resulting in a state transition. It is certainly possible for an edge to be a loop connecting the starting state to itself. In the particular case of testing web applications, note that though it's reasonable to author a page object model with each method corresponding to an edge, this is not an assumption that is necessary to make, and would-be Yeager adopters may choose to lump lower-level page object methods into clusters of function calls in new functions and treat those higher-level functions as edges instead. In fact, the example yeagerized monica tests does just this, creating a suite of yeager-friendly functions as snipets of existing test sequences, built from page object function calls.
+A graph consists of a set of nodes and a set of edges. If our nodes are the states the system under test may be in, the edges are the actions that may be taken from those states, possibly resulting in a state transition. It is certainly possible for an edge to be a loop connecting the starting state to itself. In the particular case of testing web applications, note that though it's reasonable to author a page object model with each method corresponding to an edge, this is not an assumption that is necessary to make, and would-be yeager adopters may choose to lump lower-level page object methods into clusters of function calls in new functions and treat those higher-level functions as edges instead. In fact, the example yeagerized monica tests does just this, creating a suite of yeager-friendly functions as snipets of existing test sequences, built from page object function calls.
 
 % \subsection{Our Example System, Illustrated}
 % overview of the system as a whole, fully rendered and illustrated %TODO: FillMe
@@ -85,7 +85,7 @@ Note that we use the Python \texttt{None} constant as a reference to the uniniti
 Yeager provides a utility function to check for states which cannot be reached from a given state, probably due to misconfigured annotations. The function, \texttt{yeager.orphaned\_states}, takes one optional argument (the starting state, it defaults to \texttt{None}), and returns a list of all states that yeager knows about but doesn't know how to get to. The inverse, the known states, is also provided as a utility function with the same optional argument, as \texttt{yeager.reachable\_states}. Though the orphaned states function is useful for debugging, it can be used in other automated ways, for instance as a test coverage check or a way to automate \texttt{walk()} calls with each of the "orphaned" states actually being new entry points. They're useful in a number of different contexts for enterprising testers.
 
 \section{Yeager Test Harnesses}
-in more advanced scenarios, we need to assist Yeager's execution %TODO: FillMe
+A suite of yeager-annotated python functions, while neat, is neither immediately useful (it's still just a chunk of naked functions), nor particularly intrusive (annotating a function with a yeager state transition only adds a print statement before the function executes). Analysis of the state transition graph can be done manually for sure (\texttt{from yeager.annotations import nodes, edges}), but yeager also provides a set of utility functions to actually exercise the system under test.
 
 \subsection{Test Setup and Entry Point}
 It's up to testers to generate python scripts that start up and execute a yeager test, but the process is very easy.
@@ -109,13 +109,12 @@ Yeager doesn't make any particular assumptions about the logging toolkit that yo
 While it may seem counterintuitive after going to the effort to define them, it is possible to mark a state as one to not visit during a walk. This is useful, say, in cases where testers might want a run configuration that avoids certain known-buggy regions of the system under test, or try a yeager test but know parts of their yeager-specific code is still incomplete. It's accomplished by using the \texttt{yeager.add\_state\_to\_blacklist} function. Any state identifier, when passed as an argument, will not be visited by a yeager walk.
 
 \subsection{Controlling The Path: Weights}
-Humans using software don't truly do actions equally randomly. A user of the the Atom text editor, for instance, probably spends more time typing and saving than they do moving tabs around, opening consoles, running compile/lint commands, changing themes or settings, and so on. To enable better simulation of these more-probable actions, yeager supports the notion of weighting edges. For example: from the state "editing-text", there are four actions leading out: \texttt{edit\_text} and \texttt{save\_buffer}, which lead back to the "editing-text" state, 
+Humans using software don't truly do actions equally randomly. A user of the the Atom text editor, for instance, probably spends more time typing and saving than they do moving tabs around, opening consoles, running compile/lint commands, changing themes or settings, and so on. To enable better simulation of these more-probable actions, yeager supports the notion of weighting edges.
+
+An edge may be weighted by using a standalone function (\texttt{yeager.set\_edge\_weight}) or by using the weight kwarg with the actual state transition annotation (\texttt{@state\_transition("state-a", "state-b", weight=10)}). Notionally, an unweighted edge has a weight of 1. This edge gets one entry into the pool of candidates for selection by the walk algorithm. An edge with a weight of 5 gets five entries into the pool. A final edge with a weight of 2 gets two entries into the pool. From the combined pool (with eight entries), one is chosen entirely at random and executed.
 
 % \subsection{Controlling The Path: Visitation Limits}
-% how to limit the number of times a particular state should be visited (for instance, dont go to the logout state in this run, stay logged in) %TODO: FillMe
-
-\subsection{Executing Test Plans}
-\texttt{python -m yeager run yplan.py} %TODO: FillMe
+% how to limit the number of times a particular state should be visited (for instance, dont go to the logout state in this run, stay logged in) %TOD0: FillMe
 
 \subsection{Interpreting Results And Logs}
-what do logs look like anyways? %TODO: FillMe
+what do logs look like anyways? (This may go away, or blow up into a whole new section. I don't know if "heres how bugs look when yeager finds them" is a relevant question. Yeager generates logs as if the system was just running, not like a normal test. Probably a whole paper there.)%TODO: FillMe
