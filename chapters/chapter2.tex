@@ -23,13 +23,13 @@ The Dashboard and Contacts list both let us \texttt{AddAContact}, while the Jour
 For the purpose of our discussions, these pages will constitute the entire set of states in the system under test. Conveniently, each of them is a python class.
 
 \subsection{State Transitions As Actions In Our Example System}
-A graph consists of a set of nodes and a set of edges. If our nodes are the states the system under test may be in, the edges are the actions that may be taken from those states, possibly resulting in a state transition. It is certainly possible for an edge to be a loop connecting the starting state to itself. In the particular case of testing web applications, note that though it's reasonable to author a page object model with each method corresponding to an edge, this is not an assumption that is necessary to make, and would-be Yeager adopters may choose to lump lower-level page object methods into clusters of function calls in new functions and treat those higher-level functions as edges instead.
+A graph consists of a set of nodes and a set of edges. If our nodes are the states the system under test may be in, the edges are the actions that may be taken from those states, possibly resulting in a state transition. It is certainly possible for an edge to be a loop connecting the starting state to itself. In the particular case of testing web applications, note that though it's reasonable to author a page object model with each method corresponding to an edge, this is not an assumption that is necessary to make, and would-be Yeager adopters may choose to lump lower-level page object methods into clusters of function calls in new functions and treat those higher-level functions as edges instead. In fact, the example yeagerized monica tests does just this, creating a suite of yeager-friendly functions as snipets of existing test sequences, built from page object function calls.
 
 % \subsection{Our Example System, Illustrated}
 % overview of the system as a whole, fully rendered and illustrated %TODO: FillMe
 
-\subsection{Graph Connectedness}
-"Is it possible to get from here to here?" and other questions, probably will introduce Dijkstra. %TODO: FillMe
+% \subsection{Graph Connectedness}
+% "Is it possible to get from here to here?" and other questions, probably will introduce Dijkstra. %TODO: FillMe
 
 \subsection{Capturing Contextual State}
 Before embarking on the journey of high volume test automation that follows, it is important to consider for a moment the entirety of the software system. More than just software, a system includes the entire context of the software's execution, from the software itself, to the contents of the database, to the number of active system threads, to the ambient temperature of the room the system is running in. Some of these are impossible to control for in a testing environment: it's unreasonable to unseat your CPU cooler to attempt to replicate a bug related to your cousin's dust-clogged Pentium II for instance. Others are possible to configure with initialization scripts and virtualization to a degree, for instance always having the same base OS image and environment variables, or always having the same amount of RAM and number of CPU cores. Still more can be controlled for using database snapshots and well-documented test data. Regardless, remembering these variables, which are external to the code but internal to the system under test, is critical to the development exercises in this chapter.
@@ -42,10 +42,16 @@ But, imagine that you had a lot of time to kill and had already done all of your
 Contrived thought experiments aside, the notion of wandering around a program is a useful one for testing. First, it simulates human usage a little more realistically than many test scenarios (how many users actually start from a freshly booted computer, load up and login to the dashboard, create one record, search for that record, delete that record, then log out?). Second, such a process can be of any arbitrary length which, while also contributing to a more realistic usage simulation (consider that the author's instance of the Atom text editor and the GNOME desktop environment has been open on their laptop since August, while the typical Atom CI instance takes 30 minutes to build the software and run all tests\citep{CircleCI}), permits test managers to use as much of the technique as they want to- wandering the program under test for a few hours on their laptop during a conference call or over a month on a virtual machine hosted in a cloud somewhere.
 
 \section{Yeager State Transition Annotations}
-how to use yeager: mark up your existing code %TODO: FillMe
+The meat of yeager testing is accomplished through the annotation of python test methods. An \textit{annotation}, also known as a \textit{decorator} or a \textit{function decorator} is a special python function which is executed at the time of another function's definition, recieves the function being defined as well as any other required items as parameters, and can optionally wrap the function being defined in a special modifier. Yeager is implemented as a special python annotation and a set of utility functions which register after definition and can then call plain old python functions.
+
+The annotation, \texttt{yeager.annotations.state\_transition} and some utility functions (\texttt{yeager.add\_state\_to\_blacklist} and \texttt{yeager.walk}) are described in this section.
+
+A note on python convention: there are two kinds of parameters a function may take. The first, \textit{positional arguments}, are passed like this: \texttt{print("some argument")} or \texttt{math.pow(3,2)}. The second, \textit{keyword arguments}, sometimes shortened to \textit{kwargs}, are passed like this: \texttt{timedelta(hours=3, minutes=7, seconds=20)}. Order does not matter with kwargs. Positional arguments and kwargs that aren't explicitly defined in a function's signature can both be captured for use by a function. Positional arguments are captured into a python list by defining a (potentially semi-) final argument prefixed with a single asterisk, keyword arguments into a python dictionary with a final argument prefixed with two asterisks, like this: \texttt{def function(named\_arg1="Default value", *args\_var\_name, **kwargs\_var\_name)}.
 
 \subsection{State Identifiers}
-Anything that can be a Python dictionary key can serve as a state identifier. For simplicity's sake we use strings, but as long as Python will allow it, so will Yeager. Enterprising Yeager hackers may use the actual Python page object model class from the test suite to be adapted, often in combination with a custom random walk algorithm and the use of Python's reflection toolkit.%TODO: FillMe
+Anything that can be a Python dictionary key can serve as a state identifier. For simplicity's sake we use strings in this document, but as long as Python will allow it, so will Yeager. Enterprising Yeager hackers may use the actual Python page object model class, for instance.
+
+The example implementation of a yeager test uses unique strings for state identifiers. There's no strong reason for this, it's just illustrative.
 
 \subsection{Basic State Transition Annotations}
 The fastest way to get started with using Yeager is to define a function for each of the state transitions you wish to use in the test. These will probably be short snippets from the traditional-style test sequences. Then, for each of these functions, you should use the \texttt{yeager.annotations.state\_transition} annotation to mark the transition of that function. Here's an example using some of our Monica test code from the previous chapter:
@@ -57,17 +63,17 @@ from pages.dashboard import DashboardPage
 from yeager.annotations import state_transition
 
 @state_transition(None, "login-page")
-def open(driver):
+def open(driver, **kwargs):
     driver = webdriver.Chrome()
     driver.get("https://app.monicahq.com/")
 
 @state_transition("login-page", "dashboard-page")
-def log_in(driver):
+def log_in(driver, **kwargs):
     login = LoginPage(driver)
     login.log_in_correctly()
 
 @state_transition("dashboard-page", "login-page")
-def log_out(driver):
+def log_out(driver, **kwargs):
     dashboard = DashboardPage(driver)
     dashboard.log_out()
 \end{verbatim}
@@ -91,38 +97,22 @@ To actually start taking a walk on the state model, simply call yeager's \texttt
 \subsection{Walk Options and Execution}
 The function \texttt{yeager.walk} takes some special arguments that determine how a test will eventually come to an end. If a tester just wants to go walking until they tell it to stop, they can call it with no args and it will run until the test is killed. If a tester wants to just take a fixed number of steps, they can pass that as a naked integer or kwarg named count to \texttt{walk} and it will run for that many steps and then return. If a tester doesn't care about how long a test runs, and only wants to run until the program gets to some particular state, using the kwarg \texttt{exit\_state} with the desired end state will cause the walk call to return as soon as yeager wanders to that state. And, finally, if a tester wishes to start the walking from a state other than the default starting state of \texttt{None}, they may do so by supplying the kwarg \texttt{start\_state} with the desired starting state.
 
+All of these different preferences are just plans- the intendedway to wander the graph. If an exception is raised in the underlying code, the exception is thrown all the way to the caller, yeager doesn't try to continue walking since the system under test may be in a corrupt state. It's not possible to resume the existing walk, but it is possible to call \texttt{walk} again from scratch.
+
 \subsection{Application Context}
-sometimes a test needs more information than just what state we're in. this overviews how to store things relevant to tests (who's expected to be logged in, how many emails they have, how many contacts, etc for an email client app) %TODO: FillMe
-
-\subsection{Test Method Helpers}
-special args to an annotation that specify a caller which pulls data from App Context Storage %TODO: FillMe
-
-\subsection{Yeager-Only Assertions}
-hooks provided for each state transition which can make additonal assertions not in the original test %TODO: FillMe
+All other kwargs that are passed to the \texttt{yeager.walk} call will be passed to the transition functions by yeager, so a driver kwarg could be used to provide a webdriver to a web application's test suite, or a dict named context could store contextual information about the system under test. Mutable All unrecognized kwargs by the walk call are passed to all of the transition functions that yeager steps throug, so it is in the yeager test style to have all test functions use the \texttt{**kwargs} catch-all argument in case a new context argument is added in the future of the test suite's development.
 
 \subsection{Logging in Yeager}
-Yeager doesn't make any particular assumptions about the logging toolkit that you use. It uses standard output to print log data. For Long Sequence Regression Testing, it is very important to log with vigor, as a failure is often the result of many consecutive steps instead of one instant. %TODO: FillMe
-
-\subsection{Advanced State Transition Annotations (With Context From Harness)}
-using the stuff from above to enable more rich/complex state transitions %TODO: FillMe
-
-\section{Yeager Test Plans}
-the bread and butter, informing the test generator what you're wanting to do %TODO: FillMe
-
-\subsection{Run-To-Crash vs. Run-Finitely}
-discussion of a couple scenarios the tester may wish to choose between %TODO: FillMe
+Yeager doesn't make any particular assumptions about the logging toolkit that you use. It uses standard output to print its own data, though future revisions might use the standard python logging interface. For Long Sequence Regression Testing, it is very important to log with vigor, as a failure is often the result of many consecutive steps instead of one instant.
 
 \subsection{Controlling The Path: Blacklists}
-how to inform a test to NOT go to certain states %TODO: FillMe
+While it may seem counterintuitive after going to the effort to define them, it is possible to mark a state as one to not visit during a walk. This is useful, say, in cases where testers might want a run configuration that avoids certain known-buggy regions of the system under test, or try a yeager test but know parts of their yeager-specific code is still incomplete. It's accomplished by using the \texttt{yeager.add\_state\_to\_blacklist} function. Any state identifier, when passed as an argument, will not be visited by a yeager walk.
 
 \subsection{Controlling The Path: Weights}
-how to inform a test to prefer (or shun) certain states %TODO: FillMe
+Humans using software don't truly do actions equally randomly. A user of the the Atom text editor, for instance, probably spends more time typing and saving than they do moving tabs around, opening consoles, running compile/lint commands, changing themes or settings, and so on. To enable better simulation of these more-probable actions, yeager supports the notion of weighting edges. For example: from the state "editing-text", there are four actions leading out: \texttt{edit\_text} and \texttt{save\_buffer}, which lead back to the "editing-text" state, 
 
-\subsection{Controlling The Path: Visitation Limits}
-how to limit the number of times a particular state should be visited (for instance, dont go to the logout state in this run, stay logged in) %TODO: FillMe
-
-\subsection{Additional Configuration}
-tbd during Yeager development %TODO: FillMe
+% \subsection{Controlling The Path: Visitation Limits}
+% how to limit the number of times a particular state should be visited (for instance, dont go to the logout state in this run, stay logged in) %TODO: FillMe
 
 \subsection{Executing Test Plans}
 \texttt{python -m yeager run yplan.py} %TODO: FillMe
