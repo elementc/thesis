@@ -34,7 +34,7 @@ There's a broad answer, in logging, but what kind of data gets logged and what f
 \subsection{Testing Context: Cornering vs. Surveying vs. Abusing}
 No test exists in a vacuum, even spacecraft tests for NASA. Every test sets out to prove to some stakeholder(s) that some requirement(s) are met to their satisfaction.
 
-HiVAT techniques are incredibly versatile in that they can be used as tools to show compliance with requirements that were very difficult or expensive to verify under traditional techniques. Their adaptation can help the tester to accomplish goals like ferreting out reliable reproduction cases for intermittent "heisen"bugs, or generating leads on a breadth of bugs that might have been introduced in a new major revision, or tick the box on seemingly absurd-to-prove requirements like "the system shall not exceed a response time of 300 milliseconds more than twenty five times in thirteen million requests over the course of a one hour duration".
+HiVAT techniques are incredibly versatile in that they can be used as tools to show compliance with requirements that were very difficult or expensive to verify under traditional techniques. Their adaptation can help the tester to accomplish goals like ferreting out reliable reproduction cases for intermittent "heisen"bugs, or generating leads on the breadth of bugs that might have been introduced in a new major revision, or tick the box on seemingly absurd-to-prove requirements like "the system shall not exceed a response time of 300 milliseconds more than twenty five times in thirteen million requests over the course of a one hour duration".
 
 These testing goals, driven by the testing context, define a degree of HiVAT design freedom that exists at a higher level than the engineering and technology questions previously described.
 
@@ -43,9 +43,14 @@ The notion of "High Volume" does not necessitate the "high density" that is impl
 
 This is perhaps the most limited of these six degrees of HiVAT test design freedom in that, while the decision is already made by the requirements of above design decisions, there are still (many) cases where both can apply and it becomes a design decision unto itself.
 
-
 \section{A Note On The Recorded History Of High Volume Automated Testing}
-It's hard to discuss the history of the
+It's hard to discuss the history of this family of techniques due to their origins within the field, especially as the techniques are rarely a component of a product and instead are essentially company-internal development practices- practices which companies defend jealously so as to preserve their perceived competitive advantage.
+
+There's so little real recorded scholarship in this field, possibly driven by the fact there aren't many advanced software testing degrees offered at major universities, that occurences of rediscovery are seemingly commonplace. For instance, \citet{dawsonFourBillion} reported an interesting high volume test in which a new CPU iteration and associated software was suspected to have a bug in floating point math functions, tested when the author decided to enumerate all of the errors in the range of float, four billion or so, by iterating over each one and comparing the output of the functions under test to a known-good implementation. The author reports detecting 864,026,625 inconsistencies in the span of about ninety seconds on a computer running Microsoft Windows, which would later be used to compose the blog post reporting the test. This was a revolutionary test report among the testing community, gaining massive traction traction on HackerNews and Reddit, and as one commenter pointed out, "15 years ago this probably would not have been terribly practical. 25 years ago even thinking of it would have been absurd."
+
+This is, of course, ignoring \citet{hoffman2003Exhausting}'s report of a test in which a new CPU iteration and associated software was suspected to have a bug in floating point math functions, tested when the author decided to enumerate all of the errors in the range of float, four billion or so, by iterating over each one and comparing the output of the functions under test to a known-good implementation. The author reports detecting 2 inconsistencies in the span of a few minutes on a parallel system about twenty times faster than a single-cpu machine of the day, which would later be used to analyze and correct images transmitted by the Hubble Space Telescope prior to OV-105 (Space Shuttle Endeavour)'s 1993 lens replacement mission, STS-61.
+
+An absurdity, according to Reddit, but a published absurdity, which should remind us that all of this has happened before, and will happen again.
 
 \subsection{High Volume Automated Testing Has Been Invented Six Times}
 and here's where we list all the inventors we can find.
