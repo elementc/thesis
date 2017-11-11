@@ -1,27 +1,47 @@
 %%--------------------Chapter 3------------------------
 \chapter{High Volume Automated Testing And Long Sequence Regression Testing In Context}
-Yeager is just one implementation of a technique called long sequence regression testing in a family of advanced testing techniques called high volume automated testing. This chapter aims to capture the wider context that Yeager exists in despite the relative novelty to academia that the field of high volume test automation provides: first through a detailed anatomy of what qualifies as such a test, second through a discussion of the craft's history as we are able to research, third through an overview of the family tree, and finally through a defense of the usefulness and reasonability of Yeager's particular branch. We conclude with a brief narrative summary of scenarios and cases in which Yeager's adoption may prove useful.
+Yeager is just one implementation of a technique called long sequence regression testing in a family of advanced testing techniques called High Volume Automated Testing, which we refer to sometimes as "High Volume Test Automation" and "HiVAT". This chapter aims to capture the wider context that Yeager exists in despite the relative novelty to academia that the field of high volume test automation provides: first through a detailed anatomy of what qualifies as such a test, second through a discussion of the craft's history as we are able to research, third through an overview of the family tree, and finally through a defense of the usefulness and reasonability of Yeager's particular branch. We conclude with a brief narrative summary of scenarios and cases in which Yeager's adoption may prove useful.
 
 \section{Anatomy Of A High Volume Automated Test}
-Let's look at the different legos we can play with %TODO: FillMe
+High Volume Automated Tests are software tests that, rather than exercising a particular set of preplanned scripts as a verification of a specific requirement's compliance, algorithmically generate, execute, evaluate, and potentially summarize the results of arbitrarily many test actions on a system under test, in such volume as to attain some or all of the following goals:
+\begin{enumerate}
+\item Exceed the volume of a reasonable testing staff to do manually.
+\item Expose behaviors of the system not normally exposed during traditional testing techniques, eg. through loading and stressing the system in a manner akin to when a large numbers of users may interact with it.
+\item Simulate (ab)use of the system more realistically and dynamicaly than would be attainable through traditional techniques.
+\item Generate test scenarios that, while difficult to imagine by a tester, are not outside the realm of possiblity or even probability due to the high-availability nature of modern software systems.
+\end{enumerate}
 
-\subsection{Driver: What Actions Are Taken}
-how to generate things. random entirely? random from list? build and run? %TODO: FillMe
+While this is an extremely broad definition, this is due to the fact that these goals can be met through the arrangement of a large number of different test design factors. We propose six degrees of freedom, driven by technology choice, that combine exponentially to create a diverse and comprehensive family tree of test techniques.
+
+\subsection{Generation: What Actions Are Taken}
+The first degree of HiVAT test design freedom we propose is that of the test's generation. This is essentially an engineering question: how will the application under test be driven? In the case of yeager, tests are generated through the random selection and arrangement of pre-defined test code snippets according to a state model. Other HiVAT techniques may instead playback recorded user interactions, or send a truly random stream of input to the system, or drive the system through any other method.
 
 \subsection{Interface: Black Box vs. White Box (And Shades Of Grey)}
-are you acting on the disassembled source or are you acting on the running end-user program, or something in between (like sending http requests to a ui-based app) %TODO: FillMe
+A prerequisite to the above degree of test design freedom, and one that itself drives a degree, is that of the testing interface. Tests, based on the tester's ability or intent to interact with the source code or build artifacts of the system under test, may be treated as white/glass box, or black box tests. The tradeoffs associated with testing decision are well-studied, and both have valid uses.
+
+Despite the techniques' names' implication, this is actually not a black-and-white issue: Meaningful tests can be achieved by interacting with the internals of some classes of program while still treating these interactions as black-box, dfor instance by interacting directly with the http APIs associated with a web application under test without dealing with the weight of the webapp's user interface, potentially simplifying or accelerating the test's design and execution.\citep{HoffmanTradeoffs}
 
 \subsection{Oracle: Determining Correct Behaviour}
-how do you know things are going ok? %TODO: FillMe
+Purely manual testing verfies compliance through tester observation and judgement. That is, while a manual tester is working through their test script, they are looking for known indications of noncompliance, for instance bad application behavior, strange output, or system crashes. The high volume and speed of testing present in any automated test, let alone a high volume automated test, precludes human observation and therefore necessitates a computer "oracle" to verify the application under test is behaving correctly.
 
-\subsection{Logger: Figuring Out What Happened}
-how does the test report the results? %TODO: FillMe
+In the specific case of automated unit tests and related non-high-volume test techniques, testers write checkable assertions about the state of the system at various points during the test's script, which if found to be untrue are reported and treated as a test's failure. High Volume techniques may incorporate different oracles than just these assertions (though, notably, yeager doesn't). For instance, a HiVAT technique might compare the output of a system to the output generated by a previous version of the system, or a competitor's system, or a (simplistic) alternative implementation built by the tester. Or, a technique might entirely ignore the state of the system under test and might instead focus on observable metrics like system CPU load, or memory usage, or response time, or disk write patterns. The problem of "how do we know if the program is behaving correctly", also known as the "oracle problem", has many context-driven solutions, and drives this proposed degree of HiVAT design freedom.
+
+\subsection{Loggers and Diagnostics: Figuring Out What Happened}
+Diagnostics are a unique case in that, while they can act as an oracle themselves, they overlap with the fundamental question (and degree of HiVAT test design freedom) of how the tester is to determine what circumstances fed into a detected fault.
+
+There's a broad answer, in logging, but what kind of data gets logged and what form these logs take falls to the discretion of te tester. Some tests might need detailed accountings of allocated memory bytes for every millisecond recorded, while others might get by with just a summary list- function X got called 5623 times while function Z got called 2383 times. It might be the case that a log serves as a future test plan- eg a test tool consumes its own logs to playback a previously failed test, or a tool might just dump executable test code itself.
 
 \subsection{Testing Context: Cornering vs. Surveying vs. Abusing}
-what are you trying to do with this HiVAT anyways %TODO: FillMe
+No test exists in a vacuum, even spacecraft tests for NASA. Every test sets out to prove to some stakeholder(s) that some requirement(s) are met to their satisfaction.
+
+HiVAT techniques are incredibly versatile in that they can be used as tools to show compliance with requirements that were very difficult or expensive to verify under traditional techniques. Their adaptation can help the tester to accomplish goals like ferreting out reliable reproduction cases for intermittent "heisen"bugs, or generating leads on a breadth of bugs that might have been introduced in a new major revision, or tick the box on seemingly absurd-to-prove requirements like "the system shall not exceed a response time of 300 milliseconds more than twenty five times in thirteen million requests over the course of a one hour duration".
+
+These testing goals, driven by the testing context, define a degree of HiVAT design freedom that exists at a higher level than the engineering and technology questions previously described.
 
 \subsection{Scalability: Parallelized vs. Sequential}
-how are you breaking down the work (and why should you care) %TODO: FillMe
+The notion of "High Volume" does not necessitate the "high density" that is implied by the high availability of modern supercomputing, particularly inexpensive cloud systems or other massively parallel systems. That said, many systems under test are already relatively well-suited for this kind of testing, especially web API systems, and a compelling case can be made for the adoption of cloud testing techniques.\citep{parveen2010migrate} Other requirements might explictly preclude the usage of massively parallel testing techniques, for instance testing long-term use of a single-workstation native application.
+
+This is perhaps the most limited of these six degrees of HiVAT test design freedom in that, while the decision is already made by the requirements of above design decisions, there are still (many) cases where both can apply and it becomes a design decision unto itself.
 
 
 \section{A Note On The Recorded History Of High Volume Automated Testing}
