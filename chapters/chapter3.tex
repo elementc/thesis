@@ -29,7 +29,7 @@ In the specific case of automated unit tests and related non-high-volume test te
 \subsection{Loggers and Diagnostics: Figuring Out What Happened}
 Diagnostics are a unique case in that, while they can act as an oracle themselves, they overlap with the fundamental question (and degree of HiVAT test design freedom) of how the tester is to determine what circumstances fed into a detected fault.
 
-There's a broad answer, in logging, but what kind of data gets logged and what form these logs take falls to the discretion of te tester. Some tests might need detailed accountings of allocated memory bytes for every millisecond recorded, while others might get by with just a summary list- function X got called 5623 times while function Z got called 2383 times. It might be the case that a log serves as a future test plan- eg a test tool consumes its own logs to playback a previously failed test, or a tool might just dump executable test code itself.
+There's a broad answer, in logging, but what kind of data gets logged and what form these logs take falls to the discretion of the tester. Some tests might need detailed accountings of allocated memory bytes for every millisecond recorded, while others might get by with just a summary list- function X got called 5623 times while function Z got called 2383 times. It might be the case that a log serves as a future test plan- eg a test tool consumes its own logs to playback a previously failed test, or a tool might just dump executable test code itself.
 
 \subsection{Testing Context: Cornering vs. Surveying vs. Abusing}
 No test exists in a vacuum, even spacecraft tests for NASA. Every test sets out to prove to some stakeholder(s) that some requirement(s) are met to their satisfaction.
@@ -53,14 +53,19 @@ This is, of course, ignoring \citet{hoffman2003Exhausting}'s report of a test in
 An absurdity, according to Reddit, but a published absurdity, which should remind us that all of this has happened before, and will happen again.
 
 \subsection{High Volume Automated Testing Has Been Invented Six Times}
-and here's where we list all the inventors we can find.
-\citep{miller1990empirical, KanerHivatOverview} %TODO: FillMe, add a citation for WTST
+In fact, despite the fact that the first HiVAT techniques we could find in academic literature were invented one "dark and stormy night" \citep{miller1989TR830}, many anecdotal HiVAT-linkable testing regimes were in use within the software engineering industry as early as 1966 with Hewlett-Packard's unfortunately-yet-aptly named "Evil" program whose story is now lost among the millions of sufficiently dramatic modern consumer complaints about the quality of their printer drivers. In fact, \citet{KanerHivatOverview} reports several instances of HiVAT-ey testing policies, including the 1987 implementation of "ideas implenented years ago at other telephone companies", long-sequence regression testing of a word-processing application in 1984 or 1985, and a 1991 company with a popular commercial product designed to generate many fake phone-calls to enable load testing of call center systems.
+
+In the face of Kaner's collection of anecdotal reports of HiVAT techniques used at such companies as Texas Insturments, Microsoft, AT\&T, Rolm, and other telephone companies, as well as usage in verifying FAA systems and systems at automotive manufacturers, it becomes clear that HiVAT has a rich and diverse history in industry, with many lessons to be learned from past testers. But why, then, does the academic world think the concept was invented one dark and stormy night in 1988?
 
 \subsection{Every Industrial Inventor Thinks It's A Trade Secret}
-which is why I'm apologizing that this is sourced from a bunch of talks and interviews and less-than-academic sourcing. %TODO: FillMe
+It's the very nature of the software engineering industry that companies aim to ship products as quickly as possible and with as few bugs as they can tolerate. In fact, many managers within the industry view maintenance-related tasks (such as testing) to be a problem in need of fixing, something which is desireable to minimize, even though it is, in reality, a solution to the problems posed by external requirements, normal development faults, and human processes.\citep{glass2002Facts} It's not a crazy thought, though, as any manager would be severely concerned by the notion that roughly 80 percent of their company's development effort goes into maintenance-related tasks, and certainly seeking to cut costs in that department.\citep{pigoski1996practical}
+
+Imagine a situation in which an enterprising tester has discovered a way to run thousands or millions of tests on a product in the span that a small team could previously do maybe a few dozen. A test manager whose first thought was to write an academic report explicating what exactly the process does and how it works so that others could apply these fascinating techniques in their own development practices would be only fired on a good day, and most likely sued into oblivion by any rational company.
 
 \subsection{A Call For HiVAT Documentation and Academic Consideration}
-so that the next poor sap who writes about it isn't going to have to do so much archaeology. %TODO: FillMe
+It is therefore not surprising that history became legend, legend became myth, and some testing techniques that should not have been forgotten passed out of all knowledge. There are certainly many valuable lessons still to be learned from these historical testers, and it's unlikely that this perverse incentive which drives the secreting away of advanced maintenance practices will go away in the forseeable future.
+
+The task, then, falls to academia to find and preserve knowledge of these practices and probably many more in related fields. The author is not aware of any professional software engineering historians, but it seems this is a rich area of further research. Perhaps, even, a career.
 
 \section{The High Volume Test Automation Family Tree}
 let's walk through some well-documented techniques %TODO: FillMe
