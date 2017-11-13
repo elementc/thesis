@@ -105,12 +105,12 @@ A CSS selector is a string confomrant to the CSS selection grammar \citep{Select
 
 The following CSS selector satisfies these requirements:
 
-\texttt{button.btn.btn-primary:nth-of-type(1)}.
+\texttt{.btn.btn-primary:nth-of-type(1)}.
 
 Here's a python example:
 {\tt
 \begin{verbatim}
-login_sel = (By.CSS_SELECTOR, "button.btn.btn-primary:nth-of-type(1)")
+login_sel = (By.CSS_SELECTOR, ".btn.btn-primary:nth-of-type(1)")
 login_button = driver.find_element(*login_sel)
 \end{verbatim}
 }

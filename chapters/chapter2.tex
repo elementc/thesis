@@ -18,7 +18,9 @@ Let's consider Monica's pages, which are already built into our test suite, to b
 
 We have: the login page (\texttt{Login}) and logging in takes us to the \texttt{Dashboard} which has tabs for the \texttt{Contacts} list and the \texttt{Journal} log. There's also a \texttt{Settings} page which has subpages for \texttt{Import}, \texttt{Export}, \texttt{Users}, and \texttt{Tags}.
 
-The Dashboard and Contacts list both let us \texttt{AddAContact}, while the Journal tab lets us \texttt{AddAJournalEntry}. From a given \texttt{Contact}, one can \texttt{AddASignificantOther}, \texttt{AddAChild}, \texttt{UpdateJobInformation}, \texttt{AddANote}, \texttt{AddAnActivity}, \texttt{AddAReminder}, \texttt{AddAGift}, and \texttt{AddADebt}.
+The Dashboard and Contacts list both let us \texttt{AddAContact}, while the Journal tab lets us \texttt{AddAJournalEntry}.
+
+From a given \texttt{Contact}, one can \texttt{AddASignificantOther}, \texttt{AddAChild}, \\\texttt{UpdateJobInformation}, \texttt{AddANote}, \texttt{AddAnActivity}, \texttt{AddAReminder}, \texttt{AddAGift}, and \texttt{AddADebt}.
 
 For the purpose of our discussions, these pages will constitute the entire set of states in the system under test. Conveniently, each of them is a python class.
 
@@ -40,7 +42,9 @@ The meat of yeager testing is accomplished through the annotation of python test
 
 The annotation, \texttt{yeager.annotations.state\_transition} and some utility functions (\texttt{yeager.add\_state\_to\_blacklist} and \texttt{yeager.walk}) are described in this section.
 
-A note on python convention: there are two kinds of parameters a function may take. The first, \textit{positional arguments}, are passed like this: \texttt{print("some argument")} or \texttt{math.pow(3,2)}. The second, \textit{keyword arguments}, sometimes shortened to \textit{kwargs}, are passed like this: \texttt{timedelta(hours=3, minutes=7, seconds=20)}. Order does not matter with kwargs. Positional arguments and kwargs that aren't explicitly defined in a function's signature can both be captured for use by a function. Positional arguments are captured into a python list by defining a (potentially semi-) final argument prefixed with a single asterisk, keyword arguments into a python dictionary with a final argument prefixed with two asterisks, like this: \texttt{def function(named\_arg1="Default value", *args\_var\_name, **kwargs\_var\_name)}.
+A note on python convention: there are two kinds of parameters a function may take. The first, \textit{positional arguments}, are passed like this: \texttt{print("some argument")} or \texttt{math.pow(3,2)}. The second, \textit{keyword arguments}, sometimes shortened to \textit{kwargs}, are passed like this:
+\\\texttt{timedelta(hours=3, minutes=7, seconds=20)}. Order does not matter with kwargs. Positional arguments and kwargs that aren't explicitly defined in a function's signature can both be captured for use by a function. Positional arguments are captured into a python list by defining a (potentially semi-) final argument prefixed with a single asterisk, keyword arguments into a python dictionary with a final argument prefixed with two asterisks, like this:
+\\\texttt{def function(arg1="Default val", *args\_var, **kwargs\_var)}
 
 \subsection{State Identifiers}
 Anything that can be a Python dictionary key can serve as a state identifier. For simplicity's sake we use strings in this document, but as long as Python will allow it, so will Yeager. Enterprising Yeager hackers may use the actual Python page object model class, for instance.
@@ -107,4 +111,5 @@ While it may seem counterintuitive after going to the effort to define them, it 
 \subsection{Controlling The Path: Weights}
 Humans using software don't truly do actions equally randomly. A user of the the Atom text editor, for instance, probably spends more time typing and saving than they do moving tabs around, opening consoles, running compile/lint commands, changing themes or settings, and so on. To enable better simulation of these more-probable actions, yeager supports the notion of weighting edges.
 
-An edge may be weighted by using a standalone function (\texttt{yeager.set\_edge\_weight}) or by using the weight kwarg with the actual state transition annotation (\texttt{@state\_transition("state-a", "state-b", weight=10)}). Notionally, an unweighted edge has a weight of 1. This edge gets one entry into the pool of candidates for selection by the walk algorithm. An edge with a weight of 5 gets five entries into the pool. A final edge with a weight of 2 gets two entries into the pool. From the combined pool (with eight entries), one is chosen entirely at random and executed.
+An edge may be weighted by using a standalone function
+\\(\texttt{yeager.set\_edge\_weight}) or by using the weight kwarg with the actual state transition annotation (\texttt{@state\_transition("st-a", "st-b", weight=10)}). Notionally, an unweighted edge has a weight of 1. This edge gets one entry into the pool of candidates for selection by the walk algorithm. An edge with a weight of 5 gets five entries into the pool. A final edge with a weight of 2 gets two entries into the pool. From the combined pool (with eight entries), one is chosen entirely at random and executed.
