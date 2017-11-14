@@ -1,7 +1,7 @@
 %%-----------Chapters start-------------------------------------
 %%-----------Chapter 1------------------------------------------
-\chapter{A Concise Overview of A Python Regression Test Suite For a Web Application}
-This thesis proposes a general-purpose python module for the implementation of high volume automated tests. To properly discuss the nuanced uses of the module, it is first critical to establish a "typical" industrial usage scenario.
+\chapter{An Overview of A Regression Test Suite For a Web Application}
+This thesis proposes a general-purpose Python module for the implementation of high volume automated tests. To properly discuss the nuanced uses of the module, it is first critical to establish a ``typical'' industrial usage scenario.
 
 To that end, this chapter describes the state of the art in the web test automation field, and walks through the construction of a web test suite for a popular open source relationship management site, Monica, available for use from the website \url{https://monicahq.org} as well for self-hosting from \url{https://github.com/monicahq/monica}. Later chapters will discuss implementation of the module for high volume long sequence regression testing as well as the industrial and academic context surrounding the practice of high volume automated testing.
 
@@ -32,16 +32,18 @@ Test authors need to be able to inspect the application under test from the UI p
 In modern web development, however, the debugger and inspector are built directly into the desktop web browser.\citep{odell2014browser} These are all roughly equivalent in capability, but for the purposes of this document we'll use terminology consistent with Google Chrome's Inspector toolkit, which can be accessed with the F12 key.
 
 \section{Architecture}
-A typical web application test suite is built from three components: a collection of page object models, a set of configuration parameters, and a set of test sequence scripts. In most cases, these will be stored in similarly named directories (/pages/, /config/, and /tests/).\citep{leotta2013improving}
+A typical web application test suite is built from three components: a collection of page object models, a set of configuration parameters, and a set of test sequence scripts. In most cases, these will be stored in similarly named directories (/pages/, /config/, and /tests/, which may be stored on top-level depending on suite complexity or runner requirements.).\citep{leotta2013improving}
 
 \subsection{Page Objects}
-To abstract out much of the low level work associated with interacting with the system under test, a typical usage case is to write a Python class for each "page" of the web application.\citep{kung2000object} In this scenario, each class will have a function related to each of the low level interactions, eg setting a field to a value or pulling a string from the page title. In the constructor of the page object, common sanity checks are often run to ensure the system is in a good state.
+To abstract out much of the low level work associated with interacting with the system under test, a typical usage case is to write a Python class for each ``page'' of the web application.\citep{kung2000object} In this scenario, each class will have a function related to each of the low level interactions, eg setting a field to a value or pulling a string from the page title. In the constructor of the page object, common sanity checks are often run to ensure the system is in a good state.
 
 \subsection{Configuration}
-It is common for different environments to have different credentials and settings, for instance, a continuous integration server might deploy with one set of passwords while a developer workstation has another and a user acceptance test server has a third set. To that end, it is critical that such variances are captured corectly, often in a configuration file or by reading correct values from execution environment variables.\citep{marchetto2008state} This may also be sensitive to certain differences in environments, for instance the need to skip verification of emails by system or application of different sets of mock interfaces.
+It is common for different environments to have different credentials and settings, for instance, a continuous integration server might deploy with one set of passwords while a developer workstation has another and a user acceptance test server has a third set. To that end, it is critical that such variances are captured corectly, often in a configuration file or by reading correct values from execution environment variables.\citep{marchetto2008state} This may also be sensitive to certain differences in environments, for instance the need to skip verification of emails sent by the system, or usage of different sets of mock interfaces.
 
 \subsection{Test Sequences}
-With page interfaces well defined and a suite of configuration details available, actual test authorship becomes fairly simple, with files conformant to the selected test runner's interface being filled with sequences of fairly easy to understand, high-level steps. Most of the time, a test script will be authored for each user story in the requirements of the system under test. Scenario-based tests are usually the easiest for novice programmers to write, but advanced methods may include detailed tours of the system, data-flow focused traces of system usage\citep{liu2000object} or even exhausive tests of certain featue sets in isolation: test scripts for each of a calendar, a mail client, a presentation tool, and a contacts manager in an office productivity suite. There are even tools for acceptance testing where requirements can be added like in a wiki, which can be modified to generate selenium code independent of sequences of logical usage.\citep{wang2009build}
+With page interfaces well defined and a suite of configuration details available, actual test authorship becomes fairly simple, with files conformant to the selected test runner's interface being filled with sequences of fairly easy to understand, high-level steps. Most of the time, a test script will be authored for each user story in the requirements of the system under test.
+
+Scenario-based tests are usually the easiest for novice programmers to write, but advanced methods may include detailed tours of the system, data-flow focused traces of system usage\citep{liu2000object} or even exhausive tests of certain feature sets in isolation: test scripts for each of a calendar, a mail client, a presentation tool, and a contacts manager in an office productivity suite. There are even tools for acceptance testing where requirements can be added like in a wiki, which can be modified to generate selenium code independent of sequences of logical usage.\citep{wang2009build}
 
 \section{Building The Test Suite}
 While we submit anecdotally that many would-be test automators are NOT traditionally trained software engineers, resulting in many industrial practices that are somewhat backwards to a software engineering-conscious observer, the composition of a web test automation suite is thoroughly a software engineering exercise. Various documents and projects attempt to reconcile these skillsets with these testers, including many project templates and several useful boilerplates. \citep{GitHubma29}
@@ -49,14 +51,14 @@ While we submit anecdotally that many would-be test automators are NOT tradition
 The following domain-specific considerations are relevant to software engineers who would study or experiment with automated tests of a web system. The reader is encouraged to study existing boilerplates or the reference Monica test impementation to supplement these considerations.
 
 \subsection{Planning A Set Of Tests}
-Testers usually recieve two sets of testing goals: verify conformance to some set of design and acceptance criteria, whether through the performance of some set of user story scenarios, touring features from a requirements document, or some other list of "shoulds"; and discover and verify new bugs through careful torture-testing of the system under test. We'll cover how to do the discovery part later on in chapter 2, and the verification process is currently a manual process, but verifying conformance is a straightforward enough task to automate.
+Testers usually recieve two sets of testing goals: verify conformance to some set of design and acceptance criteria, whether through the performance of some set of user story scenarios, touring features from a requirements document, or some other list of ``shoulds''; and discover and verify new bugs through careful torture-testing of the system under test. We'll cover how to do the discovery part later on in chapter 2, and the verification process is currently a manual process, but verifying conformance is a straightforward enough task to automate.
 
-In fact, a common way to start writing automated regression tests is to copy the step-by-step instructions for a given scenario into comments in the body of a python test script. Each step becomes a snippet of code during the authorship process, with steps and checks corresponding to actions and assertions in the code that gets written. Then, as a tester walks through the steps in the application under test, they write the code bit by bit until theyve completed walking through an entire scenario. In this way, an automated test is designed and built.\citep{nguyen2001testing} Later subsections will outline these smaller authorship steps in the context of a web application.
+In fact, a common way to start writing automated regression tests is to copy the step-by-step instructions for a given scenario into comments in the body of a Python test script. Each step becomes a snippet of code during the authorship process, with steps and checks corresponding to actions and assertions in the code that gets written. Then, as a tester walks through the steps in the application under test, they write the code bit by bit until theyve completed walking through an entire scenario. In this way, an automated test is designed and built.\citep{nguyen2001testing} Later subsections will outline these smaller authorship steps in the context of a web application.
 
 \subsection{Determining DOM Object Identification Methods}
 In order to be able to construct a proper page action, it is critical that our test code is able to interact with the right specific parts of the page under test. In Selenium, we use the driver's \texttt{find\_element\_by\_*} methods to do so. There are methods for finding page elements by many methods, including html ID, html name, link text and partial link text, css selectors, and several other more unique methods like an xpath string or just the tag's name. All of these methods are convenience wrappers for a base method named find\_element that takes a special constant from the \texttt{selenium.webdriver.common.by.By} class, such as \texttt{By.ID} or \texttt{By.CSS\_SELECTOR}.
 
-While it may be more immediately readable to write test code using the convenience methods, this does have an effect on maintainability in that if a particular field must change the method it is found by, many function calls will need to be replaced.\citep{gupta2003dom} To prevent such a replacement nightmare, we can use python tuples and the unzip (splat) operator to combine a method of selection with a string constant as a single "element selector" field which may universally be consumed by a \texttt{find\_element} function call.
+While it may be more immediately readable to write test code using the convenience methods, this does have an effect on maintainability in that if a particular field must change the method it is found by, many function calls will need to be replaced.\citep{gupta2003dom} To prevent such a replacement nightmare, we can use Python tuples and the unzip (splat) operator to combine a method of selection with a string constant as a single ``element selector'' field which may universally be consumed by a \texttt{find\_element} function call.
 
 Consider this HTML tag:
 
@@ -72,7 +74,7 @@ Consider this HTML tag:
 \end{verbatim}
 }
 
-This has a number of useful atributes we could use as a selector, but the best of all is the id field. HTML ids must be unique in an html document \citep{HTMLStan99} so selection by ID is extremely resillient. Here's a selector and a call to \texttt{find\_element} for the id "email":
+This has a number of useful attributes we could use as a selector, but the best of all is the id field. HTML ids must be unique in an html document \citep{HTMLStan99} so selection by ID is extremely resillient. Here's a selector and a call to \texttt{find\_element} for the id ``email'':
 
 {\tt
 \begin{verbatim}
@@ -94,20 +96,20 @@ While selecting by the id field is comparatively simple (application authors may
 \end{verbatim}
 }
 
-This button is critical, it must be clicked in order to complete a login! However, it lacks a unique ID. It is tempting to use the \texttt{By.LINK\_TEXT} selection method since it has a fairly concise body text ("Login"), but this won't work since it's a \texttt{<button>} tag and not an \texttt{<a>} (anchor, a hyperlink base) tag. The next logical option is to select by class, the class attribute of html being whitespace-separated tags which are not guaranteed to be unique. If the software is designed to use classes in a way that relevant tags will be unique, this is an option, but it is not typical. In this case, the button has the btn and btn-primary classes, an identically styled button would have the same set of classes. This, then, is a candidate for improvement in the system under test, to at least provide a cleaner testing interface in the form of a unique id or class on this button, but in the interim we can fall back to HTML's built-in selection system, the CSS selector.
+This button is critical, it must be clicked in order to complete a login! However, it lacks a unique ID. It is tempting to use the \texttt{By.LINK\_TEXT} selection method since it has a fairly concise and unique body text (``Login''), but this won't work since it's a \texttt{<button>} tag and not an \texttt{<a>} (anchor, a hyperlink base) tag. The next logical option is to select by class, the class attribute of html being whitespace-separated tags which are not guaranteed to be unique. If the software is designed to use classes in a way that relevant tags will have a unique combination of classes, this is an option, but it is not typical. In this case, the button has the \texttt{btn} and \texttt{btn-primary} classes, an identically styled button would have the same set of classes. This, then, is a candidate for improvement in the system under test, to at least provide a cleaner testing interface in the form of a unique id or class on this button, but in the interim we can fall back to HTML's built-in selection system, the CSS selector.
 
-A CSS selector is a string confomrant to the CSS selection grammar \citep{Selector54} which enables detailed selection of DOM element or elements. It can combine an element's tag, id, class, parents, children, or even position. For the purposes of this login button's selection, we require the following features of candidate elements:
+A CSS selector is a string conformant to the CSS selection grammar \citep{Selector54} which enables detailed selection of DOM element or elements. It can combine an element's tag, id, class, parents, children, or even position. For the purposes of this login button's selection, we require the following features of candidate elements:
 \begin{itemize}
-\item Tag named button
-\item Classes btn and btn-primary
-\item First on the page
+\item Class \texttt{btn}.
+\item Class \texttt{btn-primary}.
+\item First on the page.
 \end{itemize}
 
 The following CSS selector satisfies these requirements:
 
 \texttt{.btn.btn-primary:nth-of-type(1)}.
 
-Here's a python example:
+Here's a Python example:
 {\tt
 \begin{verbatim}
 login_sel = (By.CSS_SELECTOR, ".btn.btn-primary:nth-of-type(1)")
@@ -116,7 +118,7 @@ login_button = driver.find_element(*login_sel)
 }
 
 \subsection{Scripting Actions}
-Now that each relevant element of the web page under test has a unique identifier for our use, the next step is to write the code that actually triggers the interactions with them. This is fairly straightforward, we use the Page Object's driver field to retrieve elements using these identifiers, then take actions on those elements.
+Now that each relevant element of the web page under test has a unique identifier for our use, the next step is to write the code that actually triggers the interactions with them. This is fairly straightforward, we use the page object's driver field to retrieve elements using these identifiers, then take actions on those elements.
 
 The following snippet from our login page test retrieves an email text field and a password text field by their html IDs, as well as a login button by a css selector. These elements are then interacted with via the \texttt{send\_keys()} and \texttt{click()} methods. Note that \texttt{self.username} and \texttt{self.password} are defined in the object constructor from some secure source of testing account credentials.
 
@@ -136,15 +138,13 @@ def log_in_correctly(self):
 }
 
 \subsection{Asserting Validity}
-Consider what an assertion (the \texttt{assert} statement in python) does: it takes one mandatory argument, a statement that boils down to true or false, and if the statement evaluates to anything but true, the system halts immediately with a message (an optional second argument or a default one) as to what assertion failed and in what way. They explicate and then enforce contracts in programming systems and are a staple of high quality programming.
+Consider what an assertion (the \texttt{assert} statement in Python) does: it takes one mandatory argument, a statement that boils down to true or false, and if the statement evaluates to anything but true, the system halts immediately with a message (an optional second argument or a useful default one) as to what assertion failed and in what way. They explicate and then enforce contracts in programming systems and are a staple of high quality programming.
 
-Since contracts are a core part of a test, much of the actual important work of a test suite consists of well-placed assertions about the state of the system under test. While the assert statement is the most obvious and common way to designate an assertion, any snippet of code which does not change the state of the running test and raises an exception if some assumption is not true can fulfill the same purpose- I call these "assert-alikes". For instance, if a Selenium webdriver find\_element fails to find the element described, it simply raises an exception. There's no need to do something complex like
-{\tt
-\begin{verbatim}
- dash = self.driver.find_element(*self.dashboard_sel) or False
- assert dash, "Couldn't find the dashboard."
-\end{verbatim}
+Since contracts are a core part of a test, much of the actual important work of a test suite consists of well-placed assertions about the state of the system under test. While the assert statement is the most obvious and common way to designate an assertion, any snippet of code which does not change the state of the running test and raises an exception if some assumption is not true can fulfill the same purpose- we call these ``assert-alikes''. For instance, if a Selenium webdriver \texttt{find\_element} fails to find the element described, it simply raises an exception. There's no need to do something complex like\\
+\texttt{
+ dash = self.driver.find\_element(*self.dashboard\_sel) or False\\
+ assert dash, ``Couldn't find the dashboard.''\\
 }
 when, for the purposes of asserting some page element is present, the element finding call itself (\texttt{self.driver.find\_element(*self.dashboard\_sel)}) can stand alone.
 
-Within the page object model, two key places for the insertion of assertions becomes apparent: first, at the initialization of the page object model itself, and second, as necessary during action execution. In the \texttt{monica\-tests\-traditional} repository, page object models are derived from a PageBase class in the page\_base.py file. This includes an overridable function, \\\texttt{self.initial\_status}, which is called in the lowest inherited class definition- and can be selectively chained upwards- after object construction is complete. This method is filled with a number of assertions and assertion-alikes for the given page object model at the expected starting state in that page. Methods on the page object mdoel also include assertions as necessary to verify successful operation, including constructing and returning a page model for a new page when a method causes a transition for that new page- therefore triggering the new page's initial\_status method all over again.
+Within the page object model, two key places for the insertion of assertions becomes apparent: first, at the initialization of the page object model itself, and second, as necessary during action execution. In the \texttt{monica\-tests\-traditional} repository, page object models are derived from a \texttt{PageBase} class in the page\_base.py file. This includes an overridable function, \\\texttt{self.initial\_status}, which is called in the lowest inherited class definition- and can be selectively chained upwards- after object construction is complete. This method is filled with a number of assertions and assertion-alikes for the given page object model at the expected starting state in that page. Methods on the page object model also include assertions as necessary to verify successful operation, including constructing and returning a page model for a new page when a method causes a transition for that new page- therefore triggering the new page's initial\_status method all over again.
