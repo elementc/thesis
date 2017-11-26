@@ -4,7 +4,7 @@ The test suite assembled in the previous chapter is a great way for a software d
 
 It's a boring, tedious, and repetitious task that can be the entire career of a test engineer. However, as any test automator will know, tasks which are boring, tedious, and repetitious are ripe targets for computer automation, and the task of scenario authorship is no different.
 
-This chapter will outline a method for adapting the existing test suite explored in the previous chapter, using a tool of our own authorship named Yeager, to enable the computer to generate scenarios automatically. Yeager is an MIT- licensed open source Python 3 module, with source available at \url{https://github.com/elementc/yeager}. It provides a Python annotation and a set of utility functions. Usage of Yeager's state transition annotation allows testers to quickly and easily map an existing suite of test code onto a state machine, in the form of a graph. This graph can then be traversed using the utility functions, thereby generating new test scenarios from the existing code.
+This chapter will outline a method for adapting the existing test suite explored in the previous chapter, using a tool of our own authorship named Yeager, to enable the computer to generate scenarios automatically. Yeager is an MIT-licensed open source Python 3 module, with source available at \url{https://github.com/elementc/yeager}. It provides a Python annotation and a set of utility functions. Usage of Yeager's state transition annotation allows testers to quickly and easily map an existing suite of test code onto a state machine, in the form of a graph. This graph can then be traversed using the utility functions, thereby generating new test scenarios from the existing code.
 
 The resultant adapted test suite is published online at \url{https://github.com/elementc/monica-tests-yeagerized} for your convenience.
 
@@ -115,3 +115,172 @@ Humans using software don't truly do actions equally randomly. A user of the Ato
 
 An edge may be weighted by using a standalone function
 \\(\texttt{yeager.set\_edge\_weight}) or by using the weight kwarg with the state transition annotation (\texttt{@state\_transition("st-a", "st-b", weight=10)}). Notionally, an unweighted edge has a weight of 1. This edge gets one entry into the pool of candidates for selection by the \texttt{walk} algorithm. An edge with a weight of 5 gets five entries into the pool. A final edge with a weight of 2 gets two entries into the pool. From the combined pool (with eight entries), one is chosen as a random draw and executed.
+
+\section{Yeager in Action: Torture-Testing Monica}
+With the Yeager package described in a general fashion, we now move on to a detailed look at a specific use case: testing the Monica personal CRM. Just as the author provided a reference traditional test suite as the \texttt{monica-tests-traditional} repository, so too have they provided a reference Yeager test suite online at \url{https://github.com/elementc/monica-tests-yeagerized}.
+
+\subsection{Detailed Test Code}
+
+The following test code was used to generate the example runs which follow. It is a snippet of the reference Yeager suite.
+%TODO: update with content from the
+
+{\tt
+\begin{verbatim}
+from selenium import webdriver
+from pages.login import LoginPage
+from pages.dashboard import DashboardPage
+from pages.header_page import HeaderPage
+from pages.contacts import ContactsPage
+from pages.add_a_contact import AddPersonPage
+from pages.contact import ContactPage
+from pages.edit_contact import EditContactPage
+from yeager import walk
+from yeager.annotations import state_transition
+driver = None
+
+@state_transition(None, "login-page")
+def open(driver):
+    driver.get("https://app.monicahq.com/")
+
+@state_transition("login-page", "dashboard-page")
+def log_in(driver):
+    login = LoginPage(driver)
+    login.log_in_correctly()
+
+@state_transition(["dashboard-page", "contacts-page", "journal-page", "settings-page"], "login-page")
+def log_out(driver):
+    header = HeaderPage(driver)
+    header.log_out()
+
+@state_transition(["dashboard-page", "contacts-page", "journal-page", "settings-page"], "dashboard-page")
+def dashboard_page(driver):
+    header = HeaderPage(driver)
+    header.go_dashboard()
+
+@state_transition(["dashboard-page", "contacts-page", "journal-page", "settings-page"], "contacts-page")
+def contacts_page(driver):
+    header = HeaderPage(driver)
+    header.go_contacts()
+
+@state_transition(["dashboard-page", "contacts-page", "journal-page", "settings-page"], "journal-page")
+def journal_page(driver):
+    header = HeaderPage(driver)
+    header.go_journal()
+
+@state_transition(["dashboard-page", "contacts-page", "journal-page", "settings-page"], "settings-page")
+def settings_page(driver):
+    header = HeaderPage(driver)
+    header.go_settings()
+
+@state_transition("contacts-page", "add-contact-page")
+def add_someone(driver):
+    contacts = ContactsPage(driver)
+    contacts.click_add_person()
+
+@state_transition("add-contact-page", "contacts-page")
+def cancel_add(driver):
+    add = AddPersonPage(driver)
+    add.click_cancel_button()
+
+@state_transition("add-contact-page", "contact-page")
+def okay_add(driver):
+    add = AddPersonPage(driver)
+    add.click_add_button()
+
+@state_transition("contact-page", "edit-contact-page")
+def edit_contact(driver):
+    contact = ContactPage(driver)
+    contact.click_edit_contact()
+
+walk(50, driver=webdriver.Chrome())
+
+\end{verbatim}
+}
+
+\subsection{Example of Execution: No Bugs}
+Running the full code from the above section can yield a number of different outputs. Here's one run which terminates successfully.
+{
+\begin{verbatim}
+executing function <function open at 0x039CB4F8>, current state -> login-page
+executing function <function log_in at 0x039CB588>, current state -> dashboard-page
+executing function <function log_out at 0x039CB618>, current state -> login-page
+executing function <function log_in at 0x039CB588>, current state -> dashboard-page
+executing function <function dashboard_page at 0x039CB780>, current state -> dashboard-page
+executing function <function dashboard_page at 0x039CB780>, current state -> dashboard-page
+executing function <function log_out at 0x039CB618>, current state -> login-page
+executing function <function log_in at 0x039CB588>, current state -> dashboard-page
+executing function <function settings_page at 0x039CBBB8>, current state -> settings-page
+executing function <function contacts_page at 0x039CB8E8>, current state -> contacts-page
+executing function <function log_out at 0x039CB618>, current state -> login-page
+executing function <function log_in at 0x039CB588>, current state -> dashboard-page
+executing function <function journal_page at 0x039CBA50>, current state -> journal-page
+executing function <function log_out at 0x039CB618>, current state -> login-page
+executing function <function log_in at 0x039CB588>, current state -> dashboard-page
+executing function <function log_out at 0x039CB618>, current state -> login-page
+executing function <function log_in at 0x039CB588>, current state -> dashboard-page
+executing function <function contacts_page at 0x039CB8E8>, current state -> contacts-page
+executing function <function add_someone at 0x039CBD20>, current state -> add-contact-page
+executing function <function cancel_add at 0x039CBDB0>, current state -> contacts-page
+executing function <function settings_page at 0x039CBBB8>, current state -> settings-page
+executing function <function contacts_page at 0x039CB8E8>, current state -> contacts-page
+executing function <function contacts_page at 0x039CB8E8>, current state -> contacts-page
+executing function <function log_out at 0x039CB618>, current state -> login-page
+executing function <function log_in at 0x039CB588>, current state -> dashboard-page
+executing function <function dashboard_page at 0x039CB780>, current state -> dashboard-page
+executing function <function dashboard_page at 0x039CB780>, current state -> dashboard-page
+executing function <function journal_page at 0x039CBA50>, current state -> journal-page
+executing function <function contacts_page at 0x039CB8E8>, current state -> contacts-page
+executing function <function settings_page at 0x039CBBB8>, current state -> settings-page
+executing function <function settings_page at 0x039CBBB8>, current state -> settings-page
+executing function <function dashboard_page at 0x039CB780>, current state -> dashboard-page
+executing function <function log_out at 0x039CB618>, current state -> login-page
+executing function <function log_in at 0x039CB588>, current state -> dashboard-page
+executing function <function journal_page at 0x039CBA50>, current state -> journal-page
+executing function <function settings_page at 0x039CBBB8>, current state -> settings-page
+executing function <function contacts_page at 0x039CB8E8>, current state -> contacts-page
+executing function <function log_out at 0x039CB618>, current state -> login-page
+executing function <function log_in at 0x039CB588>, current state -> dashboard-page
+executing function <function journal_page at 0x039CBA50>, current state -> journal-page
+executing function <function contacts_page at 0x039CB8E8>, current state -> contacts-page
+executing function <function dashboard_page at 0x039CB780>, current state -> dashboard-page
+executing function <function contacts_page at 0x039CB8E8>, current state -> contacts-page
+executing function <function log_out at 0x039CB618>, current state -> login-page
+executing function <function log_in at 0x039CB588>, current state -> dashboard-page
+executing function <function dashboard_page at 0x039CB780>, current state -> dashboard-page
+executing function <function settings_page at 0x039CBBB8>, current state -> settings-page
+executing function <function dashboard_page at 0x039CB780>, current state -> dashboard-page
+executing function <function log_out at 0x039CB618>, current state -> login-page
+executing function <function log_in at 0x039CB588>, current state -> dashboard-page
+\end{verbatim}}
+
+No error message, an exit under our expected conditions (after 50 steps), and a healthy system. Everything looks good!
+
+\subsection{Example of Execution: Bug In Model}
+Sometimes, a test fails. Yeager makes no guarantee that a test failure is consistent with a fault in the software. In fact, the only thing it guarantees is that the model doesn't match the software's behavior. This could just as likely represent a fault in the model that Yeager inferred. Here's one such example:
+
+{
+\begin{verbatim}
+executing function <function open at 0x03539078>, current state -> login-page
+executing function <function log_in at 0x03539108>, current state -> dashboard-page
+executing function <function contacts_page at 0x03539228>, current state -> contacts-page
+executing function <function add_someone at 0x03539420>, current state -> add-contact-page
+executing function <function okay_add at 0x035394F8>, current state -> contact-page
+executing function <function edit_contact at 0x03539588>, current state -> edit-contact-page
+(traceback omitted)
+selenium.common.exceptions.NoSuchElementException: Message: no such element: Unable to locate element: {"method":"link text","selector":"Edit contact information"}
+  (Session info: chrome=63.0.3239.59)
+  (Driver info: chromedriver=2.32.498550 (9dec58e66c31bcc53a9ce3c7226f0c1c5810906a),platform=Windows NT 10.0.15063 x86_64)
+\end{verbatim}
+}
+Did you catch it? The test begins well enough, then dives into creating a contact. It opens the add-a-contact page, and then directly tries to add the (empty) contact! The next step it takes, trying to open the just-added contact for editing, throws a NoSuchElement exception! Of course, that's because the  ``add this contact'' button didn't actually tansition the system to the contact-page state, instead showing an error message. This is a common failure mode in Yeager tests, and unfotunately it doesn't represent a bug in the software so much as a bug in the test code: there's an implicit requirement that the add-contact-page state must have something unique put into the name fields before the add button will work as expected. This can be mitigated by using a separate pseudo-state (``add-contact-page'' and ``add-contact-page-filled'') through the use of an on-transition callback, or through runtime manipulation of the Yeager blacklist.
+
+\subsection{Example of Execution: Bug In Software}
+Haven't found one yet... few candidates. Will be filled.
+
+\subsection{Inferred Monica State Graph}
+
+Here's a visualization of what Yeager infers as the System Under Test's state model. Interestingly, it may be the case that the development of Yeager tests helps to better document or at least helps testers to better understand the structure of the system under test by providing such a concise model.
+
+% INSERT GRAPHIC FROM graph_tool Here
+
+% INSERT CODE USED TO GENERATE IT HERE
