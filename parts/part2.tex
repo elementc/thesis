@@ -1,0 +1,224 @@
+%========================================
+\section{Long Sequence Testing in Yeager}
+
+\begin{frame}
+  \frametitle{What Traditional Testing Finds}
+  \begin{itemize}
+    \item TBD
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{What Traditional Testing Doesn't Find}
+  \begin{itemize}
+    \item TBD
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{How To Find What Traditional Testing Doesn't Find}
+  \begin{itemize}
+    \item TBD
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Examples of The Bugs We Want To Find}
+  \begin{itemize}
+    \item TBD
+  \end{itemize}
+\end{frame}
+
+%--------------------------------------
+\subsection{Software as a State Machine}
+\begin{frame}
+  \frametitle{Software Is A State Machine}
+  \begin{itemize}
+    \item TBD
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Testers Write Based On The System's States}
+  \begin{itemize}
+    \item TBD
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{State Models Can Help Us Plan New Tests}
+  \begin{itemize}
+    \item TBD
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Context: What State Models Don't Capture}
+  \begin{itemize}
+    \item TBD
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Random Walks: Generating New Test Plans Automatically}
+  \begin{itemize}
+    \item TBD
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{What Bugs Look Like From A Modeling Perspective}
+  \begin{itemize}
+    \item TBD
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Prior Art: Model Based Testing}
+  \begin{itemize}
+    \item TBD
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Weaknesses in PyModel}
+  \begin{itemize}
+    \item TBD
+  \end{itemize}
+\end{frame}
+
+%----------------
+\subsection{Usage}
+
+\begin{frame}
+  \frametitle{What Is Yeager?}
+  \begin{itemize}
+    \item TBD
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Yeager's API Fits On A Notecard}
+  \begin{itemize}
+    \item \texttt{import yeager}
+    \item \texttt{@yeager.state\_transition()}
+    \item \texttt{yeager.walk()}
+    \item Tweak: \texttt{yeager.add\_state\_to\_blacklist()}, \texttt{yeager.add\_transition\_to\_blacklist()}, and removal versions of each.
+    \item Debug: \texttt{yeager.enumerate\_transitions()}, \texttt{yeager.reachable\_states()}, \texttt{yeager.orphaned\_states()}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Write a Function}
+  \begin{itemize}
+    \item TBD
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Annotate the State Transition}
+  \begin{itemize}
+    \item TBD
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Repeat}
+  \begin{itemize}
+    \item TBD
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Debug Your Models}
+  \begin{itemize}
+    \item TBD
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Plan a Test Run}
+  \begin{itemize}
+    \item TBD
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Run It}
+  \begin{itemize}
+    \item TBD
+  \end{itemize}
+\end{frame}
+
+%----------------------------
+\subsection{Yeager In Action}
+
+\begin{frame}
+  \frametitle{Let's Test Monica}
+  \begin{itemize}
+    \item TBD
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Monica's Intuitive States}
+  \begin{itemize}
+    \item TBD
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{States Necessitate Transitions}
+  \begin{itemize}
+    \item TBD
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Boy, These Look Familiar}
+  \begin{itemize}
+    \item Emulates the Page Object Models.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Write Some Glue and Go}
+  \begin{itemize}
+    \item TBD
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example Suite's Model}
+  \begin{itemize}
+    \item TBD
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Give It A Run!}
+  \begin{itemize}
+    \item TBD
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{What It Looks Like When Everything's Good}
+  \begin{itemize}
+    \item TBD
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{What It Looks Like When The Model Is Wrong}
+  \begin{itemize}
+    \item TBD
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{What It Looks Like When The Software Is Wrong}
+  \begin{itemize}
+    \item TBD
+  \end{itemize}
+\end{frame}

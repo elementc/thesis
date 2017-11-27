@@ -7,6 +7,7 @@
 
 \usepackage{graphicx} % Allows including images
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{hyperref} %urls
 
 \title[Yeager]{Yeager: An Annotation-based Framework for the Generation of Automated Long Sequence Regression Tests in Python}
 
@@ -29,47 +30,21 @@ Florida Institute of Technology \\
 \frametitle{Overview}
 \tableofcontents
 \end{frame}
-\section{Automated Testing}
-
-\subsection{Technologies}
-\subsection{System Under Test: Monica CRM}
-\subsection{Patterns and Practices}
-
-\section{Long Sequence Testing in Yeager}
-\subsection{Software as a State Machine}
-\subsection{Usage}
-\subsection{Yeager In Action}
-
-\section{High Volume Automated Testing}
-\subsection{Anatomy}
-\subsection{History}
-\subsection{Family Tree}
-\subsection{The Case for Yeager}
-
-% references
-\section{}
 
 \begin{frame}
-\frametitle{References}
-\footnotesize{
-\begin{thebibliography}{99} % Beamer does not support BibTeX so references must be inserted manually as below
-\bibitem[Smith, 2012]{p1} John Smith (2012)
-\newblock Title of the publication
-\newblock \emph{Journal Name} 12(3), 45 -- 678.
-\bibitem[Smith, 2012]{p1} John Smith (2012)
-\newblock Title of the publication
-\newblock \emph{Journal Name} 12(3), 45 -- 678.
-\bibitem[Smith, 2012]{p1} John Smith (2012)
-\newblock Title of the publication
-\newblock \emph{Journal Name} 12(3), 45 -- 678.
-\bibitem[Smith, 2012]{p1} John Smith (2012)
-\newblock Title of the publication
-\newblock \emph{Journal Name} 12(3), 45 -- 678.
-\end{thebibliography}
-}
+  \frametitle{Play Along at Home}
+  \begin{itemize}
+    \item \url{github.com/elementc/yeager}
+    \item \url{github.com/elementc/monica-tests-traditional}
+    \item \url{github.com/elementc/monica-tests-yeagerized}
+    \item \url{github.com/elementc/thesis}
+    \item \url{github.com/monicahq/monica}
+  \end{itemize}
 \end{frame}
 
-
-
+\include{./parts/part1}
+\include{./parts/part2}
+\include{./parts/part3}
+\include{./parts/bib.tex}
 
 \end{document}
