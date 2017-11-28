@@ -4,28 +4,39 @@
 \begin{frame}
   \frametitle{What Traditional Testing Finds}
   \begin{itemize}
-    \item TBD
+    \item Known bugs, whether previously fixed or things that you look to see are working not working.
+    \item Unfinished features. (Write the tests before you write the feature.)
+    \item Clear and obvious program crashes.*
+    \begin{itemize}
+      \item *Clear and obvious to the computer. Nonzero return codes.
+    \end{itemize}
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{What Traditional Testing Doesn't Find}
   \begin{itemize}
-    \item TBD
+    \item Stuff you didn't think to test for.
+    \item Stuff that isn't an obvious failure.
+    \item Tons of others.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{How To Find What Traditional Testing Doesn't Find}
   \begin{itemize}
-    \item TBD
+    \item All the things we miss are failures of imagination. If you can imagine a scenario, you can probably write a test for that scenario.
+    \item Computers are really bad at imagining things too, but they're decent at rolling dice.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Examples of The Bugs We Want To Find}
   \begin{itemize}
-    \item TBD
+    \item What happens when you put 22 calls on hold on a digital phone system?
+    \item What happens when you leave Atom running for four months while writing a thesis in it?
+    \item What happens when 200k users log on to your system at the start of a workday?
+    \item Other ``hard to reproduce'' failures.
   \end{itemize}
 \end{frame}
 
@@ -34,56 +45,72 @@
 \begin{frame}
   \frametitle{Software Is A State Machine}
   \begin{itemize}
-    \item TBD
+    \item Software can be represented as a machine with states, state transitions, inputs, outputs, and a few dozen other tuples.
+    \item This IS the software, just a different way to view it.
+    \item This is already sort of evident.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Testers Write Based On The System's States}
   \begin{itemize}
-    \item TBD
+    \item Page Object Model pattern emulates the state model, and includes state transitions.
+    \item Resultant state model is significantly simplified compared to a formal model specification.
+    \item Surprisingly detailed look at how the system is built.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{State Models Can Help Us Plan New Tests}
   \begin{itemize}
-    \item TBD
+    \item Given a printout of a state model, it's not hard to trace a pen along the model and plan a new test sequence.
+    \item It's also easy to see what parts are tested (covered) and what parts aren't yet tested (still not covered).
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Context: What State Models Don't Capture}
+  \frametitle{Context: What Simplified State Models Don't Capture}
   \begin{itemize}
-    \item TBD
+    \item Things you've typed into the program.
+    \item Things the program read from some external source.
+    \item Overheating CPUs, cosmic rays, etc.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Random Walks: Generating New Test Plans Automatically}
   \begin{itemize}
-    \item TBD
+    \item Given one of these simplified state models represented as a graph, and an RNG, it's not hard to generate new test plans.
+    \item How many ways can you go from here? Ok, draw a random choice from that many. Go there. Repeat.
+    \item That's the algorithm, by the way.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{What Bugs Look Like From A Modeling Perspective}
   \begin{itemize}
-    \item TBD
+    \item Places where the model says you should be able to go, and you are unable to go, are bugs.
+    \item They might be bugs in the software.
+    \item While you're learning the software under test, they're probably bugs in the model.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Prior Art: Model Based Testing}
   \begin{itemize}
-    \item TBD
+    \item Jonathan Jacky, in Radiation Oncology, of the University of Washington, made an excellent Python model-based tester called PyModel. Apparently there are model-capturable bugs in the field of Radiation Oncology. (Therac 25)
+    \item It consumes a handcrafted model.
+    \item It can emit a test plan that covers the whole model.
+    \item It can emit a test plan that takes a random, should-be valid walk of the software under test.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Weaknesses in PyModel}
   \begin{itemize}
-    \item TBD
+    \item It requires a handcrafted model in a finicky domain-specific language. Not Plain Old Python.
+    \item It's really hard to get test plans to run as tests.
+    \item It has a lot of overhead to get running.
   \end{itemize}
 \end{frame}
 
@@ -93,7 +120,11 @@
 \begin{frame}
   \frametitle{What Is Yeager?}
   \begin{itemize}
-    \item TBD
+    \item Python module.
+    \item Annotate funtions indicating that they cause a state transition.
+    \item Infers a state model.
+    \item Can take a random walk on that model.
+    \item Has debug tools to understand the model you've made.
   \end{itemize}
 \end{frame}
 
@@ -108,45 +139,56 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]
   \frametitle{Write a Function}
-  \begin{itemize}
-    \item TBD
-  \end{itemize}
+  \begin{lstlisting}
+  def login(driver):
+    from pages.login import LoginPage
+    lp = LoginPage(driver)
+    lp.log_in_correctly(USERNAME, PASSWORD)
+  \end{lstlisting}
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]
   \frametitle{Annotate the State Transition}
-  \begin{itemize}
-    \item TBD
-  \end{itemize}
+  \begin{lstlisting}
+  import yeager
+  @yeager.state_transition("login-page", "dashboard-page")
+  def login(driver):
+    from pages.login import LoginPage
+    lp = LoginPage(driver)
+    lp.log_in_correctly(USERNAME, PASSWORD)
+  \end{lstlisting}
 \end{frame}
 
 \begin{frame}
   \frametitle{Repeat}
   \begin{itemize}
-    \item TBD
+    \item \url{github.com/elementc/monica-tests-yeagerized}
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Debug Your Models}
   \begin{itemize}
-    \item TBD
+    \item Using \texttt{enumerate\_transitions} function.
+    \item Using \texttt{orphaned\_states} function \& its inverse.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Plan a Test Run}
   \begin{itemize}
-    \item TBD
+    \item \texttt{yeager.walk()}
+    \item \texttt{yeager.walk(50)}
+    \item \texttt{yeager.walk(exit\_state="state-to-exit-on")}
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Run It}
   \begin{itemize}
-    \item TBD
+    \item \texttt{python3 yeager\_test.py}
   \end{itemize}
 \end{frame}
 
@@ -156,21 +198,23 @@
 \begin{frame}
   \frametitle{Let's Test Monica}
   \begin{itemize}
-    \item TBD
+    \item We already ahve a pretty robust suite of page models built.
+    \item We're already familiar with the usage of it.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Monica's Intuitive States}
   \begin{itemize}
-    \item TBD
+    \item Home page, login page, dashboard, contacts list, looking at a contact, editing a contact, logging a phone call or meeting with a contact, writing in the journal, etc etc etc.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{States Necessitate Transitions}
   \begin{itemize}
-    \item TBD
+    \item Filling in the login form takes you from the login page to the dashboard.
+    \item Clicking a contact in the contacts list takes you to the viewing-a-contact state.
   \end{itemize}
 \end{frame}
 
@@ -178,47 +222,50 @@
   \frametitle{Boy, These Look Familiar}
   \begin{itemize}
     \item Emulates the Page Object Models.
+    \item States are pages, methods are state transitions (even back to the same state).
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Write Some Glue and Go}
   \begin{itemize}
-    \item TBD
+    \item For each method in your page object model
+    \item Create a relatively stateless function that calls it.
+    \item Annotate any state transition.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Example Suite's Model}
   \begin{itemize}
-    \item TBD
+    \item Need to figure out how to insert pictures on Beamer.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Give It A Run!}
   \begin{itemize}
-    \item TBD
+    \item Call walk. That's it. Really.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{What It Looks Like When Everything's Good}
   \begin{itemize}
-    \item TBD
+    \item No crash.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{What It Looks Like When The Model Is Wrong}
   \begin{itemize}
-    \item TBD
+    \item Crash on an illogical sequence.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{What It Looks Like When The Software Is Wrong}
   \begin{itemize}
-    \item TBD
+    \item Crash on a perfectly logical sequence.
   \end{itemize}
 \end{frame}

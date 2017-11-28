@@ -56,7 +56,6 @@ The example implementation of a Yeager test uses unique strings for state identi
 \subsection{Basic State Transition Annotations}
 The fastest way to get started with using Yeager is to define a function for each of the state transitions you wish to use in the test. These will probably be short snippets from the traditional-style test sequences. Then, for each of these functions, you should use the \texttt{yeager.state\_transition} annotation to mark the transition of that function. Here's an example using some of our Monica test code from the previous chapter:
 
-{\tt
 \begin{verbatim}
 from pages.login import LoginPage
 from pages.dashboard import DashboardPage
@@ -77,7 +76,6 @@ def log_out(driver, **kwargs):
     dashboard = DashboardPage(driver)
     dashboard.log_out()
 \end{verbatim}
-}
 
 Note that we use the Python \texttt{None} constant as a reference to the uninitialized system. Yeager treats \texttt{None} as a special node in the implied state model our annotations provide: it's assumed to be the entry point.
 
@@ -124,8 +122,7 @@ With the Yeager package described in a general fashion, we now move on to a deta
 The following test code was used to generate the example runs which follow. It is a snippet of the reference Yeager suite.
 %TODO: update with content from the
 
-{\tt
-\begin{verbatim}
+\begin{Verbatim}[fontsize=\small]
 from selenium import webdriver
 from pages.login import LoginPage
 from pages.dashboard import DashboardPage
@@ -194,84 +191,83 @@ def edit_contact(driver):
 
 walk(50, driver=webdriver.Chrome())
 
-\end{verbatim}
-}
+\end{Verbatim}
 
 \subsection{Example of Execution: No Bugs}
 Running the full code from the above section can yield a number of different outputs. Here's one run which terminates successfully.
-{
-\begin{verbatim}
-executing function <function open at 0x039CB4F8>, current state -> login-page
-executing function <function log_in at 0x039CB588>, current state -> dashboard-page
-executing function <function log_out at 0x039CB618>, current state -> login-page
-executing function <function log_in at 0x039CB588>, current state -> dashboard-page
-executing function <function dashboard_page at 0x039CB780>, current state -> dashboard-page
-executing function <function dashboard_page at 0x039CB780>, current state -> dashboard-page
-executing function <function log_out at 0x039CB618>, current state -> login-page
-executing function <function log_in at 0x039CB588>, current state -> dashboard-page
-executing function <function settings_page at 0x039CBBB8>, current state -> settings-page
-executing function <function contacts_page at 0x039CB8E8>, current state -> contacts-page
-executing function <function log_out at 0x039CB618>, current state -> login-page
-executing function <function log_in at 0x039CB588>, current state -> dashboard-page
-executing function <function journal_page at 0x039CBA50>, current state -> journal-page
-executing function <function log_out at 0x039CB618>, current state -> login-page
-executing function <function log_in at 0x039CB588>, current state -> dashboard-page
-executing function <function log_out at 0x039CB618>, current state -> login-page
-executing function <function log_in at 0x039CB588>, current state -> dashboard-page
-executing function <function contacts_page at 0x039CB8E8>, current state -> contacts-page
-executing function <function add_someone at 0x039CBD20>, current state -> add-contact-page
-executing function <function cancel_add at 0x039CBDB0>, current state -> contacts-page
-executing function <function settings_page at 0x039CBBB8>, current state -> settings-page
-executing function <function contacts_page at 0x039CB8E8>, current state -> contacts-page
-executing function <function contacts_page at 0x039CB8E8>, current state -> contacts-page
-executing function <function log_out at 0x039CB618>, current state -> login-page
-executing function <function log_in at 0x039CB588>, current state -> dashboard-page
-executing function <function dashboard_page at 0x039CB780>, current state -> dashboard-page
-executing function <function dashboard_page at 0x039CB780>, current state -> dashboard-page
-executing function <function journal_page at 0x039CBA50>, current state -> journal-page
-executing function <function contacts_page at 0x039CB8E8>, current state -> contacts-page
-executing function <function settings_page at 0x039CBBB8>, current state -> settings-page
-executing function <function settings_page at 0x039CBBB8>, current state -> settings-page
-executing function <function dashboard_page at 0x039CB780>, current state -> dashboard-page
-executing function <function log_out at 0x039CB618>, current state -> login-page
-executing function <function log_in at 0x039CB588>, current state -> dashboard-page
-executing function <function journal_page at 0x039CBA50>, current state -> journal-page
-executing function <function settings_page at 0x039CBBB8>, current state -> settings-page
-executing function <function contacts_page at 0x039CB8E8>, current state -> contacts-page
-executing function <function log_out at 0x039CB618>, current state -> login-page
-executing function <function log_in at 0x039CB588>, current state -> dashboard-page
-executing function <function journal_page at 0x039CBA50>, current state -> journal-page
-executing function <function contacts_page at 0x039CB8E8>, current state -> contacts-page
-executing function <function dashboard_page at 0x039CB780>, current state -> dashboard-page
-executing function <function contacts_page at 0x039CB8E8>, current state -> contacts-page
-executing function <function log_out at 0x039CB618>, current state -> login-page
-executing function <function log_in at 0x039CB588>, current state -> dashboard-page
-executing function <function dashboard_page at 0x039CB780>, current state -> dashboard-page
-executing function <function settings_page at 0x039CBBB8>, current state -> settings-page
-executing function <function dashboard_page at 0x039CB780>, current state -> dashboard-page
-executing function <function log_out at 0x039CB618>, current state -> login-page
-executing function <function log_in at 0x039CB588>, current state -> dashboard-page
-\end{verbatim}}
+
+\begin{Verbatim}[fontsize=\small]
+executing <function open at 0x039CB4F8>, current state -> login-page
+executing <function log_in at 0x039CB588>, current state -> dashboard-page
+executing <function log_out at 0x039CB618>, current state -> login-page
+executing <function log_in at 0x039CB588>, current state -> dashboard-page
+executing <function dashboard_page at 0x039CB780>, current state -> dashboard-page
+executing <function dashboard_page at 0x039CB780>, current state -> dashboard-page
+executing <function log_out at 0x039CB618>, current state -> login-page
+executing <function log_in at 0x039CB588>, current state -> dashboard-page
+executing <function settings_page at 0x039CBBB8>, current state -> settings-page
+executing <function contacts_page at 0x039CB8E8>, current state -> contacts-page
+executing <function log_out at 0x039CB618>, current state -> login-page
+executing <function log_in at 0x039CB588>, current state -> dashboard-page
+executing <function journal_page at 0x039CBA50>, current state -> journal-page
+executing <function log_out at 0x039CB618>, current state -> login-page
+executing <function log_in at 0x039CB588>, current state -> dashboard-page
+executing <function log_out at 0x039CB618>, current state -> login-page
+executing <function log_in at 0x039CB588>, current state -> dashboard-page
+executing <function contacts_page at 0x039CB8E8>, current state -> contacts-page
+executing <function add_someone at 0x039CBD20>, current state -> add-contact-page
+executing <function cancel_add at 0x039CBDB0>, current state -> contacts-page
+executing <function settings_page at 0x039CBBB8>, current state -> settings-page
+executing <function contacts_page at 0x039CB8E8>, current state -> contacts-page
+executing <function contacts_page at 0x039CB8E8>, current state -> contacts-page
+executing <function log_out at 0x039CB618>, current state -> login-page
+executing <function log_in at 0x039CB588>, current state -> dashboard-page
+executing <function dashboard_page at 0x039CB780>, current state -> dashboard-page
+executing <function dashboard_page at 0x039CB780>, current state -> dashboard-page
+executing <function journal_page at 0x039CBA50>, current state -> journal-page
+executing <function contacts_page at 0x039CB8E8>, current state -> contacts-page
+executing <function settings_page at 0x039CBBB8>, current state -> settings-page
+executing <function settings_page at 0x039CBBB8>, current state -> settings-page
+executing <function dashboard_page at 0x039CB780>, current state -> dashboard-page
+executing <function log_out at 0x039CB618>, current state -> login-page
+executing <function log_in at 0x039CB588>, current state -> dashboard-page
+executing <function journal_page at 0x039CBA50>, current state -> journal-page
+executing <function settings_page at 0x039CBBB8>, current state -> settings-page
+executing <function contacts_page at 0x039CB8E8>, current state -> contacts-page
+executing <function log_out at 0x039CB618>, current state -> login-page
+executing <function log_in at 0x039CB588>, current state -> dashboard-page
+executing <function journal_page at 0x039CBA50>, current state -> journal-page
+executing <function contacts_page at 0x039CB8E8>, current state -> contacts-page
+executing <function dashboard_page at 0x039CB780>, current state -> dashboard-page
+executing <function contacts_page at 0x039CB8E8>, current state -> contacts-page
+executing <function log_out at 0x039CB618>, current state -> login-page
+executing <function log_in at 0x039CB588>, current state -> dashboard-page
+executing <function dashboard_page at 0x039CB780>, current state -> dashboard-page
+executing <function settings_page at 0x039CBBB8>, current state -> settings-page
+executing <function dashboard_page at 0x039CB780>, current state -> dashboard-page
+executing <function log_out at 0x039CB618>, current state -> login-page
+executing <function log_in at 0x039CB588>, current state -> dashboard-page
+\end{Verbatim}
 
 No error message, an exit under our expected conditions (after 50 steps), and a healthy system. Everything looks good!
 
 \subsection{Example of Execution: Bug In Model}
 Sometimes, a test fails. Yeager makes no guarantee that a test failure is consistent with a fault in the software. In fact, the only thing it guarantees is that the model doesn't match the software's behavior. This could just as likely represent a fault in the model that Yeager inferred. Here's one such example:
 
-{
-\begin{verbatim}
-executing function <function open at 0x03539078>, current state -> login-page
-executing function <function log_in at 0x03539108>, current state -> dashboard-page
-executing function <function contacts_page at 0x03539228>, current state -> contacts-page
-executing function <function add_someone at 0x03539420>, current state -> add-contact-page
-executing function <function okay_add at 0x035394F8>, current state -> contact-page
-executing function <function edit_contact at 0x03539588>, current state -> edit-contact-page
+\begin{Verbatim}[fontsize=\small]
+executing <function open at 0x03539078>, current state -> login-page
+executing <function log_in at 0x03539108>, current state -> dashboard-page
+executing <function contacts_page at 0x03539228>, current state -> contacts-page
+executing <function add_someone at 0x03539420>, current state -> add-contact-page
+executing <function okay_add at 0x035394F8>, current state -> contact-page
+executing <function edit_contact at 0x03539588>, current state -> edit-contact-page
 (traceback omitted)
 selenium.common.exceptions.NoSuchElementException: Message: no such element: Unable to locate element: {"method":"link text","selector":"Edit contact information"}
   (Session info: chrome=63.0.3239.59)
   (Driver info: chromedriver=2.32.498550 (9dec58e66c31bcc53a9ce3c7226f0c1c5810906a),platform=Windows NT 10.0.15063 x86_64)
-\end{verbatim}
-}
+\end{Verbatim}
+
+
 Did you catch it? The test begins well enough, then dives into creating a contact. It opens the add-a-contact page, and then directly tries to add the (empty) contact! The next step it takes, trying to open the just-added contact for editing, throws a NoSuchElement exception! Of course, that's because the  ``add this contact'' button didn't actually tansition the system to the contact-page state, instead showing an error message. This is a common failure mode in Yeager tests, and unfotunately it doesn't represent a bug in the software so much as a bug in the test code: there's an implicit requirement that the add-contact-page state must have something unique put into the name fields before the add button will work as expected. This can be mitigated by using a separate pseudo-state (``add-contact-page'' and ``add-contact-page-filled'') through the use of an on-transition callback, or through runtime manipulation of the Yeager blacklist.
 
 \subsection{Example of Execution: Bug In Software}

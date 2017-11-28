@@ -134,20 +134,30 @@
   \frametitle{Page Object Modeling}
   \begin{itemize}
     \item Each page on a site corresponds to a Python class.
-    \item 
+    \item Fields or text spots on pages get getters and setters.
+    \item Clickable things get click() functions.
+    \begin{itemize}
+      \item If the click should transition to a new page, construct and return that new page's class.
+    \end{itemize}
+    \item In class consturctors, assert things that are constant about that page. Username in header? Some error message not in the body? Standard controls are present?
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{How Test Suites Come Together}
+  \frametitle{How Web Test Suites Come Together}
   \begin{itemize}
-    \item TBD
+    \item Build all the page objects and put them in /pages/.
+    \item Write step-by-step test plan as comments in the body of a function in the runner's format.
+    \item Translate english steps into python code.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Running Tests}
   \begin{itemize}
-    \item TBD
+    \item Same as running any other script.
+    \item \texttt{python3 test\_contacts.py}
+    \item Some frameworks have a multi-script runner.
+    \item \texttt{python3 -m unittest}
   \end{itemize}
 \end{frame}

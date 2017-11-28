@@ -2,10 +2,14 @@
 \section{High Volume Automated Testing}
 
 \begin{frame}
-  \frametitle{What Is High Volume Test Automation}
-  \begin{itemize}
-    \item TBD
-  \end{itemize}
+  \frametitle{What Is High Volume Test Automation?}
+  Tests that algorithmically generate, execute, evaluate, and summarize the results of arbitrarily many test actions on a system, in such volume as to:
+  \begin{enumerate}
+  \item Exceed the volume a reasonable testing staff could do manually.
+  \item Expose behaviors of the system not normally exposed during traditional testing techniques.
+  \item Simulate (ab)use of the system more realistically and dynamically than would be attainable through traditional techniques.
+  \item Generate test scenarios that are not outside the realm of possibility or even probability due to the high-availability nature of modern software systems.
+\end{enumerate}\nocite{KanerHivatOverview}
 \end{frame}
 
 %------------------
@@ -14,43 +18,46 @@
 \begin{frame}
   \frametitle{Generators}
   \begin{itemize}
-    \item TBD
+    \item How you hook up the RNG to the SUT.
+    \item In short, how the test drives the System.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Interface}
   \begin{itemize}
-    \item TBD
+    \item Black box?
+    \item White box?
+    \item In between? (hitting an HTTP api that's not public but also not unit-ey)
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Oracle}
   \begin{itemize}
-    \item TBD
+    \item How do you know if you've exposed bad behavior?
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Loggers and Diagnostics}
   \begin{itemize}
-    \item TBD
+    \item How you know what happened.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Context}
   \begin{itemize}
-    \item TBD
+    \item What are you trying to do? Corner a bug? Survey the system? Abuse the system?
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Scalability}
   \begin{itemize}
-    \item TBD
-  \end{itemize}
+    \item Single-threaded? Many-threaded? Hammering the system from thousands of cloud servers?
+  \end{itemize}\cite{parveen2010migrate}
 \end{frame}
 
 %------------------
@@ -59,21 +66,26 @@
 \begin{frame}
   \frametitle{Inventors One Through Three}
   \begin{itemize}
-    \item TBD
+    \item HP, "evil", 1966
+    \item TI
+    \item Bell
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Inventors Four Through Six (And Beyond)}
   \begin{itemize}
-    \item TBD
+    \item Microsoft
+    \item Telenova
+    \item Fuzz Tester \cite{miller1989TR830}
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Everybody Thinks It's A Trade Secret}
   \begin{itemize}
-    \item TBD
+    \item Why wouldn't they?
+    \item It's massively better at testing than what they read about.
   \end{itemize}
 \end{frame}
 
@@ -140,7 +152,7 @@
   \frametitle{A/B Testing}
   \begin{itemize}
     \item TBD
-  \end{itemize}
+  \end{itemize}\cite{HBR2017ABTest}
 \end{frame}
 
 %-------------------------------

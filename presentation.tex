@@ -8,6 +8,7 @@
 \usepackage{graphicx} % Allows including images
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
 \usepackage{hyperref} %urls
+\usepackage{listings}
 
 \title[Yeager]{Yeager: An Annotation-based Framework for the Generation of Automated Long Sequence Regression Tests in Python}
 
@@ -39,12 +40,21 @@ Florida Institute of Technology \\
     \item \url{github.com/elementc/monica-tests-yeagerized}
     \item \url{github.com/elementc/thesis}
     \item \url{github.com/monicahq/monica}
+    \item \url{monica-doran.herokuapp.com}
   \end{itemize}
 \end{frame}
 
 \include{./parts/part1}
 \include{./parts/part2}
 \include{./parts/part3}
-\include{./parts/bib.tex}
+
+% references
+\section{} % references gets invisible section
+
+\begin{frame}[t, allowframebreaks]
+\frametitle{References}
+\bibliographystyle{plainnat}
+\bibliography{bibfilethesis}
+\end{frame}
 
 \end{document}
