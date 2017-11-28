@@ -134,7 +134,7 @@
     \item \texttt{import yeager}
     \item \texttt{@yeager.state\_transition()}
     \item \texttt{yeager.walk()}
-    \item Tweak: \texttt{yeager.add\_state\_to\_blacklist()}, \texttt{yeager.add\_transition\_to\_blacklist()}, and removal versions of each.
+    \item Tweak: \texttt{yeager.add\_state\_to\_blacklist()}, \texttt{yeager.add\_transition\_to\_blacklist()}, \texttt{yeager.remove\_state\_from\_blacklist()}, \texttt{yeager.remove\_transition\_from\_blacklist()}, and \texttt{yeager.set\_edge\_weight()}
     \item Debug: \texttt{yeager.enumerate\_transitions()}, \texttt{yeager.reachable\_states()}, \texttt{yeager.orphaned\_states()}
   \end{itemize}
 \end{frame}
@@ -152,8 +152,7 @@
 \begin{frame}[fragile]
   \frametitle{Annotate the State Transition}
   \begin{lstlisting}
-  import yeager
-  @yeager.state_transition("login-page", "dashboard-page")
+  @yeager.state_transition("login", "dashboard")
   def login(driver):
     from pages.login import LoginPage
     lp = LoginPage(driver)
