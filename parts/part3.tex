@@ -2,7 +2,7 @@
 \section{High Volume Automated Testing}
 
 \begin{frame}
-  \frametitle{What Is High Volume Test Automation?}
+  \frametitle{What Is High Volume Test Automation (HiVAT)?}
   Tests that algorithmically generate, execute, and evaluate the results of arbitrarily many test actions on a system, in such volume as to:\citep{KanerHivatOverview}
   \begin{enumerate}
   \item Exceed the volume a reasonable testing staff could do manually.
@@ -18,81 +18,105 @@
 \begin{frame}
   \frametitle{Generators}
   \begin{itemize}
-    \item How you hook up the RNG to the SUT.
-    \item In short, how the test drives the System.
+    \item How test cases are generated
+    \item How the system is driven
+    \item An engineering consideration
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Interface}
   \begin{itemize}
-    \item Black box?
-    \item White box?
-    \item In between? (hitting an HTTP api that's not public but also not unit-ey)
+    \item Black box or white box
+    \item Shades of grey, maybe hitting a private REST service instead of the UI directly
+    \item A consideration of engineering and testing goals
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Oracle}
   \begin{itemize}
-    \item How do you know if you've exposed bad behavior?
+    \item How to programmatically determine correctness of generated tests
+    \item Comparison of some sort
+    \begin{itemize}
+      \item To assertions in previously written code
+      \item To expectations from a formal Finite State Machine
+      \item To a previous version of the system
+      \item To a competitor's system
+      \item To systemic expectations, like not crashing
+      \item Room for research here
+    \end{itemize}
+    \item A consideration of engineering and testing goals
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Loggers and Diagnostics}
   \begin{itemize}
-    \item How you know what happened.
+    \item Keeping track of test trace
+    \item Keeping track of system health during test
+    \item Possibly characterizing system degradation
+    \item A consideration of testing goals
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Context}
   \begin{itemize}
-    \item What are you trying to do? Corner a bug? Survey the system? Abuse the system?
+    \item Testing objectives regardless of engineering
+    \begin{itemize}
+      \item Surveying the system for new bugs
+      \item Determining system resillience through abuse
+      \item Cornering hard-to-replicate bugs in suspect modules
+      \item Characterizing system resource consuption over time
+    \end{itemize}
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Scalability}
   \begin{itemize}
-    \item Single-threaded? Many-threaded? Hammering the system from thousands of cloud servers?
-  \end{itemize}\cite{parveen2010migrate}
+    \item How volume in these tests is generated
+    \begin{itemize}
+      \item A single, long-running thread
+      \item A cluster of many threads
+      \item A swarm of many cheap cloud servers \citep{parveen2010migrate}
+      \item A virtualization service testing a breadth of configurations
+    \end{itemize}
+    \item A consideration of the testing context and engineering constraints
+  \end{itemize}
 \end{frame}
 
 %------------------
 \subsection{History}
 
 \begin{frame}
-  \frametitle{Inventors One Through Three}
+  \frametitle{Purported Inventors}
   \begin{itemize}
-    \item HP, "evil", 1966
+    \item HP's ``evil''
+    \begin{itemize}
+      \item Oldest in my literature review from 1966
+    \end{itemize}
     \item TI
     \item Bell
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Inventors Four Through Six (And Beyond)}
-  \begin{itemize}
+    \item AT\&T
     \item Microsoft
     \item Telenova
-    \item Fuzz Tester \citep{miller1989TR830}
+    \item Rohm
+    \item FAA contractors
+    \item Automotive industry
+    \item \citet{miller1989TR830} with the Fuzz Tester
+    \begin{itemize}
+      \item First from academia, 1989 technical report and 1990 article.
+    \end{itemize}
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Everybody Thinks It's A Trade Secret}
+  \frametitle{Industrial Inventors Are Reticent To Publish}
   \begin{itemize}
-    \item Why wouldn't they?
-    \item It's massively better at testing than what they read about.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{A Call For Academic Consideration}
-  \begin{itemize}
-    \item TBD
+    \item HiVAT is perceived as a competititve advantage
+    \item Disclosing these practices would expose testers to risk of termination or legal retaliation
   \end{itemize}
 \end{frame}
 
@@ -100,58 +124,90 @@
 \subsection{Family Tree}
 
 \begin{frame}
-  \frametitle{Family Tree: Exploring (And Abusing) The Anatomy}
-  \begin{itemize}
-    \item TBD
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
   \frametitle{Long Sequence Regression Testing}
   \begin{itemize}
-    \item TBD
+    \item Accomplished by modifying exisiting test suites
+    \item Set tests to run continuously
+    \item Remove cleanup between test runs
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{State Model Testing}
   \begin{itemize}
-    \item TBD
+    \item Build a detailed Finite State machine
+    \item Algorithmically exercise the machine to generate testable theorems about the system
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Exhastive Testing}
   \begin{itemize}
-    \item TBD
+    \item Lower level
+    \item Test every single possible parameter value to a function
+    \item Needs another implementation for an oracle
+    \item Gets prohibitively slow for multiple parameters
+    \item Analysis, using slices for instance \citep{gallagher1991using}, can prove parameter independence and eliminate the need to test combinations of parameters
   \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{A Tale Of Two Exhaustive Tests}
+\begin{columns}[c]
+  \column{.5\textwidth}
+    \textbf{\citet{hoffman2003Exhausting}}
+    \begin{itemize}
+      \item Suspected a trig function of bugs
+      \item Used another implementation
+      \item Fed both functions every number in the range of a 32 bit float
+      \item Found two errors in a few minutes
+    \end{itemize}
+  \column{.5\textwidth} % Right column and width
+    \textbf{\citet{dawsonFourBillion}}
+    \begin{itemize}
+      \item Suspected a trig function of bugs
+      \item Used another implementation
+      \item Fed both functions every number in the range of a 32 bit float
+      \item Found one error 826k times in about 90 seconds
+    \end{itemize}
+\end{columns}
 \end{frame}
 
 \begin{frame}
   \frametitle{Fuzz Testing}
   \begin{itemize}
-    \item TBD
+    \item Miller's tool generates streams of random bytes and feeds them as input to UNIX command line utilities \citep{miller1990empirical}
+    \item A test fails if the program crashes
+    \item Has grown into a diverse family of subtechniques, popular among security researchers
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Load Testing}
   \begin{itemize}
-    \item TBD
+    \item API tests put into a massive thread pool
+    \item The ``accepted'' way to verify many users won't crash a system
+    \item Locust is a popular tool in this family \citep{heymanlocust}
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Testing In Production}
   \begin{itemize}
-    \item TBD
+    \item A practice at Microsoft
+    \item Candidate builds of Bing are fed actual user input
+    \item Output compared to current build
+    \item Enables automated, staged deployments
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{A/B Testing}
   \begin{itemize}
-    \item TBD
+    \item Marketing practice
+    \item Release candidate revisions to a subset of users and monitor for desireable behavior
+    \item Promote the most effective revision to general availability
+    \item Email marketing, site homepages, search engine ads, news stories
   \end{itemize}\cite{HBR2017ABTest}
 \end{frame}
 
@@ -161,27 +217,25 @@
 \begin{frame}
   \frametitle{Model-Based LSRT}
   \begin{itemize}
-    \item TBD
+    \item Benefits of LSRT by building on existing test automation investment, and exposing behavior under arbitrarily long test sequences
+    \item Benefits of FSM modeling by thoroghly exploring the system, as well as providing valuable insight into the construction of the system
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Quick To Implement}
   \begin{itemize}
-    \item TBD
+    \item Tests can be built as quickly as the tester can write Python
+    \item Tests benefit from good engineering practices elsewhere in the testing effort
+    \item Tests can focus on areas of the system under inspection, an incomplete model is still valuable unlike in FSMs
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Good Enough Detail}
+  \frametitle{Selective Detail}
   \begin{itemize}
-    \item TBD
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Benefit From Existing Test Code}
-  \begin{itemize}
-    \item TBD
+    \item Testers can hammer small details like keystrokes into a textbox or focus only on big-picture program flow
+    \item Testers make as many or few assertions as they wish
+    \item Testers can control the flow of their walks depending on the testing context
   \end{itemize}
 \end{frame}
