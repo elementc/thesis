@@ -1,11 +1,11 @@
 %%-----------Chapters start-------------------------------------
 %%-----------Chapter 1------------------------------------------
 \chapter{An Overview of a Regression Test Suite for a Web Application}
-This thesis proposes a general-purpose Python module for the implementation of high volume automated tests. To properly discuss the nuanced uses of the module, it is first critical to establish a ``typical'' industrial usage scenario.
+This thesis proposes a general-purpose Python module for the generation and execution of high volume automated tests. To properly discuss the nuanced uses of the module, it is first critical to establish a ``typical'' industrial usage scenario.
 
 To that end, this chapter describes the state of the art in the web test automation field, and walks through the construction of a web test suite for a popular open source relationship management site, Monica, available for use from the website \url{https://monicahq.org} as well for self-hosting from \url{https://github.com/monicahq/monica}. Later chapters will discuss implementation of the module for high volume long sequence regression testing as well as the industrial and academic context surrounding the practice of high volume automated testing.
 
-The test suite discussed in this chapter is published in its entirety online at \url{https://github.com/elementc/monica-tests-traditional}. They are written against the 0.6.5 release of the Monica software, and may be run using Python 3.
+The test suite discussed in this chapter is published in its entirety online at \url{https://github.com/elementc/monica-tests-traditional}. They are written against the 1.0.0 release of the Monica software, and may be run using Python 3.
 
 \section{Technologies}
 There are a considerable number of tools and libraries used in the development and execution of web application tests.\citep{kaur2013comparative} Regardless of actual platform, there must be at least a browser driver, a test runner, and probably some set of inspection tools. As later chapters will use a Python library, the following Python-friendly libraries have been selected.
