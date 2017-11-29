@@ -2,115 +2,143 @@
 \section{Long Sequence Testing in Yeager}
 
 \begin{frame}
-  \frametitle{What Traditional Testing Finds}
+  \frametitle{'Bugs' That Traditional Testing Finds}
   \begin{itemize}
-    \item Known bugs, whether previously fixed or things that you look to see are working not working.
-    \item Unfinished features. (Write the tests before you write the feature.)
-    \item Clear and obvious program crashes.*
+    \item Known bugs, whether previously fixed or bugs that are defended against
+    \item Unfinished features
     \begin{itemize}
-      \item *Clear and obvious to the computer. Nonzero return codes.
+      \item Write the tests before you write the feature.
+    \end{itemize}
+    \item Clear and obvious program faults
+    \begin{itemize}
+      \item Obvious to the computer
+      \item Crashes, for instance
+      \item Nonzero return codes
     \end{itemize}
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{What Traditional Testing Doesn't Find}
+  \frametitle{What Traditional Testing Does Not Find}
   \begin{itemize}
-    \item Stuff you didn't think to test for.
-    \item Stuff that isn't an obvious failure.
-    \item Tons of others.
+    \item Faults the tester did not think to test for
+    \item Faults that are not obvious
+    \item Faults the tester deems improbable
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{How To Find What Traditional Testing Doesn't Find}
+  \frametitle{How To Find What Traditional Testing Does Not Find}
   \begin{itemize}
-    \item All the things we miss are failures of imagination. If you can imagine a scenario, you can probably write a test for that scenario.
-    \item Computers are really bad at imagining things too, but they're decent at rolling dice.
+    \item All the bugs missed are failures of imagination.
+    \begin{itemize}
+      \item If a scenario can be imagined, a test can be written for it.
+    \end{itemize}
+    \item Computers are really bad at imagining, too, but are passable at rolling dice.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Examples of The Bugs We Want To Find}
   \begin{itemize}
-    \item What happens when you put 22 calls on hold on a digital phone system?
-    \item What happens when you leave Atom running for four months while writing a thesis in it?
-    \item What happens when 200k users log on to your system at the start of a workday?
-    \item Other ``hard to reproduce'' failures.
+    \item Digital phone system that crashes when the 22nd line is put on hold
+    \item Flaky text editor that has been running for months on a grad student's laptop
+    \item System that buckles when 200k users log on at the start of a workday
+    \item Other ``hard to reproduce'' failures
   \end{itemize}
 \end{frame}
 
 %--------------------------------------
 \subsection{Software as a State Machine}
 \begin{frame}
-  \frametitle{Software Is A State Machine}
+  \frametitle{Software Is A Finite State Machine}
   \begin{itemize}
-    \item Software can be represented as a machine with states, state transitions, inputs, outputs, and a few dozen other tuples.
-    \item This IS the software, just a different way to view it.
-    \item This is already sort of evident.
+    \item Software can be represented as a machine with states, state transitions, inputs, outputs, and other tuples.
+    \item FSM exactly describes the software's behavior
+    \item Technique is popular in EE and for testing protocols
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Testers Write Based On The System's States}
   \begin{itemize}
-    \item Page Object Model pattern emulates the state model, and includes state transitions.
-    \item Resultant state model is significantly simplified compared to a formal model specification.
-    \item Surprisingly detailed look at how the system is built.
+    \item Page Object Model testing pattern emulates the system's underlying state model, and includes state transitions.
+    \item Implied state model is significantly simplified compared to a formal FSM specification.
+    \item POM provides a detailed look at how the system is built.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{State Models Can Help Us Plan New Tests}
   \begin{itemize}
-    \item Given a printout of a state model, it's not hard to trace a pen along the model and plan a new test sequence.
-    \item It's also easy to see what parts are tested (covered) and what parts aren't yet tested (still not covered).
+    \item Given a printout of a state model, one can trace a pen along the model and plan a new test sequence.
+    \item What parts of the SUT are tested and what parts are not yet tested becomes obvious.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Context: What Simplified State Models Don't Capture}
   \begin{itemize}
-    \item Things you've typed into the program.
-    \item Things the program read from some external source.
+    \item Input typed into the program
+    \item Data the program read from some external source
     \item Overheating CPUs, cosmic rays, etc.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Random Walks: Generating New Test Plans Automatically}
+  \frametitle Simplified State Models Can Be Represented As Directed Multigraphs
   \begin{itemize}
-    \item Given one of these simplified state models represented as a graph, and an RNG, it's not hard to generate new test plans.
-    \item How many ways can you go from here? Ok, draw a random choice from that many. Go there. Repeat.
-    \item That's the algorithm, by the way.
+    \item System states are vertexes, or nodes.
+    \item Test functions are edges, connecting an in-node to an out-node.
+    \item Each edge connects one in-node to one out-node, however
+    \begin{itemize}
+      \item a given function might work as a transition to an out-node from multiple compatible in-nodes.
+      \item This behavior is a byproduct of convenicence features in the software under test, like having a logout button on every page.
+      \item For brevity's sake, treat a list of in-nodes on an edge's definition as a separate edge definition for each listed in-node.
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Random Walks: Generating New Test Plans Automatically}
+  Given one of these simplified state models represented as a graph, and a source of random numbers, automatically generating test plans is straightforward.
+  \begin{itemize}
+    \item For a given node, the current state, from the set of nodes
+    \item Gather all of the edges, the transition functions, which have that state as their from-node
+    \item Select one of these gathered functions at random and execute it
+    \item The selected function's to-node becomes the new current state
+    \item Repeat until some planned condition is met or execution of a selected function is not possible
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{What Bugs Look Like From A Modeling Perspective}
   \begin{itemize}
-    \item Places where the model says you should be able to go, and you are unable to go, are bugs.
-    \item They might be bugs in the software.
-    \item While you're learning the software under test, they're probably bugs in the model.
+    \item Bugs manifest as nodes which the model says should be reachable, but execution cannot successfully reach.
+    \item Such occurrences might be bugs in the software.
+    \item Such occurrences might be bugs in the tester's model.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Prior Art: Model Based Testing}
   \begin{itemize}
-    \item Jonathan Jacky, in Radiation Oncology, of the University of Washington, made an excellent Python model-based tester called PyModel. Apparently there are model-capturable bugs in the field of Radiation Oncology. (Therac 25)
-    \item It consumes a handcrafted model.
-    \item It can emit a test plan that covers the whole model.
-    \item It can emit a test plan that takes a random, should-be valid walk of the software under test.
+    \item Jonathan Jacky, in Radiation Oncology, of the University of Washington, made an excellent Python model-based tester called PyModel.
+    \item PyModel consumes a handcrafted model.
+    \item PyModel can emit a test plan that covers the whole model.
+    \item PyModel can emit a test plan that takes a random, should-be valid walk of the software under test.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Weaknesses in PyModel}
   \begin{itemize}
-    \item It requires a handcrafted model in a finicky domain-specific language. Not Plain Old Python.
-    \item It's really hard to get test plans to run as tests.
-    \item It has a lot of overhead to get running.
+    \item PyModel requires a handcrafted model in a finicky domain-specific language.
+    \begin{itemize}
+      \item Not Plain Old Python.
+    \end{itemize}
+    \item PyModel is difficult to connect to test execution.
+    \item PyModel requires a lot of time to get running.
   \end{itemize}
 \end{frame}
 
@@ -120,11 +148,14 @@
 \begin{frame}
   \frametitle{What Is Yeager?}
   \begin{itemize}
-    \item Python module.
+    \item Python version 3 module
     \item Annotate funtions indicating that they cause a state transition.
-    \item Infers a state model.
-    \item Can take a random walk on that model.
-    \item Has debug tools to understand the model you've made.
+    \item Infers a state model
+    \item Can take a random walk on that model
+    \begin{itemize}
+      \item Can terminate random walks under selectable conditions
+    \end{itemize}
+    \item Has debug tools to understand the inferred model
   \end{itemize}
 \end{frame}
 
@@ -132,7 +163,7 @@
   \frametitle{Yeager's API Fits On A Notecard}
   \begin{itemize}
     \item \texttt{import yeager}
-    \item \texttt{@yeager.state\_transition()}
+    \item \texttt{@yeager.state\_transition(from, to)}
     \item \texttt{yeager.walk()}
     \item Tweak: \texttt{yeager.add\_state\_to\_blacklist()}, \texttt{yeager.add\_transition\_to\_blacklist()}, \texttt{yeager.remove\_state\_from\_blacklist()}, \texttt{yeager.remove\_transition\_from\_blacklist()}, and \texttt{yeager.set\_edge\_weight()}
     \item Debug: \texttt{yeager.enumerate\_transitions()}, \texttt{yeager.reachable\_states()}, \texttt{yeager.orphaned\_states()}
@@ -156,38 +187,32 @@
   def login(driver):
     from pages.login import LoginPage
     lp = LoginPage(driver)
-    lp.log_in_correctly(USERNAME, PASSWORD)
+    lp.log_in(USERNAME, PASSWORD)
   \end{lstlisting}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Repeat}
+  \frametitle{Debug Yeager Models}
   \begin{itemize}
-    \item \url{github.com/elementc/monica-tests-yeagerized}
+    \item Using \texttt{enumerate\_transitions} function %DEMO
+    \item Using \texttt{orphaned\_states} \& \texttt{reachable\_states} functions %DEMO
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Debug Your Models}
-  \begin{itemize}
-    \item Using \texttt{enumerate\_transitions} function.
-    \item Using \texttt{orphaned\_states} function \& its inverse.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Plan a Test Run}
+  \frametitle{Plan A Test Run}
   \begin{itemize}
     \item \texttt{yeager.walk()}
     \item \texttt{yeager.walk(50)}
     \item \texttt{yeager.walk(exit\_state="state-to-exit-on")}
+    \item In development: after some visitation goal
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Run It}
   \begin{itemize}
-    \item \texttt{python3 yeager\_test.py}
+    \item \texttt{python3 yeager\_test.py} % DEMO
   \end{itemize}
 \end{frame}
 
@@ -195,70 +220,100 @@
 \subsection{Yeager In Action}
 
 \begin{frame}
-  \frametitle{Let's Test Monica}
+  \frametitle{Test Monica With Yeager}
   \begin{itemize}
-    \item We already ahve a pretty robust suite of page models built.
-    \item We're already familiar with the usage of it.
+    \item Have a robust suite of Page Object Models
+    \item Intuitive and meaningful system
+    \item Public service
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Monica's Intuitive States}
+  \frametitle{Intuitive States of Monica}
   \begin{itemize}
-    \item Home page, login page, dashboard, contacts list, looking at a contact, editing a contact, logging a phone call or meeting with a contact, writing in the journal, etc etc etc.
+    \item login page
+    \item dashboard
+    \item contacts list
+    \item looking at a contact
+    \item editing a contact
+    \item logging a phone call or meeting with a contact
+    \item writing in the journal
+    \item etc.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{States Necessitate Transitions}
   \begin{itemize}
-    \item Filling in the login form takes you from the login page to the dashboard.
-    \item Clicking a contact in the contacts list takes you to the viewing-a-contact state.
+    \item Filling in the login form transitions from the login page to the dashboard
+    \item Clicking a contact in the contacts list transitions to the viewing-a-contact state
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Boy, These Look Familiar}
+  \frametitle{Use Existing Page Object Models As A Guide}
   \begin{itemize}
-    \item Emulates the Page Object Models.
-    \item States are pages, methods are state transitions (even back to the same state).
+    \item Emulates the Page Object Models' structure
+    \item States are pages
+    \item Methods are state transitions
+    \begin{itemize}
+      \item Some transitions can be loopbacks
+    \end{itemize}
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Write Some Glue and Go}
+  For each method in the page object models:
   \begin{itemize}
-    \item For each method in your page object model
-    \item Create a relatively stateless function that calls it.
-    \item Annotate any state transition.
+    \item create a relatively stateless function that calls it.
+    \item annotate any state transition that function triggers.
   \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{``Relative Statelessness''}
+  \begin{itemize}
+    \item This will vary from tester to tester according to their gumption.
+    \item It's reasonable for a test function to require a shared webdriver so page objects can be used.
+    \item It might be reasonable for a test function to require a list of all the Contact names put into the system so far.
+    \item It's unreasonable for a test function to require a memoizing key-value store with hundreds or thousands of entries.
+\end{itemize}
+
 \end{frame}
 
 \begin{frame}
   \frametitle{Example Suite's Model}
+  % TODO: PICTURE AND DEMO
+\end{frame}
+
+\begin{frame}
+  \frametitle{Give It A Run}
   \begin{itemize}
-    \item Need to figure out how to insert pictures on Beamer.
+    \item Execution begins with a call to \texttt{yeager.walk()}
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Give It A Run!}
+  \frametitle{What It Looks Like When Everything Is Good}
   \begin{itemize}
-    \item Call walk. That's it. Really.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{What It Looks Like When Everything's Good}
-  \begin{itemize}
-    \item No crash.
+    \item No crash
+    \item No assertions being tripped
+    \item Software appears to be being executed
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{What It Looks Like When The Model Is Wrong}
   \begin{itemize}
-    \item Crash on an illogical sequence.
+    \item Crash on an illogical sequence
+    \item Example:
+    \begin{itemize}
+      \item Click "Create Contact"
+      \item Click "Add this Contact"
+      \item Expected: On Contact pages
+      \item Actual: On Add Contact Page with an error message about needing to input a name
+    \end{itemize}
   \end{itemize}
 \end{frame}
 
@@ -266,5 +321,17 @@
   \frametitle{What It Looks Like When The Software Is Wrong}
   \begin{itemize}
     \item Crash on a perfectly logical sequence.
+    \item Example:
+    \begin{itemize}
+      \item Open a contact
+      \item Click "Add Reminder"
+      \item Fill in a date
+      \item Fill in a title
+      \item Check the ``Remind me about this just once'' box
+      \item Click the save button
+      \item Expected: On the contact's page, with a new reminder
+      \item Actual: On a 500 internal server error page
+    \end{itemize}
+    \item \url{https://github.com/monicahq/monica/issues/326}
   \end{itemize}
 \end{frame}

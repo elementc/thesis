@@ -1,4 +1,10 @@
 \documentclass{beamer}
+% uncomment above for normal slides,
+% uncomment below for handouts
+% \documentclass[handout]{beamer}
+% \usepackage{pgf} %handouts
+% \usepackage{pgfpages}
+% \pgfpagesuselayout{4 on 1}[letterpaper,landscape,border shrink=5mm]
 
 \mode<presentation> {
 \usetheme{Szeged}
@@ -9,8 +15,10 @@
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
 \usepackage{hyperref} %urls
 \usepackage{listings}
+\usepackage[square, authoryear, colon]{natbib}
 
-\title[Yeager]{Yeager: An Annotation-based Framework for the Generation of Automated Long Sequence Regression Tests in Python}
+
+\title[Yeager]{High Volume Automated Testing with Yeager}
 
 \author{Casey Doran}
 \institute[Florida Tech]
@@ -33,7 +41,20 @@ Florida Institute of Technology \\
 \end{frame}
 
 \begin{frame}
-  \frametitle{Play Along at Home}
+  \frametitle{Acknowedgements}
+  This work would not be possible without the support of:
+  \begin{itemize}
+    \item Cem Kaner, CSTER, and WTST participants
+    \item Curtis Chambers, Jeff Farr, Mike DeCabia at Dycom Industries
+    \item the Ruckus, the Harbor City Hooligans, the Samuels family
+    \item Rob Atilho and Ryan Bomalaski, and many more on campus
+    \item kbg, Richard Ford, actual and adopted family
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Relevant URLs}
   \begin{itemize}
     \item \url{github.com/elementc/yeager}
     \item \url{github.com/elementc/monica-tests-traditional}

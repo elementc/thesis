@@ -2,36 +2,25 @@
 \section{Automated Testing}
 
 \begin{frame}
-  \frametitle{Why Automate?}
+  \frametitle{Why Automate Testing?}
   \begin{itemize}
-    \item Save time.
-    \item Save money.
-    \item Computers don't get bored.
+    \item Save time
+    \item Save money
+    \item Test thoroughness
     \begin{itemize}
-      \item Testing is boring work.
+      \item Humans miss details
+      \item Humans get bored or tired
     \end{itemize}
-    \item Doesn't overlook test cases.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{How Do You Automate?}
+  \frametitle{How Do We Automate?}
   \begin{itemize}
-    \item Write functions that exercise the system under test.
-    \item Put these functions in a format that can be consumed by a test runner.
-    \item Call test runner.
-    \item Interpret test runner's output.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Kinds of Test Automation}
-  \begin{itemize}
-    \item Unit- Verify individual code functions work as expected.
-    \item Integration- Verify modules are working together.
-    \item Regression- Verify stuff that worked isn't broken and stuff that's broken before haven't broken again.
-    \item Functional- Validate that system as a whole conforms to requirements (eg, works to a user's eye).
-    \item Many others- see CSE3411 \& CSE4415.
+    \item Write functions that exercise the system under test
+    \item Put these functions in a format that can be consumed by a test runner
+    \item Call test runner
+    \item Interpret test runner's output
   \end{itemize}
 \end{frame}
 
@@ -41,67 +30,69 @@
 \begin{frame}
   \frametitle{Languages}
   \begin{itemize}
-    \item *Unit frameworks (CUnit, JUnit, CppUnit, etc.) enable the practice, though they're useful for far more than unit testing.
-    \item Testers are usually, unintuitively, \textbf{less} trained as programmers.
-    \item Consequently, they prefer ``easier'' scripting languages like Python or Ruby.
-    \item This discussion will center around Python. All of it can happen in Ruby.
+    \item Test frameworks exist for many languages
+    \item Testers prefer ``easier'' scripting languages like Perl, Ruby, Python
+    \item This discussion will center around Python
+    \begin{itemize}
+      \item Much can be implemented in Ruby
+    \end{itemize}
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Frameworks}
   \begin{itemize}
-    \item Include a suite of assertion convenience methods, logging/reporting facilities, and a runner.
-    \item Python: \texttt{unittest}, \texttt{nose}, \texttt{pytest}.
-    \item \texttt{unittest} is in the Python Standard Library, we'll use it.
+    \item Has a suite of assertion convenience methods
+    \item Has logging/reporting facilities
+    \item Has a runner
+    \item Python: \texttt{unittest}, \texttt{nose}, \texttt{pytest}
+    \item \texttt{unittest} is in the Python Standard Library
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Glass Box Testing}
   \begin{itemize}
-    \item Test code interacts directly with the program's source.
-    \item Can probe quite deeply.
-    \item Use mock interfaces shims to accomplish testing goals.
-    \item Unit testing and integration testing are automated through Glass Box methods.
+    \item Test code interacts directly with the System Under Test's source
+    \item Can probe very deeply into execution
+    \item Use mock interfaces \& shims to isolate tests
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Black Box Testing}
   \begin{itemize}
-    \item Test code interacts with the user (or some other non-transparent) interface into the running program.
-    \item Use external toolkits like Selenium to enable driving user interfaces.
-    \item Usually in a special test environment but otherwise the unmodified software.
-    \item Regression testing and functional testing are automated through Black Box methods.
+    \item Test code interacts with the user or service interface of the running program
+    \item Use external toolkits like Selenium to drive user interfaces
+    \item Often in a special test environment but otherwise the unmodified software
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Selenium}
   \begin{itemize}
-    \item Programmatic control of web browsers for testing and other automation.
-    \item Driver class allows navigation (get this URL) and document queries (get this node for me to read from or click on or type into).
-    \item Node class allows interaction (click here, type this), and data retrieval (What's the text body? What' site does this form POST to?) and limited Driver-like queries for children.
+    \item Programmatic control of web browsers for testing and other automation
+    \item Driver class allows navigation and document queries
+    \item Node class allows interaction, data retrieval, and limited Driver-like queries for children
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{HTML (summary)}
   \begin{itemize}
-    \item XML- based documents for the web.
-    \item Tree-structured.
-    \item Nodes have properties, including text, in addition to children.
+    \item XML- based documents for the web
+    \item Tree-structured
+    \item Nodes have properties, including text, in addition to children
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{CSS (summary)}
   \begin{itemize}
-    \item Language for styling HTML documents.
+    \item Language for styling HTML documents
     \item Format- \texttt{selector}: \texttt{rule};
-    \item Selectors: strings that identify one, many, or none of the nodes in an HTML document.
-    \item Rules: Specific styling rules to apply to each node matched by preceeding rule.
+    \item Selectors: strings that identify one, many, or none of the nodes in an HTML document
+    \item Rules: specific styling attributes to apply to each node matched by attached rule
   \end{itemize}
 \end{frame}
 
@@ -110,21 +101,27 @@
 \begin{frame}
   \frametitle{Monica: A Personal CRM}
   \begin{itemize}
-    \item Open-Source.
-    \item Life-tracker.
-    \item Friend-keeper.
-    \item Journal.
-    \item In the cloud.
+    \item Open-Source
+    \item Life-tracker
+    \item Friend-keeper
+    \item Journal
+    \item In the cloud
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Contacts Book On Steroids}
-  \begin{itemize}
-    \item We've all seen a contact list as an example in a database course.
-    \item Monica extends that to the extreme. Per-contact notebooks, relationship tracking (How many wives did he have?), reminders, etc.
-    \item Screenshots TBD
-  \end{itemize}
+  \frametitle{Contacts}
+  % screenshot and discussion of contacts features
+\end{frame}
+
+\begin{frame}
+  \frametitle{Relationship Management}
+  % screenshot and discussion of per-contact activity log, phone log, etc
+\end{frame}
+
+\begin{frame}
+  \frametitle{Journal}
+  % screenshot and discussion of journaling activities
 \end{frame}
 
 %----------------------------------
@@ -134,12 +131,12 @@
   \frametitle{Page Object Modeling}
   \begin{itemize}
     \item Each page on a site corresponds to a Python class.
-    \item Fields or text spots on pages get getters and setters.
-    \item Clickable things get click() functions.
+    \item Fields or important strings on pages get getters and setters.
+    \item Clickable buttons or links get click() functions.
     \begin{itemize}
       \item If the click should transition to a new page, construct and return that new page's class.
     \end{itemize}
-    \item In class consturctors, assert things that are constant about that page. Username in header? Some error message not in the body? Standard controls are present?
+    \item In class constructors, assert invariants about that page.
   \end{itemize}
 \end{frame}
 
@@ -148,16 +145,16 @@
   \begin{itemize}
     \item Build all the page objects and put them in /pages/.
     \item Write step-by-step test plan as comments in the body of a function in the runner's format.
-    \item Translate english steps into python code.
+    \item Translate english steps into Python code.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Running Tests}
   \begin{itemize}
-    \item Same as running any other script.
+    \item Same as running any other Python script
     \item \texttt{python3 test\_contacts.py}
-    \item Some frameworks have a multi-script runner.
+    \item Some frameworks have a multi-script runner
     \item \texttt{python3 -m unittest}
   \end{itemize}
 \end{frame}
