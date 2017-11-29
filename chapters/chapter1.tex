@@ -1,6 +1,6 @@
 %%-----------Chapters start-------------------------------------
 %%-----------Chapter 1------------------------------------------
-\chapter{An Overview of a Regression Test Suite for a Web Application}
+\chapter{An Overview of a Test Suite for a Web Application}
 This thesis proposes a general-purpose Python module for the generation and execution of high volume automated tests. To properly discuss the nuanced uses of the module, it is first critical to establish a ``typical'' industrial usage scenario.
 
 To that end, this chapter describes the state of the art in the web test automation field, and walks through the construction of a web test suite for a popular open source relationship management site, Monica, available for use from the website \url{https://monicahq.org} as well for self-hosting from \url{https://github.com/monicahq/monica}. Later chapters will discuss implementation of the module for high volume long sequence regression testing as well as the industrial and academic context surrounding the practice of high volume automated testing.
@@ -59,7 +59,7 @@ In fact, a common way to start writing automated regression tests is to copy the
 In order to be able to construct a proper page action, it is critical that our test code is able to interact with the right specific parts of the page under test. In Selenium, we use the driver's \texttt{find\_element\_by\_*} methods to do so. There are methods for finding page elements by many methods, including HTML ID, HTML name, link text and partial link text, CSS selectors, and several other more unique methods like an XPath string or just the tag's name. All of these methods are convenience wrappers for a base method named find\_element that takes a special constant from the \texttt{selenium.webdriver.common.by.By} class, such as \texttt{By.ID} or \texttt{By.CSS\_SELECTOR}.
 
 While it may be more immediately readable to write test code using the convenience methods, this does have an effect on maintainability in that if a particular field must change the method it is found by, many function calls will need to be replaced.\citep{gupta2003dom} To prevent such a replacement nightmare, we can use Python tuples and the unzip (splat) operator to combine a method of selection with a string constant as a single ``element selector'' field which may universally be consumed by a \texttt{find\_element} function call.
-
+\\\\
 Consider this HTML tag:
 
 {\tt
