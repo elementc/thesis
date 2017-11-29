@@ -15,7 +15,7 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{How Do We Automate?}
+  \frametitle{How is Automation Achieved?}
   \begin{itemize}
     \item Write functions that exercise the system under test
     \item Put these functions in a format that can be consumed by a test runner
@@ -71,7 +71,7 @@
 \begin{frame}
   \frametitle{Selenium}
   \begin{itemize}
-    \item Programmatic control of web browsers for testing and other automation
+    \item Programmatic control of web browsers for testing and other automation\citep{holmes2006automating}
     \item Driver class allows navigation and document queries
     \item Node class allows interaction, data retrieval, and limited Driver-like queries for children
   \end{itemize}
@@ -106,22 +106,8 @@
     \item Friend-keeper
     \item Journal
     \item In the cloud
+    \item Inspired by sales' Client Relationship Management (CRM) suites
   \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Contacts}
-  % screenshot and discussion of contacts features
-\end{frame}
-
-\begin{frame}
-  \frametitle{Relationship Management}
-  % screenshot and discussion of per-contact activity log, phone log, etc
-\end{frame}
-
-\begin{frame}
-  \frametitle{Journal}
-  % screenshot and discussion of journaling activities
 \end{frame}
 
 %----------------------------------
@@ -138,6 +124,7 @@
     \end{itemize}
     \item In class constructors, assert invariants about that page.
   \end{itemize}
+  \citep{kung2000object}
 \end{frame}
 
 \begin{frame}
@@ -145,8 +132,9 @@
   \begin{itemize}
     \item Build all the page objects and put them in /pages/.
     \item Write step-by-step test plan as comments in the body of a function in the runner's format.
-    \item Translate english steps into Python code.
+    \item Translate English steps into Python code.
   \end{itemize}
+  \citep{nguyen2001testing}
 \end{frame}
 
 \begin{frame}

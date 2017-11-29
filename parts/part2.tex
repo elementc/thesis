@@ -2,12 +2,12 @@
 \section{Long Sequence Testing in Yeager}
 
 \begin{frame}
-  \frametitle{'Bugs' That Traditional Testing Finds}
+  \frametitle{Bugs That Traditional Testing Finds}
   \begin{itemize}
     \item Known bugs, whether previously fixed or bugs that are defended against
     \item Unfinished features
     \begin{itemize}
-      \item Write the tests before you write the feature.
+      \item As in Test Driven Development
     \end{itemize}
     \item Clear and obvious program faults
     \begin{itemize}
@@ -39,10 +39,10 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Examples of The Bugs We Want To Find}
+  \frametitle{Examples of The Bugs We Want to Find}
   \begin{itemize}
     \item Digital phone system that crashes when the 22nd line is put on hold
-    \item Flaky text editor that has been running for months on a grad student's laptop
+    \item Flakey text editor that has been running for months on a grad student's laptop
     \item System that buckles when 200k users log on at the start of a workday
     \item Other ``hard to reproduce'' failures
   \end{itemize}
@@ -53,9 +53,9 @@
 \begin{frame}
   \frametitle{Software Is A Finite State Machine}
   \begin{itemize}
-    \item Software can be represented as a machine with states, state transitions, inputs, outputs, and other tuples.
-    \item FSM exactly describes the software's behavior
-    \item Technique is popular in EE and for testing protocols
+    \item Software representable as a machine with states, state transitions, inputs, outputs, and other tuples
+    \item FSMs exactly describes the software's behavior
+    \item Technique is popular in Electrical Engineering and for testing protocols
   \end{itemize}
 \end{frame}
 
@@ -71,8 +71,8 @@
 \begin{frame}
   \frametitle{State Models Can Help Us Plan New Tests}
   \begin{itemize}
-    \item Given a printout of a state model, one can trace a pen along the model and plan a new test sequence.
-    \item What parts of the SUT are tested and what parts are not yet tested becomes obvious.
+    \item Given a printout of a state diagram, one can trace a pen along the model and plan a new test sequence.
+    \item What parts of the System Under Test are tested and what parts are not yet tested becomes obvious.
   \end{itemize}
 \end{frame}
 
@@ -81,12 +81,12 @@
   \begin{itemize}
     \item Input typed into the program
     \item Data the program read from some external source
-    \item Overheating CPUs, cosmic rays, etc.
+    \item Overheating CPUs, full disks, cosmic rays, etc.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle Simplified State Models Can Be Represented As Directed Multigraphs
+  \frametitle{Simplified State Models Can Be Represented As Directed Multigraphs}
   \begin{itemize}
     \item System states are vertexes, or nodes.
     \item Test functions are edges, connecting an in-node to an out-node.
@@ -105,7 +105,7 @@
   \begin{itemize}
     \item For a given node, the current state, from the set of nodes
     \item Gather all of the edges, the transition functions, which have that state as their from-node
-    \item Select one of these gathered functions at random and execute it
+    \item Select and execute one of the gathered functions
     \item The selected function's to-node becomes the new current state
     \item Repeat until some planned condition is met or execution of a selected function is not possible
   \end{itemize}
@@ -125,20 +125,20 @@
   \begin{itemize}
     \item Jonathan Jacky, in Radiation Oncology, of the University of Washington, made an excellent Python model-based tester called PyModel.
     \item PyModel consumes a handcrafted model.
-    \item PyModel can emit a test plan that covers the whole model.
-    \item PyModel can emit a test plan that takes a random, should-be valid walk of the software under test.
+    \item It can emit a test plan that covers the whole model.
+    \item It can emit a test plan that takes a random, should-be valid walk of the software under test.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Weaknesses in PyModel}
   \begin{itemize}
-    \item PyModel requires a handcrafted model in a finicky domain-specific language.
+    \item It requires a handcrafted model in a finicky domain-specific language.
     \begin{itemize}
       \item Not Plain Old Python.
     \end{itemize}
-    \item PyModel is difficult to connect to test execution.
-    \item PyModel requires a lot of time to get running.
+    \item It is difficult to connect to test execution.
+    \item It requires a lot of time to get running.
   \end{itemize}
 \end{frame}
 
@@ -149,7 +149,7 @@
   \frametitle{What Is Yeager?}
   \begin{itemize}
     \item Python version 3 module
-    \item Annotate funtions indicating that they cause a state transition.
+    \item Annotate funtions indicating that they cause a state transition
     \item Infers a state model
     \item Can take a random walk on that model
     \begin{itemize}
@@ -194,25 +194,18 @@
 \begin{frame}
   \frametitle{Debug Yeager Models}
   \begin{itemize}
-    \item Using \texttt{enumerate\_transitions} function %DEMO
-    \item Using \texttt{orphaned\_states} \& \texttt{reachable\_states} functions %DEMO
+    \item Using \texttt{enumerate\_transitions} function as show in \texttt{enumerate\_transitions.py} %DEMO
+    \item Using \texttt{orphaned\_states} \& \texttt{reachable\_states} functions as shown in \texttt{orphaned\_states.py} \& \texttt{reachable\_states.py} %DEMO
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Plan A Test Run}
+  \frametitle{Plan And Execute A Test Run}
   \begin{itemize}
     \item \texttt{yeager.walk()}
     \item \texttt{yeager.walk(50)}
     \item \texttt{yeager.walk(exit\_state="state-to-exit-on")}
     \item In development: after some visitation goal
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Run It}
-  \begin{itemize}
-    \item \texttt{python3 yeager\_test.py} % DEMO
   \end{itemize}
 \end{frame}
 
@@ -247,6 +240,7 @@
   \begin{itemize}
     \item Filling in the login form transitions from the login page to the dashboard
     \item Clicking a contact in the contacts list transitions to the viewing-a-contact state
+    \item etc.
   \end{itemize}
 \end{frame}
 
@@ -272,30 +266,35 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{``Relative Statelessness''}
+  \frametitle{A Note on ``Relative Statelessness''}
   \begin{itemize}
     \item This will vary from tester to tester according to their gumption.
-    \item It's reasonable for a test function to require a shared webdriver so page objects can be used.
+    \item It is reasonable for a test function to require a shared webdriver so page objects can be used.
     \item It might be reasonable for a test function to require a list of all the Contact names put into the system so far.
-    \item It's unreasonable for a test function to require a memoizing key-value store with hundreds or thousands of entries.
+    \item It is unreasonable for a test function to require a memoizing key-value store with hundreds or thousands of entries.
+    \item All extra arguments passed to \texttt{walk} are forwarded to test functions.
+    \item Mutable arguments can be modified and these modifications persist across execution.
 \end{itemize}
 
 \end{frame}
 
 \begin{frame}
   \frametitle{Example Suite's Model}
-  % TODO: PICTURE AND DEMO
+  It is straightforward to use the Yeager graph inference with graph visualization software. A routine is provided to allow users to visualize with the \texttt{graph\_tool} module, which can further export to graphviz natively.
+
+  \texttt{python3 visualize\_graph.py} % DEMO
 \end{frame}
 
 \begin{frame}
-  \frametitle{Give It A Run}
+  \frametitle{Take a Walk}
   \begin{itemize}
     \item Execution begins with a call to \texttt{yeager.walk()}
+    \item A demo: \texttt{python3 yeager\_test.py} % DEMO
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{What It Looks Like When Everything Is Good}
+  \frametitle{What It Looks Like The Test Is Going Well}
   \begin{itemize}
     \item No crash
     \item No assertions being tripped
@@ -314,13 +313,14 @@
       \item Expected: On Contact pages
       \item Actual: On Add Contact Page with an error message about needing to input a name
     \end{itemize}
+    \item A suite can generate this fault: \texttt{yeager\_bad\_model\_test.py} % DEMO
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{What It Looks Like When The Software Is Wrong}
   \begin{itemize}
-    \item Crash on a perfectly logical sequence.
+    \item Crash on a perfectly logical sequence
     \item Example:
     \begin{itemize}
       \item Open a contact
