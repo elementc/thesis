@@ -114,14 +114,25 @@ The process can be adapted to a wide number of scenarios: site homepage layouts,
 \chapter{Conclusion: The Case for Yeager}
 Yeager's usage is unique in that it straddles two exiting techniques, finite state machine (FSM) testing and long sequence regression testing. These two techniques are powerful ones when testers are hoping to survey the system for bugs. Particularly, they find bugs by simulating usage of the system that should be valid, but, in practice, is not.
 
-There is a tradeoff between the two techniques, in that LSRT is quick to implement and leverages an existing test suite, but treats the system as a single-state machine thereby limiting the granularity and novelty of the test's execution. Contrarily, FSM testing necessitates the huge investment of the creation of a detailed system model, a model which might not even be feasible to implement, and has no ability to leverage an existing test automation investment. However, SMT's detailed accounting of the system's specification enables the application of systematic methods for test generation and provides fine-grained verification of the system's implementation.
+There is a tradeoff between the two techniques, in that LSRT is quick to implement and leverages an existing test suite, but treats the system as a single-state machine thereby limiting the granularity and novelty of the test's execution. Contrarily, FSM testing necessitates the huge investment of the creation of a detailed system model, a model which might not even be feasible to implement, and has no ability to leverage an existing test automation investment. However, FSM testing's detailed accounting of the system's specification enables the application of systematic methods for test generation and provides fine-grained verification of the system's implementation.
 
 Yeager is meant to be a way to bridge the gap between the two techniques. It can leverage existing test code, to accelerate implementation. It generates a relatively detailed model of the system under test enabling the application advanced model traversal algorithms (even though the current implementation only provides a weighted random walk). Yeager tests respect the system's structure and more accurately simulate human usage by enabling the traversal of the system in smaller, modular chunks as opposed to the same few large, repeated cases.
 
 Yeager represents a powerful, easy-to-adopt form of HiVAT in some scenarios, enabling discovery of otherwise-elusive bugs and better testing practices across contexts.
 
 \section{Contributions}
-% Talk about what this thesis did.
+The primary contribution of this work is the creation of the Yeager open source project. The module is exercised through high volume automated tests of a web application, consuming a regression test suite purpose-built for this work as a reference implementation.
+
+Yeager, however, is usable across contexts for generating high automated volume tests against command-line applications, API applications, desktop applications, or any codebase driveable through Python. Its clean, concise API fits on a notecard and helpfully defers to and benefits from testers' existing investment in test code- no matter what they might be testing.
+
+Further contributions include Chapter 3's survey of the field of HiVAT, as well as testing work for the open source project Monica.
 
 \section{Future Work}
-% talk about what employers might pay me to do
+Yeager will benefit from a number of new features in the coming months, including:
+\begin{itemize}
+  \item improved documentation
+  \item a new termination condition for \texttt{walk} based on model coverage
+  \item additional visualization sample code
+\end{itemize}
+
+The usage of the \texttt{graph\_tool} module is especially useful as the interactive window feature could enable graphical editing of the inferred graph, for instance to generate method stubs for new edges and nodes a tester could draw, or emitting simple test scripts from a tester's drawn trace of the model's graph. A breadth of new test comprehension and generation tools might be enabled by future revisions of Yeager and integration with the wider graph visualization body of work.
