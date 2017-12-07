@@ -11,7 +11,7 @@ The test suite discussed in this chapter is published in its entirety online at 
 There are a considerable number of tools and libraries used in the development and execution of web application tests.\citep{kaur2013comparative} Regardless of the actual platform, there must be at least a browser driver, a test runner, and some set of inspection tools. As later chapters will use a Python library, the following Python-friendly libraries have been selected.
 
 \subsection{Selenium}
-The Selenium open source project is a library which permits the programmatic control of a web browser.\citep{holmes2006automating} This library is ostensibly designed for automated testing purposes\citep{razak2011agile}, but it may be used in any case where automated browser interaction is critical, including secretarial desktop automation, the development of testing tools, malicious purposes, and niche industrial purposes.\citep{kongsli2007security} It has a number of supported platforms, including Python and a purpose-built IDE.\citep{bruns2009web} Selenium's purpose-built IDE features capture-playback technology which enables quick recording of test scenarios for later playback, but suffers from drawbacks related to the maintainability of the generated recordings.\citep{leotta2013capture}
+The Selenium open source project is a library which permits the programmatic control of a web browser.\citep{holmes2006automating} This library is ostensibly designed for automated testing purposes\citep{razak2011agile}, but it may be used in any case where automated browser interaction is critical, including secretarial desktop automation, the development of testing tools, malicious purposes, and niche industrial purposes.\citep{kongsli2007security} It has a number of supported platforms, including Python and a purpose-built IDE.\citep{bruns2009web} Selenium's purpose-built IDE features capture-playback technology which enables quick recording of test scenarios for later playback, but suffers from drawbacks related to the maintainability of the generated recordings.\citep{leotta2013capture}\\
 
 The general programmatic usage cycle is:
 \begin{enumerate}
@@ -59,7 +59,7 @@ A common way to start writing automated regression tests is to copy the step-by-
 In order to be able to construct a proper page action, it is critical that the test code is able to interact with the right specific parts of the page under test. These page parts are elements of the Document Object Model (DOM) the site generates and the browser uses. In Selenium, the driver's \texttt{find\_element\_by\_*} method do traverse the DOM. There are methods for finding page elements by many methods, including HTML ID, HTML name, link text and partial link text, CSS selectors, and several other more unique methods like an XPath string\footnote{a language developed to traverse XML documents} or just the tag's name. All of these methods are convenience wrappers for a base method named find\_element that takes a special constant from the \texttt{selenium.webdriver.common.by.By} class, such as \texttt{By.ID} or \texttt{By.CSS\_SELECTOR}.
 
 While it may be more immediately readable to write test code using the convenience methods, this does have an effect on maintainability in that if a particular field must change the method it is found by, many function calls will need to be replaced.\citep{gupta2003dom} To prevent such a replacement nightmare, Python tuples and the unzip (splat) operator may be used to combine a method of selection with a string constant as a single ``element selector'' field which may universally be consumed by a \texttt{find\_element} function call.
-\\\\
+
 Consider this HTML tag:
 
 {\tt
@@ -83,7 +83,10 @@ email_field = driver.find_element(*email_sel)
 \end{verbatim}
 }
 
-While selecting by the id field is comparatively simple (application authors may wish to give constant ids to parts of their applications they know will be involved in testing)\citep{DOMStand78}, selection by other methods is more complex. Consider this HTML tag:
+While selecting by the id field is comparatively simple (application authors may wish to give constant ids to parts of their applications they know will be involved in testing)\citep{DOMStand78}, selection by other methods is more complex.
+
+\pagebreak
+Consider this HTML tag:
 
 {\tt
 \begin{verbatim}
@@ -98,7 +101,10 @@ While selecting by the id field is comparatively simple (application authors may
 
 This button is critical, it must be clicked in order to complete a login! However, it lacks a unique ID. It is tempting to use the \texttt{By.LINK\_TEXT} selection method since it has a fairly concise and unique body text (``Login''), but this will not work since it is a \texttt{<button>} tag and not an \texttt{<a>} (anchor, a hyperlink base) tag. The next logical option is to select by class, the class attribute of HTML being whitespace-separated tags which are not guaranteed to be unique. If the software is designed to use classes in a way that relevant tags will have a unique combination of classes, this is an option, but it is not typical. In this case, the button has the \texttt{btn} and \texttt{btn-primary} classes, an identically styled button would have the same set of classes. This, then, is a candidate for improvement in the system under test, to at least provide a cleaner testing interface in the form of a unique id or class on this button, but in the interim, testers can fall back to HTML's built-in selection system, the CSS selector.
 
-A CSS selector is a string conformant to the CSS selection grammar \citep{Selector54} which enables detailed selection of DOM element or elements. It can combine an element's tag, id, class, parents, children, or even position. For the purposes of this login button's selection, the following features of candidate eleents are required:
+A CSS selector is a string conformant to the CSS selection grammar \citep{Selector54} which enables detailed selection of DOM element or elements. It can combine an element's tag, id, class, parents, children, or even position.
+
+\pagebreak
+For the purposes of this login button's selection, the following features of candidate elements are required:
 \begin{itemize}
 \item Class \texttt{btn}.
 \item Class \texttt{btn-primary}.

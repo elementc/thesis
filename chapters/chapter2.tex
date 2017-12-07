@@ -4,7 +4,7 @@ The test suite assembled in the previous chapter is an effective way for a softw
 
 It is a boring, tedious, and repetitious task that can be the entire career of a test engineer. However, as any software engineer will know, tasks which are boring, tedious, and repetitious are ripe targets for computer automation, and the task of scenario authorship is no different.
 
-This chapter will outline a method for adapting the existing test suite explored in the previous chapter, using a tool named Yeager, to enable the computer to generate scenarios automatically. Yeager is an MIT-licensed open source Python 3 module, with source available at \url{https://github.com/elementc/yeager}. It provides a Python annotation and a set of utility functions. Usage of Yeager's state transition annotation allows testers to quickly and easily map an existing suite of test code onto a state machine, in the form of a graph. This graph can then be traversed using the utility functions, thereby generating new test scenarios from the existing code.
+This chapter will outline a method for adapting the existing test suite explored in the previous chapter, using a tool named Yeager, to enable the computer to generate scenarios automatically. Yeager is an MIT-licensed open source Python 3 module, with source available at \newline\url{https://github.com/elementc/yeager}. It provides a Python annotation and a set of utility functions. Usage of Yeager's state transition annotation allows testers to quickly and easily map an existing suite of test code onto a state machine, in the form of a graph. This graph can then be traversed using the utility functions, thereby generating new test scenarios from the existing code.
 
 The resultant adapted test suite is published online at \url{https://github.com/elementc/monica-tests-yeagerized}.
 
@@ -47,7 +47,7 @@ The meat of Yeager testing is accomplished through the annotation of Python test
 The annotation, \texttt{yeager.state\_transition} and some utility functions \\\texttt{yeager.add\_state\_to\_blacklist}, \texttt{yeager.orphaned\_states}, \\\texttt{yeager.reachable\_states}, and \texttt{yeager.walk}, are described in this section.
 
 A note on Python convention: there are two kinds of parameters a function may take. The first, \textit{positional arguments}, are passed like this: \texttt{print("some argument")} or \texttt{math.pow(3,2)}. The second, \textit{keyword arguments}, sometimes shortened to \textit{kwargs}, are passed like this:
-\\\texttt{timedelta(hours=3, minutes=7, seconds=20)}. Order does not matter with kwargs. Positional arguments and kwargs that are not explicitly defined in a function's signature can both be captured for use by a function. Positional arguments are captured into a Python \texttt{list} by defining a (potentially semi-) final argument prefixed with a single asterisk, keyword arguments into a Python dictionary (\texttt{dict}) with a final argument prefixed with two asterisks, like this:
+\texttt{timedelta(hours=3, minutes=7)}. Order does not matter with kwargs. Positional arguments and kwargs that are not explicitly defined in a function's signature can both be captured for use by a function. Positional arguments are captured into a Python \texttt{list} by defining a (potentially semi-) final argument prefixed with a single asterisk, keyword arguments into a Python dictionary (\texttt{dict}) with a final argument prefixed with two asterisks, like this:
 \\\texttt{def function(arg1="Default val", *args\_var, **kwargs\_var)}
 
 \subsection{State Identifiers}
@@ -58,7 +58,7 @@ The example implementation of a Yeager test uses unique strings for state identi
 \subsection{Basic State Transition Annotations}
 The fastest way to get started with using Yeager is to define a function for each of the state transitions to be used in the test. These will probably be short snippets from the traditional-style test sequences. Then, for each of these functions, the \texttt{yeager.state\_transition} annotation should be to mark the transition of that function. Here is an example using some of the Monica test code from the previous chapter:
 
-\begin{verbatim}
+\pagebreak\begin{Verbatim}[fontsize=\small, baselinestretch=0.75]
 from pages.login import LoginPage
 from pages.dashboard import DashboardPage
 from yeager import state_transition
@@ -77,12 +77,12 @@ def log_in(driver, **kwargs):
 def log_out(driver, **kwargs):
     dashboard = DashboardPage(driver)
     dashboard.log_out()
-\end{verbatim}
+\end{Verbatim}
 
 Note that Python \texttt{None} constant is used as a reference to the uninitialized system. Yeager treats \texttt{None} as a special node in the implied state model the annotations provide: it is assumed to be the entry point, though that may be overridden.
 
 \subsection{Verifying Connectedness}
-Yeager provides a utility function to check for states which cannot be reached from a given state, probably due to misconfigured annotations. The function, \texttt{yeager.orphaned\_states}, takes one optional argument (the starting state, it defaults to \texttt{None}), and returns a \texttt{list} of all states that Yeager knows about but does not know how to get to. The inverse set, the known states, is also provided as a utility function with the same optional argument, as \texttt{yeager.reachable\_states}. Though the orphaned states function is useful for debugging, it can be used in other automated ways, for instance as a test coverage check or a way to automate \texttt{walk} calls with each of the ``orphaned'' states actually being new entry points. They are useful in a number of different contexts for enterprising testers.
+Yeager provides a utility function to check for states which cannot be reached from a given state, probably due to misconfigured annotations. The function, \texttt{yeager.orphaned\_states}, takes one optional argument (the starting state, it defaults to \texttt{None}), and returns a \texttt{list} of all states that Yeager knows about but does not know how to get to. The inverse set, the known states, is also provided as a utility function with the same optional argument, as \\\texttt{yeager.reachable\_states}. Though the orphaned states function is useful for debugging, it can be used in other automated ways, for instance as a test coverage check or a way to automate \texttt{walk} calls with each of the ``orphaned'' states actually being new entry points. They are useful in a number of different contexts for enterprising testers.
 
 \section{Yeager Test Harnesses}
 A suite of Yeager-annotated Python functions, while neat, is neither immediately useful (it is still just a chunk of naked functions), nor particularly intrusive (annotating a function with a Yeager state transition only adds a print statement before the function executes). Analysis of the state transition graph can be done manually for sure (\texttt{from yeager import nodes, edges}), but Yeager also provides a set of utility functions to actually exercise the system under test.
@@ -123,7 +123,7 @@ With the Yeager package described in a general fashion, a detailed look is now t
 
 The following test code was used to generate the example runs which follow. It is a snippet of the reference Yeager suite, reformatted to run from a single file as opposed to the reference suite's full structure.
 
-\begin{Verbatim}[fontsize=\small]
+\begin{Verbatim}[fontsize=\small, baselinestretch=0.75]
 from selenium import webdriver
 from pages.login import LoginPage
 from pages.dashboard import DashboardPage
@@ -198,7 +198,7 @@ walk(20, driver=webdriver.Chrome())
 \subsection{Example of Execution: No Bugs}
 Running the full code from the above section can yield a number of different outputs. Here is one run which terminates successfully.
 
-\begin{Verbatim}[fontsize=\small]
+\begin{Verbatim}[fontsize=\small, baselinestretch=0.75]
   executing <function open>, current state -> login-page
   executing <function log_in>, current state -> dashboard-page
   executing <function log_out>, current state -> login-page
@@ -221,7 +221,7 @@ Running the full code from the above section can yield a number of different out
   executing <function cancel_add>, current state -> contacts-page
 \end{Verbatim}
 
-No error message appears, and the test exits under the expected conditions (after 20 steps). This is a successful (if short) test. The following graphic contains all the states and transitions used in this section and the next one, as an aid to assist with tracing these test examples.
+No error message appears, and the test exits after 20 steps, the requested exit condition. This is a successful, if short, test. The following graphic contains all the states and transitions used in this section and the next section, as an aid to assist with tracing these test examples.
 
 \noindent\makebox[\textwidth]{\includegraphics[width=\textwidth]{traceme}}
 % for der fingerpoken
@@ -229,7 +229,7 @@ No error message appears, and the test exits under the expected conditions (afte
 \subsection{Example of Execution: Bug In Model}
 Sometimes, a test fails. Yeager makes no guarantee that a test failure is consistent with a fault in the software. In fact, the only thing it guarantees is that the model does not match the software's behavior. This could just as likely represent a fault in the model that Yeager inferred. Here is one such example:
 
-\begin{Verbatim}[fontsize=\small]
+\begin{Verbatim}[fontsize=\small, baselinestretch=0.75]
 executing <function open>, current state -> login-page
 executing <function log_in>, current state -> dashboard-page
 executing <function contacts_page, current state -> contacts-page
@@ -259,7 +259,7 @@ Testers will know a bug in the software if the steps leading up to that failure 
 
 As Yeager stores a computer representation of the system's state graph to operate, it is simple to export this graph for visualization from other tools. The following code will render a graph using the popular \texttt{graph\_tool} package.
 
-\begin{Verbatim}[fontsize=\small]
+\begin{Verbatim}[fontsize=\small, baselinestretch=0.75]
   rom yeager import nodes, edges
   from graph_tool.all import *
 
@@ -293,6 +293,6 @@ As Yeager stores a computer representation of the system's state graph to operat
 
 The commented-out ``\texttt{pos =}'' lines are ways to call different layout algorithms provided by the package. Different types of software will benefit from different layouts, and manual layout can be achieved through the \texttt{graph\_tool}'s interactive window function. Multiple edges that connect the same start and end nodes will be drawn on top of each other under the default settings, and consequently their labels may also overlap. This can be mitigated through modification of the rendering settings in the call to \texttt{graph\_draw}.
 
-The graphics used in the previous sections were generated through modifications of this example code, as was the following graphic capturing a subset of the state model inferred from the \texttt{monica-tests-yeagerized} repository. In this graphic, edge labels have been turned off for legibility, and aspect ratio has been modified.
+The graphics used in the previous sections were generated through modifications of this example code, as was the following graphic capturing a subset of the state model inferred from the \texttt{monica-tests-yeagerized} repository. In the following graphic, edge labels have been turned off for legibility, and aspect ratio has been modified.
 
 \noindent\makebox[\textwidth]{\includegraphics[width=\textwidth]{monicamodel}}
