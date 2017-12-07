@@ -20,11 +20,11 @@ There are: the login page (\texttt{Login}) and logging in takes us to the \textt
 
 The Dashboard and Contacts list both let us \texttt{AddAContact}, while the Journal tab lets us \texttt{AddAJournalEntry}.
 
-From a given \texttt{Contact}, there are pages where one can \texttt{AddASignificantOther}, \texttt{AddAChild}, \\\texttt{UpdateJobInformation}, \texttt{AddANote}, \texttt{AddAnActivity}, \texttt{AddAReminder}, \texttt{AddAGift}, and \texttt{AddADebt}.
+From a given \texttt{Contact}, there are pages where one can \texttt{AddASignificantOther}, \texttt{AddAChild}, \texttt{UpdateJobInformation}, \texttt{AddANote}, \texttt{AddAnActivity}, \texttt{AddAReminder}, \texttt{AddAGift}, and \texttt{AddADebt}.
 
-For the purpose of these discussions, those pages will constitute the entire set of states in the system under test. Conveniently, each of them is represented as a Python class.
+For the purpose of these discussions, those pages will constitute the entire set of states in the system under test. Conveniently, each of them is represented as a Python class. The following graphic includes all of these states, with lines connecting each state to the state that notionally lead to them, for instance the \texttt{Settings} page leading to the \texttt{Import} page. Note that connecting lines are merely explanatory, other connections exist between the actual states in the system, for instance in the form of a logout button on every page.
 
-% TODO: PICTURE OF CLASS GRAPH, UNCONNECTED graphicx
+\noindent\makebox[\textwidth]{\includegraphics[width=\textwidth]{notionalstates}}
 
 \subsection{State Transitions as Actions in The Example System}
 A graph consists of a set of nodes and a set of edges. If the nodes are the states the system under test may be in, the edges are the actions that may be taken from those states, possibly resulting in a state transition. It is certainly possible for an edge to be a loop connecting the starting state to itself. In the particular case of testing web applications, note that though it is reasonable to author a page object model with each method corresponding to an edge, this is not an assumption that is necessary to make, and would-be Yeager adopters may choose to lump lower-level page object methods into clusters of function calls in new functions and treat those higher-level functions as edges instead. The example Yeagerized Monica tests do just this, creating a suite of Yeager-friendly functions as snippets of existing test sequences, built from page object function calls.
@@ -221,8 +221,10 @@ Running the full code from the above section can yield a number of different out
   executing <function cancel_add>, current state -> contacts-page
 \end{Verbatim}
 
-No error message, an exit under the expected conditions (after 20 steps), and a healthy system.
-% TODO: graph with states and edges from this run, for der fingerpoken
+No error message appears, and the test exits under the expected conditions (after 20 steps). This is a successful (if short) test. The following graphic contains all the states and transitions used in this section and the next one, as an aid to assist with tracing these test examples.
+
+\noindent\makebox[\textwidth]{\includegraphics[width=\textwidth]{traceme}}
+% for der fingerpoken
 
 \subsection{Example of Execution: Bug In Model}
 Sometimes, a test fails. Yeager makes no guarantee that a test failure is consistent with a fault in the software. In fact, the only thing it guarantees is that the model does not match the software's behavior. This could just as likely represent a fault in the model that Yeager inferred. Here is one such example:
@@ -289,6 +291,8 @@ As Yeager stores a computer representation of the system's state graph to operat
       graph_draw(g, pos=pos, vertex_text=v_node_map, edge_text=e_map)
 \end{Verbatim}
 
-The commented-out ``pos ='' lines are ways to call different layout algorithms provided by the package. Different types of software will benefit from different layouts.
+The commented-out ``\texttt{pos =}'' lines are ways to call different layout algorithms provided by the package. Different types of software will benefit from different layouts, and manual layout can be achieved through the \texttt{graph\_tool}'s interactive window function. Multiple edges that connect the same start and end nodes will be drawn on top of each other under the default settings, and consequently their labels may also overlap. This can be mitigated through modification of the rendering settings in the call to \texttt{graph\_draw}.
 
-% TODO: full system graph picture
+The graphics used in the previous sections were generated through modifications of this example code, as was the following graphic capturing a subset of the state model inferred from the \texttt{monica-tests-yeagerized} repository. In this graphic, edge labels have been turned off for legibility, and aspect ratio has been modified.
+
+\noindent\makebox[\textwidth]{\includegraphics[width=\textwidth]{monicamodel}}
