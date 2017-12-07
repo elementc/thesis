@@ -27,7 +27,7 @@ For the purpose of these discussions, those pages will constitute the entire set
 \begin{figure}
 \noindent\makebox[\textwidth]{\includegraphics[width=\textwidth]{notionalstates}}
 \caption{Notional States in the Monica System}
-The statesa tester might imagine to be in Monica, with lines connecting each state to the state that notionally lead to them, for instance the \texttt{Settings} page leading to the \texttt{Import} page. Note that connecting lines are merely explanatory, other connections exist between the actual states in the system, for instance in the form of a logout button on every page.
+The states a tester might imagine to be in Monica, with lines connecting each state to the state that notionally lead to them, for instance the \texttt{Settings} page leading to the \texttt{Import} page. Note that connecting lines are merely explanatory, other connections exist between the actual states in the system, for instance in the form of a logout button on every page.
 \end{figure}
 
 \subsection{State Transitions as Actions in The Example System}
@@ -62,7 +62,7 @@ The example implementation of a Yeager test uses unique strings for state identi
 \subsection{Basic State Transition Annotations}
 The fastest way to get started with using Yeager is to define a function for each of the state transitions to be used in the test. These will probably be short snippets from the traditional-style test sequences. Then, for each of these functions, the \texttt{yeager.state\_transition} annotation should be to mark the transition of that function. Here is an example using some of the Monica test code from the previous chapter:
 
-\pagebreak\begin{Verbatim}[fontsize=\small, baselinestretch=0.75]
+\begin{Verbatim}[fontsize=\small, baselinestretch=0.75]
 from pages.login import LoginPage
 from pages.dashboard import DashboardPage
 from yeager import state_transition
@@ -227,7 +227,7 @@ Running the full code from the above section can yield a number of different out
 
 No error message appears, and the test exits after 20 steps, the requested exit condition. This is a successful, if short, test.
 
-\begin{figure}
+\begin{figure}[h]
 \noindent\makebox[\textwidth]{\includegraphics[width=\textwidth]{traceme}}
 \caption{States and Transitions in the Example Test Runs}
 This graph is a subgraph of the total inferred system state model, representing every node and edge used in the test runs in sections 2.4.2 and 2.4.3. Edges are unlabelled but correspond to functions named in the corresponding sections.
