@@ -1,5 +1,4 @@
 *.aux
-*.aux
 *.out
 *.bbl
 *.blg
@@ -9,3 +8,5 @@
 *.nav
 *.vrb
 *.snm
+*.fdb_latexmk
+*.fls
