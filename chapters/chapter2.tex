@@ -1,48 +1,50 @@
 %%----------Chapter 2------------------------------------------
 \chapter{Using Yeager to Generate Long Sequence Tests}
-The test suite assembled in the previous chapter is a great way for a software development team to verify that the core functionality of the system under test is fundamentally operational. When executed, it will test the few well-understood scenarios we have outlined consistently and, assuming enough assertions are present, thoroughly. In fact, the suite requires the entire process from the previous chapter in order to accommodate the addition of new scenarios.
+The test suite assembled in the previous chapter is an effective way for a software development team to verify that the core functionality of the system under test is fundamentally operational. When executed, it will test the few well-understood scenarios the testers wrote the suite for consistently and, assuming enough assertions are present, thoroughly. To accomodate new test scenarios will require an iteration of the entire process outlined in the previous chapter.
 
 It's a boring, tedious, and repetitious task that can be the entire career of a test engineer. However, as any test automator will know, tasks which are boring, tedious, and repetitious are ripe targets for computer automation, and the task of scenario authorship is no different.
 
-This chapter will outline a method for adapting the existing test suite explored in the previous chapter, using a tool of our own authorship named Yeager, to enable the computer to generate scenarios automatically. Yeager is an MIT-licensed open source Python 3 module, with source available at \url{https://github.com/elementc/yeager}. It provides a Python annotation and a set of utility functions. Usage of Yeager's state transition annotation allows testers to quickly and easily map an existing suite of test code onto a state machine, in the form of a graph. This graph can then be traversed using the utility functions, thereby generating new test scenarios from the existing code.
+This chapter will outline a method for adapting the existing test suite explored in the previous chapter, using a tool named Yeager, to enable the computer to generate scenarios automatically. Yeager is an MIT-licensed open source Python 3 module, with source available at \url{https://github.com/elementc/yeager}. It provides a Python annotation and a set of utility functions. Usage of Yeager's state transition annotation allows testers to quickly and easily map an existing suite of test code onto a state machine, in the form of a graph. This graph can then be traversed using the utility functions, thereby generating new test scenarios from the existing code.
 
-The resultant adapted test suite is published online at \url{https://github.com/elementc/monica-tests-yeagerized} for your convenience.
+The resultant adapted test suite is published online at \url{https://github.com/elementc/monica-tests-yeagerized}.
 
 \section{Software as a State Machine}
-Consider the system under test, Monica. As a relationship management web site, it has a few obvious states it can be in: logged out and on the landing page, logged in and on the dashboard, viewing a list of contacts, viewing a list of journal entries, or viewing the settings page. This maps nicely to the page objects we defined in the previous chapter. Actions on those page objects assume a current state (e.g., we're logged in and on the dashboard) and after execution are in a new state which may or may not be the same state (eg, the \texttt{Dashboard.click\_contacts\_button()} method transitions from the dashboard to the contacts list, while the \texttt{LoginPage.log\_in\_incorrectly()} method should result in the system being in the same login page it was before the method was run).
+Consider the system under test, Monica. As a relationship management web site, it has a few obvious states it can be in: logged out and on the landing page, logged in and on the dashboard, viewing a list of contacts, viewing a list of journal entries, or viewing the settings page. This maps nicely to the page objects defined in the previous chapter. Actions on those page objects assume a current state (e.g., logged in and on the dashboard) and after execution are in a new state which may or may not be the same state. For instance, the \texttt{Dashboard.click\_contacts\_button()} method transitions from the dashboard to the contacts list, while the \texttt{AddPersonPage.set\_first\_name()} method should result in the system being in the same add-a-person page the system was on before the method was run.
 
-In fact, most modern programs can be looked at as systems composed of a finite set of states (pages, in this case) with some state transitions (links) and a data context (the data already typed into the system in those states). Yeager uses this fact to enable automated test sequence generation.
+Most modern programs can be looked at as systems composed of a finite set of states (pages, in this case) with some state transitions (links) and a data context (data entered into the system). Yeager uses this view to enable automated test sequence generation.
 
-\subsection{States in Our Example System}
-Let's consider Monica's pages, which are already built into our test suite, to be states.
+\subsection{States in The Example System}
+Consider Monica's pages, which are already built into our test suite, to be states.
 
-We have: the login page (\texttt{Login}) and logging in takes us to the \texttt{Dashboard} which has tabs for the \texttt{Contacts} list and the \texttt{Journal} log. There's also a \texttt{Settings} page which has subpages for \texttt{Import}, \texttt{Export}, \texttt{Users}, and \texttt{Tags}.
+There are: the login page (\texttt{Login}) and logging in takes us to the \texttt{Dashboard} which has tabs for the \texttt{Contacts} list and the \texttt{Journal} log. There's also a \texttt{Settings} page which has subpages for \texttt{Import}, \texttt{Export}, \texttt{Users}, and \texttt{Tags}.
 
 The Dashboard and Contacts list both let us \texttt{AddAContact}, while the Journal tab lets us \texttt{AddAJournalEntry}.
 
-From a given \texttt{Contact}, one can \texttt{AddASignificantOther}, \texttt{AddAChild}, \\\texttt{UpdateJobInformation}, \texttt{AddANote}, \texttt{AddAnActivity}, \texttt{AddAReminder}, \texttt{AddAGift}, and \texttt{AddADebt}.
+From a given \texttt{Contact}, there are pages where one can \texttt{AddASignificantOther}, \texttt{AddAChild}, \\\texttt{UpdateJobInformation}, \texttt{AddANote}, \texttt{AddAnActivity}, \texttt{AddAReminder}, \texttt{AddAGift}, and \texttt{AddADebt}.
 
-For the purpose of our discussions, these pages will constitute the entire set of states in the system under test. Conveniently, each of them is a Python class.
+For the purpose of our discussions, these pages will constitute the entire set of states in the system under test. Conveniently, each of them is represented as a Python class.
+
+% TODO: PICTURE OF CLASS GRAPH, UNCONNECTED graphicx
 
 \subsection{State Transitions as Actions in Our Example System}
-A graph consists of a set of nodes and a set of edges. If our nodes are the states the system under test may be in, the edges are the actions that may be taken from those states, possibly resulting in a state transition. It is certainly possible for an edge to be a loop connecting the starting state to itself. In the particular case of testing web applications, note that though it's reasonable to author a page object model with each method corresponding to an edge, this is not an assumption that is necessary to make, and would-be Yeager adopters may choose to lump lower-level page object methods into clusters of function calls in new functions and treat those higher-level functions as edges instead. In fact, the example Yeagerized Monica tests do just this, creating a suite of Yeager-friendly functions as snippets of existing test sequences, built from page object function calls.
+A graph consists of a set of nodes and a set of edges. If our nodes are the states the system under test may be in, the edges are the actions that may be taken from those states, possibly resulting in a state transition. It is certainly possible for an edge to be a loop connecting the starting state to itself. In the particular case of testing web applications, note that though it's reasonable to author a page object model with each method corresponding to an edge, this is not an assumption that is necessary to make, and would-be Yeager adopters may choose to lump lower-level page object methods into clusters of function calls in new functions and treat those higher-level functions as edges instead. The example Yeagerized Monica tests do just this, creating a suite of Yeager-friendly functions as snippets of existing test sequences, built from page object function calls.
 
 \subsection{Capturing Contextual State}
-Before embarking on the journey of high volume test automation that follows, it is important to consider for a moment the entirety of the software system. More than just software, a system includes the entire context of the software's execution, from the software itself, to the contents of the database, to the number of active system threads, to the ambient temperature of the room the system is running in.
+Before embarking on the journey of high volume test automation that follows, it is important to consider the entirety of the software system. More than just software, a system includes the entire context of the software's execution, from the software itself, to the contents of the database, to the number of active system threads, to the ambient temperature of the room the system is running in.
 
-Some of these are impossible to control for in a testing environment: it's unreasonable to unseat your CPU cooler to attempt to replicate a bug related to your cousin's dust-clogged Pentium II for instance. Others are possible to configure with initialization scripts and virtualization to a degree, for instance always having the same base OS image and environment variables, or always having the same amount of RAM and number of CPU cores. Still more can be controlled for using database snapshots and well-documented test data. Regardless, remembering these variables, which are external to the code but internal to the system under test, is critical to the development exercises in this chapter.
+Some of these are impossible to control for in a testing environment: it's unreasonable to unseat your CPU cooler to attempt to replicate a bug related to your cousin's dust-clogged Pentium II, for instance. Others are possible to configure with initialization scripts and virtualization to a degree, for instance always having the same base OS image and environment variables, or always having the same amount of RAM and number of CPU cores. Still more can be controlled for using database snapshots and well-documented test data. Regardless, remembering these variables, which are external to the code but internal to the system under test, is critical to the development exercises in this chapter. \citep{HoffmanTradeoffs}
 
 \subsection{Taking a Walk on the Graph}
-Imagine standing on a giant picture of the program under test's state graph, at the starting point. You are able to walk along the lines in the directions they are drawn to new points, but you can't walk backwards against their direction of travel. It's a strange looking environment for sure, many of the nodes you might stand on have leaving edges that just loop back to where they started. Existing test scripts are like following directions along this map, ``from A, go to B, turn right at C, stop at D'' and so on. These pre-planned scripts are an effective way to make sure you visit the whole map at least once.
+Traditional test sequencing can be thought of as following a set of directions to traverse a map, akin to ``from A, go to B, turn right at C, stop at D'' and so on. These pre-planned scripts are an effective way to make sure the test visits all of the parts of the system that need testing at least once.
 
-But, imagine that you had a lot of time to kill and had already done all of your maps for the day. An interesting way to spend your time might be to go wandering: wherever you are, pick one of the paths before you at random and walk that way. Keep flipping coins or rolling n-sided dice and walking and you might eventually trigger a secret passage in the labyrinth you've been wandering. Well, that or crash the program under test. How exciting!
+An additional exercise might be to go wandering: From a given state, pick a random transition that lists that state as the starting state, execute it, make a note of that transition's ending state as being the new current state, and repeat until some terminating conditions are met or the software under test crashes.
 
-Contrived thought experiments aside, the notion of wandering around a program is a useful one for testing. First, it simulates human usage a little more realistically than many test scenarios (how many users actually start from a freshly booted computer, load up and login to the dashboard, create one record, search for that record, delete that record, then log out?). Second, such a process can be of any arbitrary length which, while also contributing to a more realistic usage simulation\footnote{Consider that the author's instances of the Atom text editor and the GNOME desktop environment have been open on their laptop since August, while the typical Atom CI instance takes 30 minutes to build the software and run all tests.\citep{CircleCI}}, permits test managers to use as much of the technique as they want to- wandering the program under test for a few hours on their laptop during a conference call or over a month on a virtual machine hosted in a cloud somewhere.
+The notion of wandering around a program is a useful one for testing. First, it simulates human usage a little more realistically than many test scenarios: how many users actually start from a freshly booted computer, load up and login to the dashboard, create one record, search for that record, delete that record, then log out? Second, such a process can be of any arbitrary length which, while also contributing to a more realistic usage simulation\footnote{Consider that the author's instance of the Atom text editor has been open since August, while the typical Atom continuous integration instance takes 30 minutes to build the software and run all tests.\citep{CircleCI}}, permits test managers to use as much of the technique as they want to- wandering the program under test for a few hours on their laptop during a conference call or over a month on a virtual machine hosted in a private cloud somewhere.
 
 \section{Yeager State Transition Annotations}
 The meat of Yeager testing is accomplished through the annotation of Python test methods. An \textit{annotation}, also known as a \textit{decorator} or a \textit{function decorator} is a special Python function which is executed at the time of another function's definition, receives the function being defined as well as any other required items as parameters, and can optionally wrap the function being defined in a special modifier. Yeager is implemented as a special Python annotation and a set of utility functions which register after definition and can then call plain old Python functions.
 
-The annotation, \texttt{yeager.state\_transition} and some utility functions \\(\texttt{yeager.add\_state\_to\_blacklist}, \texttt{yeager.orphaned\_states}, \\\texttt{yeager.reachable\_states}, and \texttt{yeager.walk}) are described in this section.
+The annotation, \texttt{yeager.state\_transition} and some utility functions \\\texttt{yeager.add\_state\_to\_blacklist}, \texttt{yeager.orphaned\_states}, \\\texttt{yeager.reachable\_states}, and \texttt{yeager.walk}, are described in this section.
 
 A note on Python convention: there are two kinds of parameters a function may take. The first, \textit{positional arguments}, are passed like this: \texttt{print("some argument")} or \texttt{math.pow(3,2)}. The second, \textit{keyword arguments}, sometimes shortened to \textit{kwargs}, are passed like this:
 \\\texttt{timedelta(hours=3, minutes=7, seconds=20)}. Order does not matter with kwargs. Positional arguments and kwargs that aren't explicitly defined in a function's signature can both be captured for use by a function. Positional arguments are captured into a Python \texttt{list} by defining a (potentially semi-) final argument prefixed with a single asterisk, keyword arguments into a Python dictionary (\texttt{dict}) with a final argument prefixed with two asterisks, like this:
@@ -54,7 +56,7 @@ Anything that can be a Python \texttt{dict} key can serve as a state identifier.
 The example implementation of a Yeager test uses unique strings for state identifiers. There's no strong reason for this, it's just illustrative.
 
 \subsection{Basic State Transition Annotations}
-The fastest way to get started with using Yeager is to define a function for each of the state transitions you wish to use in the test. These will probably be short snippets from the traditional-style test sequences. Then, for each of these functions, you should use the \texttt{yeager.state\_transition} annotation to mark the transition of that function. Here's an example using some of our Monica test code from the previous chapter:
+The fastest way to get started with using Yeager is to define a function for each of the state transitions to be used in the test. These will probably be short snippets from the traditional-style test sequences. Then, for each of these functions, the \texttt{yeager.state\_transition} annotation should be to mark the transition of that function. Here's an example using some of our Monica test code from the previous chapter:
 
 \begin{verbatim}
 from pages.login import LoginPage
@@ -77,7 +79,7 @@ def log_out(driver, **kwargs):
     dashboard.log_out()
 \end{verbatim}
 
-Note that we use the Python \texttt{None} constant as a reference to the uninitialized system. Yeager treats \texttt{None} as a special node in the implied state model our annotations provide: it's assumed to be the entry point.
+Note that Python \texttt{None} constant is used as a reference to the uninitialized system. Yeager treats \texttt{None} as a special node in the implied state model our annotations provide: it's assumed to be the entry point.
 
 \subsection{Verifying Connectedness}
 Yeager provides a utility function to check for states which cannot be reached from a given state, probably due to misconfigured annotations. The function, \texttt{yeager.orphaned\_states}, takes one optional argument (the starting state, it defaults to \texttt{None}), and returns a \texttt{list} of all states that Yeager knows about but doesn't know how to get to. The inverse set, the known states, is also provided as a utility function with the same optional argument, as \texttt{yeager.reachable\_states}. Though the orphaned states function is useful for debugging, it can be used in other automated ways, for instance as a test coverage check or a way to automate \texttt{walk} calls with each of the ``orphaned'' states actually being new entry points. They're useful in a number of different contexts for enterprising testers.
@@ -189,7 +191,7 @@ def edit_contact(driver):
     contact = ContactPage(driver)
     contact.click_edit_contact()
 
-walk(50, driver=webdriver.Chrome())
+walk(20, driver=webdriver.Chrome())
 
 \end{Verbatim}
 
@@ -217,39 +219,9 @@ Running the full code from the above section can yield a number of different out
   executing <function contacts_page>, current state -> contacts-page
   executing <function add_someone>, current state -> add-contact-page
   executing <function cancel_add>, current state -> contacts-page
-  executing <function settings_page>, current state -> settings-page
-  executing <function contacts_page>, current state -> contacts-page
-  executing <function contacts_page>, current state -> contacts-page
-  executing <function log_out>, current state -> login-page
-  executing <function log_in>, current state -> dashboard-page
-  executing <function dashboard_page>, current state -> dashboard-page
-  executing <function dashboard_page>, current state -> dashboard-page
-  executing <function journal_page>, current state -> journal-page
-  executing <function contacts_page>, current state -> contacts-page
-  executing <function settings_page>, current state -> settings-page
-  executing <function settings_page>, current state -> settings-page
-  executing <function dashboard_page>, current state -> dashboard-page
-  executing <function log_out>, current state -> login-page
-  executing <function log_in>, current state -> dashboard-page
-  executing <function journal_page>, current state -> journal-page
-  executing <function settings_page>, current state -> settings-page
-  executing <function contacts_page>, current state -> contacts-page
-  executing <function log_out>, current state -> login-page
-  executing <function log_in>, current state -> dashboard-page
-  executing <function journal_page>, current state -> journal-page
-  executing <function contacts_page>, current state -> contacts-page
-  executing <function dashboard_page>, current state -> dashboard-page
-  executing <function contacts_page>, current state -> contacts-page
-  executing <function log_out>, current state -> login-page
-  executing <function log_in>, current state -> dashboard-page
-  executing <function dashboard_page>, current state -> dashboard-page
-  executing <function settings_page>, current state -> settings-page
-  executing <function dashboard_page>, current state -> dashboard-page
-  executing <function log_out>, current state -> login-page
-  executing <function log_in>, current state -> dashboard-page
 \end{Verbatim}
 
-No error message, an exit under our expected conditions (after 50 steps), and a healthy system.
+No error message, an exit under our expected conditions (after 20 steps), and a healthy system.
 
 \subsection{Example of Execution: Bug In Model}
 Sometimes, a test fails. Yeager makes no guarantee that a test failure is consistent with a fault in the software. In fact, the only thing it guarantees is that the model doesn't match the software's behavior. This could just as likely represent a fault in the model that Yeager inferred. Here's one such example:
@@ -272,14 +244,14 @@ selenium.common.exceptions.NoSuchElementException:
     platform=Windows NT 10.0.15063 x86_64)
 \end{Verbatim}
 
-The test begins well enough, then dives into creating a contact. It opens the add-a-contact page, and then directly tries to add the (empty) contact. The next step it takes, trying to open the just-added contact for editing, throws a NoSuchElement exception! That's because the  ``add this contact'' button didn't actually tansition the system to the contact-page state, instead showing an error message. This is a common failure mode in Yeager tests, and unfortunately it doesn't represent a bug in the software so much as a bug in the test code: there's an implicit requirement that the add-contact-page state must have a string put into the first name field before the add button will work as expected. This can be mitigated by using a separate pseudo-state (``add-contact-page'' and ``add-contact-page-filled'') or through runtime manipulation of the Yeager blacklist, viz blacklisting the okay\_add transition at the end of the add\_someone function and then removing it from the blacklist once the first name field gets something put into it.
+The test begins well enough, then dives into creating a contact. It opens the add-a-contact page, and then directly tries to add the (empty) contact. The next step it takes, trying to open the just-added contact for editing, throws a NoSuchElement exception! That is because the  ``add this contact'' button didn't actually tansition the system to the contact-page state, instead showing an error message. This is a common failure mode in Yeager tests, it doesn't represent a bug in the software so much as a bug in the test code: there's an implicit requirement that the add-contact-page state must have a string put into the first name field before the add button will work as expected. This can be mitigated by using a separate pseudo-state (``add-contact-page'' and ``add-contact-page-filled'') or through runtime manipulation of the Yeager blacklist, viz blacklisting the okay\_add transition at the end of the add\_someone function and then removing it from the blacklist once the first name field gets something put into it.
 
 \subsection{What a Bug In Software Looks Like}
 Unfortunately, actual bugs in the software under test will appear identically to the case of bugs in the Yeager model.
 
 When a bug crops up, it will present as a sequence of calls that result in a failed assertion. As in the model bug above, the actual fault happened before the step that the assertion took place in, and it's simply the case that the next step couldnt run because it was in an unexpected state.
 
-Testers will know they've identified a bug in the software if the steps leading up to that failure are sensible, that is, if there's no logical error in the steps that led to the state transition that failed. Defensive testers will also write an exception handler around their walk call that dumps the state of the system under test at the moment of the inspection, so as to ease validation of suspected failures.
+Testers will know a bug in the software if the steps leading up to that failure are sensible, that is, if there's no logical error in the steps that led to the state transition that failed. Defensive testers will write an exception handler around their walk call that dumps the state of the system under test at the moment of the inspection, so as to ease validation of suspected failures.
 
 \subsection{Visualizing an Inferred State Graph}
 
@@ -318,3 +290,5 @@ As Yeager stores a computer representation of the system's state graph to operat
 \end{Verbatim}
 
 The commented-out ``pos ='' lines are ways to call different layout algorithms provided by the package. Different types of software will benefit from different layouts.
+
+% TODO: full system graph picture
