@@ -8,3 +8,5 @@
 *.nav
 *.vrb
 *.snm
+*.fdb_latexmk
+*.fls
