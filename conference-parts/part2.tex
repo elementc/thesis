@@ -1,88 +1,24 @@
 %========================================
 \section{Long Sequence Testing in Yeager}
 
-\begin{frame}
-  \frametitle{Bugs That Traditional Testing Finds}
-  \begin{itemize}
-    \item Known bugs, whether previously fixed or bugs that are defended against
-    \item Unfinished features
-    \begin{itemize}
-      \item As in Test Driven Development
-    \end{itemize}
-    \item Clear and obvious program faults
-    \begin{itemize}
-      \item Obvious to the computer
-      \item Crashes, for instance
-      \item Nonzero return codes
-    \end{itemize}
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{What Traditional Testing Does Not Find}
-  \begin{itemize}
-    \item Faults the tester did not think to test for
-    \item Faults that are not obvious
-    \item Faults the tester deems improbable
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{How To Find What Traditional Testing Does Not Find}
-  \begin{itemize}
-    \item All the bugs missed are failures of imagination.
-    \begin{itemize}
-      \item If a scenario can be imagined, a test can be written for it.
-    \end{itemize}
-    \item Computers are really bad at imagining, too, but are passable at rolling dice.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Examples of The Bugs We Want to Find}
-  \begin{itemize}
-    \item Digital phone system that crashes when the 22nd line is put on hold
-    \item Flakey text editor that has been running for months on a grad student's laptop
-    \item System that buckles when 200k users log on at the start of a workday
-    \item Other ``hard to reproduce'' failures
-  \end{itemize}
-\end{frame}
-
 %--------------------------------------
-\subsection{Software as a State Machine}
-\begin{frame}
-  \frametitle{Software Is A Finite State Machine}
-  \begin{itemize}
-    \item Software representable as a machine with states, state transitions, inputs, outputs, and other tuples
-    \item FSMs exactly describes the software's behavior
-    \item Technique is popular in Electrical Engineering and for testing protocols
-  \end{itemize}
-\end{frame}
-
 \begin{frame}
   \frametitle{Testers Write Based On The System's States}
   \begin{itemize}
-    \item Page Object Model testing pattern emulates the system's underlying state model, and includes state transitions.
+    \item Test scripts often are developed emulating the system's underlying state model.
     \item Implied state model is significantly simplified compared to a formal FSM specification.
-    \item POM provides a detailed look at how the system is built.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{State Models Can Help Us Plan New Tests}
-  \begin{itemize}
-    \item Given a printout of a state diagram, one can trace a pen along the model and plan a new test sequence.
-    \item What parts of the System Under Test are tested and what parts are not yet tested becomes obvious.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Context: What Simplified State Models Don't Capture}
+  If we could capture just the states and transitions implied by the test scripts being written, we'd still be missing:
   \begin{itemize}
     \item Input typed into the program
     \item Data the program read from some external source
     \item Overheating CPUs, full disks, cosmic rays, etc.
   \end{itemize}
+  These ``Simplified State Models'' might still be useful.
 \end{frame}
 
 \begin{frame}
@@ -213,16 +149,7 @@
 \subsection{Yeager In Action}
 
 \begin{frame}
-  \frametitle{Test Monica With Yeager}
-  \begin{itemize}
-    \item Have a robust suite of Page Object Models
-    \item Intuitive and meaningful system
-    \item Public service
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Intuitive States of Monica}
+  \frametitle{Intuitive States in a CRM}
   \begin{itemize}
     \item login page
     \item dashboard
@@ -245,32 +172,20 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Use Existing Page Object Models As A Guide}
-  \begin{itemize}
-    \item Emulates the Page Object Models' structure
-    \item States are pages
-    \item Methods are state transitions
-    \begin{itemize}
-      \item Some transitions can be loopbacks
-    \end{itemize}
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
   \frametitle{Write Some Glue and Go}
-  For each method in the page object models:
+  Break up existing test code into logical state-transitioning units. Then for each unit:
   \begin{itemize}
-    \item create a relatively stateless function that calls it.
-    \item annotate any state transition that function triggers.
+    \item extract a relatively stateless function from it.
+    \item annotate whatever transition that function triggers.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{A Note on ``Relative Statelessness''}
   \begin{itemize}
-    \item This will vary from tester to tester according to their gumption.
-    \item It is reasonable for a test function to require a shared webdriver so page objects can be used.
-    \item It might be reasonable for a test function to require a list of all the Contact names put into the system so far.
+    \item This will vary from tester to tester according to their gumption (and requirements).
+    \item It is reasonable for a test function to require a shared webdriver so in a web test.
+    \item It might be reasonable for a test function to require a list of all the contact names put into the system so far.
     \item It is unreasonable for a test function to require a memoizing key-value store with hundreds or thousands of entries.
     \item All extra arguments passed to \texttt{walk} are forwarded to test functions.
     \item Mutable arguments can be modified and these modifications persist across execution.
@@ -279,8 +194,8 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Example Suite's Model}
-  It is straightforward to use the Yeager graph inference with graph visualization software. A routine is provided to allow users to visualize with the \texttt{graph\_tool} module, which can further export to graphviz natively.
+  \frametitle{Visualizing the Simplified State Model}
+  It is straightforward to use the Yeager graph inference with graph visualization software. A routine is provided to allow users to visualize with the \texttt{graph\_tool} module, which can further export to the more-standardized graphviz package natively.
 
   \texttt{python3 visualize\_graph.py} % DEMO
 \end{frame}
@@ -333,5 +248,43 @@
       \item Actual: On a 500 internal server error page
     \end{itemize}
     \item \url{https://github.com/monicahq/monica/issues/326}
+  \end{itemize}
+\end{frame}
+
+%-------------------------------
+\subsection{The Case for Yeager}
+
+\begin{frame}
+  \frametitle{SSM-Based LSRT}
+  \begin{itemize}
+    \item Benefits of LSRT by building on existing test automation investment, and exposing behavior under arbitrarily long test sequences
+    \item Benefits of FSM modeling by thoroghly exploring the system, as well as providing valuable insight into the construction of the system
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Quick To Implement}
+  \begin{itemize}
+    \item Tests can be built as quickly as the tester can write Python.
+    \item Tests benefit from good engineering practices elsewhere in the testing effort.
+    \item Tests can focus on areas of the system under inspection, an incomplete model is still valuable unlike in FSMs.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Selective Detail}
+  \begin{itemize}
+    \item Testers can hammer small details like keystrokes into a textbox or focus only on big-picture program flow.
+    \item Testers make as many or few assertions as they wish.
+    \item Testers can control the flow of their walks depending on the testing context.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Another Tool To Fight Failures of Imagination}
+  \begin{itemize}
+    \item In some contexts, against some classes of bug, with sufficient resources
+    \item Good use of idle systems
+    \item Fill in a gap on the HiVAT family tree
   \end{itemize}
 \end{frame}

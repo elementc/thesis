@@ -2,6 +2,56 @@
 \section{High Volume Automated Testing}
 
 \begin{frame}
+  \frametitle{Bugs That Traditional Testing Finds}
+  \begin{itemize}
+    \item Known bugs, whether previously fixed or bugs that are defended against
+    \item Unfinished features
+    \begin{itemize}
+      \item As in Test Driven Development
+    \end{itemize}
+    \item Clear and obvious program faults
+    \begin{itemize}
+      \item Obvious to the computer
+      \item Crashes, for instance
+      \item Nonzero return codes
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{What Traditional Testing Does Not Find}
+  \begin{itemize}
+    \item Faults the tester did not think to test for
+    \item Faults that are not obvious
+    \item Faults the tester deems improbable
+    \item Faults that only emerge when the system is under some duress
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{How To Find What Traditional Testing Does Not Find}
+  \begin{itemize}
+    \item All the bugs missed are failures of imagination.
+    \begin{itemize}
+      \item If a scenario can be imagined, a test can be written for it.
+    \end{itemize}
+    \item Computers are really bad at imagining, too, but are passable at rolling dice.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Examples of The Bugs We Want to Find}
+  \begin{itemize}
+    \item Digital phone system that crashes when the 22nd line is put on hold
+    \item Flakey text editor that has been running for months on a grad student's laptop
+    \item System that buckles when 200k users log on at the start of a workday
+    \item OS password prompt that sets your password to the empty string when you try using the empty string to log in
+    \item Launching from Vostochny instead of Baikonur crashes the Fregat
+    \item Other ``hard to reproduce'' failures
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
   \frametitle{What Is High Volume Test Automation (HiVAT)?}
   Tests that algorithmically generate, execute, and evaluate the results of arbitrarily many test actions on a system, in such volume as to:\citep{KanerHivatOverview}
   \begin{enumerate}
@@ -119,6 +169,10 @@
     \item HiVAT is perceived as a competititve advantage
     \item Disclosing these practices would expose testers to risk of termination or legal retaliation
     \item Swept away as part of efforts to minimize maintenance-related tasks
+    \item Perceived to not be transferrable from project to project
+    \begin{itemize}
+      \item ``This won't help anybody else.''
+    \end{itemize}
   \end{itemize}
 \end{frame}
 
@@ -144,13 +198,23 @@
 \end{frame}
 
 \begin{frame}
+  \frametitle{Software Is A Finite State Machine}
+  \begin{itemize}
+    \item Software representable as a machine with states, state transitions, inputs, outputs, and other tuples
+    \item FSMs exactly describes the software's behavior
+    \item Technique is popular in Electrical Engineering and for testing protocols
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
   \frametitle{Exhaustive Testing}
   \begin{itemize}
     \item Lower level
     \item Test every single possible parameter value to a function
     \item Needs another implementation for an oracle
     \item Gets prohibitively slow for multiple parameters
-    \item Analysis, using slices for instance \citep{gallagher1991using}, can prove parameter independence and eliminate the need to test combinations of parameters
+    \item Analysis, using slicing for instance \citep{gallagher1991using}, can prove parameter independence and eliminate the need to test combinations of parameters
   \end{itemize}
 \end{frame}
 
@@ -174,6 +238,8 @@
       \item Found one error 826k times in about 90 seconds
     \end{itemize}
 \end{columns}
+\vspace{1.0em}
+(see thesis page 36, ``3.2 On The Recorded History of High Volume Test Automation'' for more)
 \end{frame}
 
 \begin{frame}
@@ -207,39 +273,10 @@
 \begin{frame}
   \frametitle{A/B Testing}
   \begin{itemize}
-    \item Marketing practice
+    \item A practice from the field of marketing
     \item Release candidate revisions to a subset of users and monitor for desireable behavior
     \item Promote the most effective revision to general availability
-    \item Email marketing, site homepages, search engine ads, news stories
+    \item Email marketing, site homepages, search engine ads, (fictitious) news stories
   \end{itemize}
   \citep{HBR2017ABTest}
-\end{frame}
-
-%-------------------------------
-\subsection{The Case for Yeager}
-
-\begin{frame}
-  \frametitle{Model-Based LSRT}
-  \begin{itemize}
-    \item Benefits of LSRT by building on existing test automation investment, and exposing behavior under arbitrarily long test sequences
-    \item Benefits of FSM modeling by thoroghly exploring the system, as well as providing valuable insight into the construction of the system
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Quick To Implement}
-  \begin{itemize}
-    \item Tests can be built as quickly as the tester can write Python.
-    \item Tests benefit from good engineering practices elsewhere in the testing effort.
-    \item Tests can focus on areas of the system under inspection, an incomplete model is still valuable unlike in FSMs.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Selective Detail}
-  \begin{itemize}
-    \item Testers can hammer small details like keystrokes into a textbox or focus only on big-picture program flow.
-    \item Testers make as many or few assertions as they wish.
-    \item Testers can control the flow of their walks depending on the testing context.
-  \end{itemize}
 \end{frame}
