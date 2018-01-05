@@ -1,0 +1,92 @@
+\documentclass{beamer}
+% uncomment above for normal slides,
+% uncomment below for handouts
+% \documentclass[handout]{beamer}
+% \usepackage{pgf} %handouts
+% \usepackage{pgfpages}
+% \pgfpagesuselayout{4 on 1}[letterpaper,landscape,border shrink=5mm]
+
+\mode<presentation> {
+ \usetheme{Szeged}
+ \usecolortheme{beaver}
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{hyperref} %urls
+\usepackage{listings}
+\usepackage[square, authoryear, colon]{natbib}
+
+
+\title[Yeager]{High Volume Automated Testing with Yeager}
+
+\author{Casey Doran}
+\institute[Florida Tech]
+{
+Florida Institute of Technology \\
+\medskip
+\textit{cdoran2011@my.fit.edu}
+}
+\date{\today}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Overview}
+\tableofcontents
+\end{frame}
+
+\begin{frame}
+  \frametitle{Acknowedgements}
+  This work would not be possible without the support of:
+  \begin{itemize}
+    \item Cem Kaner, CSTER, and WTST participants
+    \item Curtis Chambers, Jeff Farr, Mike DeCabia at Dycom Industries
+    \item the Ruckus, the Harbor City Hooligans, the Samuels family
+    \item Rob Atilho and Ryan Bomalaski, and many more on campus
+    \item kbg, Richard Ford, actual and adopted family
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Relevant URLs}
+  \begin{itemize}
+    \item \url{github.com/elementc/yeager}
+    \begin{itemize}
+      \item The library presented in part 2.
+    \end{itemize}
+    \item \url{github.com/elementc/monica-tests-yeagerized}
+    \begin{itemize}
+      \item Some example code, and a rudimentary test of a CRM webapp.
+    \end{itemize}
+    \item \url{github.com/elementc/thesis}
+    \begin{itemize}
+      \item The thesis and all related materials, including these slides \texttt{(conference-presentation.\{tex, pdf\})}
+      \item See \texttt{(presentation.\{tex, pdf\})} and \texttt{(main.\{tex, pdf\})} for more detail, including a primer on modern web testing.
+
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{This Work Emerges From Academia}
+  I have never worked in ``the real world'' on advanced testing. This work presents a tool I think is useful in some testing contexts, and a framing for already-existing techniques in the academic body of knowledge. A key theme of my thesis is that many technqiues in the family described are lost to history because nobody in industry wrote it down. Omissions are omissions of documentation, not  value judgement-- I welcome relevant interruptions and anecdotes, and hope the conversation continues outside of these walls.
+\end{frame}
+\include{./conference-parts/part3}
+\include{./conference-parts/part2}
+
+% references
+\section{} % references gets invisible section
+
+\begin{frame}[t, allowframebreaks]
+\frametitle{References}
+\bibliographystyle{plainnat}
+\bibliography{bibfilethesis}
+\end{frame}
+
+\end{document}

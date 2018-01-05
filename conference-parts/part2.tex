@@ -1,0 +1,290 @@
+%========================================
+\section{Long Sequence Testing in Yeager}
+
+%--------------------------------------
+\begin{frame}
+  \frametitle{Testers Write Based On The System's States}
+  \begin{itemize}
+    \item Test scripts often are developed emulating the system's underlying state model.
+    \item Implied state model is significantly simplified compared to a formal FSM specification.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Context: What Simplified State Models Don't Capture}
+  If we could capture just the states and transitions implied by the test scripts being written, we'd still be missing:
+  \begin{itemize}
+    \item Input typed into the program
+    \item Data the program read from some external source
+    \item Overheating CPUs, full disks, cosmic rays, etc.
+  \end{itemize}
+  These ``Simplified State Models'' might still be useful.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Simplified State Models Can Be Represented As Directed Multigraphs}
+  \begin{itemize}
+    \item System states are vertexes, or nodes.
+    \item Test functions are edges, connecting an in-node to an out-node.
+    \item Each edge connects one in-node to one out-node, however
+    \begin{itemize}
+      \item a given function might work as a transition to an out-node from multiple compatible in-nodes.
+      \item This behavior is a byproduct of convenicence features in the software under test, like having a logout button on every page.
+      \item For brevity's sake, treat a list of in-nodes on an edge's definition as a separate edge definition for each listed in-node.
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Random Walks: Generating New Test Plans Automatically}
+  Given one of these simplified state models represented as a graph, and a source of random numbers, automatically generating test plans is straightforward.
+  \begin{itemize}
+    \item For a given node, the current state, from the set of nodes
+    \item Gather all of the edges, the transition functions, which have that state as their from-node
+    \item Select and execute one of the gathered functions
+    \item The selected function's to-node becomes the new current state
+    \item Repeat until some planned condition is met or execution of a selected function is not possible
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{What Bugs Look Like From A Modeling Perspective}
+  \begin{itemize}
+    \item Bugs manifest as nodes which the model says should be reachable, but execution cannot successfully reach.
+    \item Such occurrences might be bugs in the software.
+    \item Such occurrences might be bugs in the tester's model.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Prior Art: Model Based Testing}
+  \begin{itemize}
+    \item Jonathan Jacky, in Radiation Oncology, of the University of Washington, made an excellent Python model-based tester called PyModel.
+    \item PyModel consumes a handcrafted model.
+    \item It can emit a test plan that covers the whole model.
+    \item It can emit a test plan that takes a random, should-be valid walk of the software under test.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Weaknesses in PyModel}
+  \begin{itemize}
+    \item It requires a handcrafted model in a finicky domain-specific language.
+    \begin{itemize}
+      \item Not Plain Old Python.
+    \end{itemize}
+    \item It is difficult to connect to test execution.
+    \item It requires a lot of time to get running.
+  \end{itemize}
+\end{frame}
+
+%----------------
+\subsection{Usage}
+
+\begin{frame}
+  \frametitle{What Is Yeager?}
+  \begin{itemize}
+    \item Python version 3 module
+    \item Annotate funtions indicating that they cause a state transition
+    \item Infers a state model
+    \item Can take a random walk on that model
+    \begin{itemize}
+      \item Can terminate random walks under selectable conditions
+    \end{itemize}
+    \item Has debug tools to understand the inferred model
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Yeager's API Fits On A Notecard}
+  \begin{itemize}
+    \item \texttt{import yeager}
+    \item \texttt{@yeager.state\_transition(from, to)}
+    \item \texttt{yeager.walk()}
+    \item Tweak: \texttt{yeager.add\_state\_to\_blacklist()}, \texttt{yeager.add\_transition\_to\_blacklist()}, \texttt{yeager.remove\_state\_from\_blacklist()}, \texttt{yeager.remove\_transition\_from\_blacklist()}, and \texttt{yeager.set\_edge\_weight()}
+    \item Debug: \texttt{yeager.enumerate\_transitions()}, \texttt{yeager.reachable\_states()}, \texttt{yeager.orphaned\_states()}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Write a Function}
+  \begin{lstlisting}
+  def login(driver):
+    from pages.login import LoginPage
+    lp = LoginPage(driver)
+    lp.log_in_correctly(USERNAME, PASSWORD)
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Annotate the State Transition}
+  \begin{lstlisting}
+  @yeager.state_transition("login", "dashboard")
+  def login(driver):
+    from pages.login import LoginPage
+    lp = LoginPage(driver)
+    lp.log_in(USERNAME, PASSWORD)
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Debug Yeager Models}
+  \begin{itemize}
+    \item Using \texttt{enumerate\_transitions} function as show in \texttt{enumerate\_transitions.py} %DEMO
+    \item Using \texttt{orphaned\_states} \& \texttt{reachable\_states} functions as shown in \texttt{orphaned\_states.py} \& \texttt{reachable\_states.py} %DEMO
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Plan And Execute A Test Run}
+  \begin{itemize}
+    \item \texttt{yeager.walk()}
+    \item \texttt{yeager.walk(50)}
+    \item \texttt{yeager.walk(exit\_state="state-to-exit-on")}
+    \item In development: after some visitation goal
+  \end{itemize}
+\end{frame}
+
+%----------------------------
+\subsection{Yeager In Action}
+
+\begin{frame}
+  \frametitle{Intuitive States in a CRM}
+  \begin{itemize}
+    \item login page
+    \item dashboard
+    \item contacts list
+    \item looking at a contact
+    \item editing a contact
+    \item logging a phone call or meeting with a contact
+    \item writing in the journal
+    \item etc.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{States Necessitate Transitions}
+  \begin{itemize}
+    \item Filling in the login form transitions from the login page to the dashboard
+    \item Clicking a contact in the contacts list transitions to the viewing-a-contact state
+    \item etc.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Write Some Glue and Go}
+  Break up existing test code into logical state-transitioning units. Then for each unit:
+  \begin{itemize}
+    \item extract a relatively stateless function from it.
+    \item annotate whatever transition that function triggers.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{A Note on ``Relative Statelessness''}
+  \begin{itemize}
+    \item This will vary from tester to tester according to their gumption (and requirements).
+    \item It is reasonable for a test function to require a shared webdriver so in a web test.
+    \item It might be reasonable for a test function to require a list of all the contact names put into the system so far.
+    \item It is unreasonable for a test function to require a memoizing key-value store with hundreds or thousands of entries.
+    \item All extra arguments passed to \texttt{walk} are forwarded to test functions.
+    \item Mutable arguments can be modified and these modifications persist across execution.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Visualizing the Simplified State Model}
+  It is straightforward to use the Yeager graph inference with graph visualization software. A routine is provided to allow users to visualize with the \texttt{graph\_tool} module, which can further export to the more-standardized graphviz package natively.
+
+  \texttt{python3 visualize\_graph.py} % DEMO
+\end{frame}
+
+\begin{frame}
+  \frametitle{Take a Walk}
+  \begin{itemize}
+    \item Execution begins with a call to \texttt{yeager.walk()}
+    \item A demo: \texttt{python3 yeager\_test.py} % DEMO
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{What It Looks Like The Test Is Going Well}
+  \begin{itemize}
+    \item No crash
+    \item No assertions being tripped
+    \item Software appears to be being executed
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{What It Looks Like When The Model Is Wrong}
+  \begin{itemize}
+    \item Crash on an illogical sequence
+    \item Example:
+    \begin{itemize}
+      \item Click ``Create Contact''
+      \item Click ``Add this Contact''
+      \item Expected: On Contact pages
+      \item Actual: On Add Contact Page with an error message about needing to input a name
+    \end{itemize}
+    \item A suite can generate this fault: \texttt{yeager\_bad\_model\_test.py} % DEMO
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{What It Looks Like When The Software Is Wrong}
+  \begin{itemize}
+    \item Crash on a perfectly logical sequence
+    \item Example:
+    \begin{itemize}
+      \item Open a contact
+      \item Click ``Add Reminder''
+      \item Fill in a date
+      \item Fill in a title
+      \item Check the ``Remind me about this just once'' box
+      \item Click the save button
+      \item Expected: On the contact's page, with a new reminder
+      \item Actual: On a 500 internal server error page
+    \end{itemize}
+    \item \url{https://github.com/monicahq/monica/issues/326}
+  \end{itemize}
+\end{frame}
+
+%-------------------------------
+\subsection{The Case for Yeager}
+
+\begin{frame}
+  \frametitle{SSM-Based LSRT}
+  \begin{itemize}
+    \item Benefits of LSRT by building on existing test automation investment, and exposing behavior under arbitrarily long test sequences
+    \item Benefits of FSM modeling by thoroghly exploring the system, as well as providing valuable insight into the construction of the system
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Quick To Implement}
+  \begin{itemize}
+    \item Tests can be built as quickly as the tester can write Python.
+    \item Tests benefit from good engineering practices elsewhere in the testing effort.
+    \item Tests can focus on areas of the system under inspection, an incomplete model is still valuable unlike in FSMs.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Selective Detail}
+  \begin{itemize}
+    \item Testers can hammer small details like keystrokes into a textbox or focus only on big-picture program flow.
+    \item Testers make as many or few assertions as they wish.
+    \item Testers can control the flow of their walks depending on the testing context.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Another Tool To Fight Failures of Imagination}
+  \begin{itemize}
+    \item In some contexts, against some classes of bug, with sufficient resources
+    \item Good use of idle systems
+    \item Fill in a gap on the HiVAT family tree
+  \end{itemize}
+\end{frame}

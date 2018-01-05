@@ -1,0 +1,282 @@
+%=====================================
+\section{High Volume Automated Testing}
+
+\begin{frame}
+  \frametitle{Bugs That Traditional Testing Finds}
+  \begin{itemize}
+    \item Known bugs, whether previously fixed or bugs that are defended against
+    \item Unfinished features
+    \begin{itemize}
+      \item As in Test Driven Development
+    \end{itemize}
+    \item Clear and obvious program faults
+    \begin{itemize}
+      \item Obvious to the computer
+      \item Crashes, for instance
+      \item Nonzero return codes
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{What Traditional Testing Does Not Find}
+  \begin{itemize}
+    \item Faults the tester did not think to test for
+    \item Faults that are not obvious
+    \item Faults the tester deems improbable
+    \item Faults that only emerge when the system is under some duress
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{How To Find What Traditional Testing Does Not Find}
+  \begin{itemize}
+    \item All the bugs missed are failures of imagination.
+    \begin{itemize}
+      \item If a scenario can be imagined, a test can be written for it.
+    \end{itemize}
+    \item Computers are really bad at imagining, too, but are passable at rolling dice.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Examples of The Bugs We Want to Find}
+  \begin{itemize}
+    \item Digital phone system that crashes when the 22nd line is put on hold
+    \item Flakey text editor that has been running for months on a grad student's laptop
+    \item System that buckles when 200k users log on at the start of a workday
+    \item OS password prompt that sets your password to the empty string when you try using the empty string to log in
+    \item Launching from Vostochny instead of Baikonur crashes the Fregat
+    \item Other ``hard to reproduce'' failures
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{What Is High Volume Test Automation (HiVAT)?}
+  Tests that algorithmically generate, execute, and evaluate the results of arbitrarily many test actions on a system, in such volume as to:\citep{KanerHivatOverview}
+  \begin{enumerate}
+  \item Exceed the volume a reasonable testing staff could do manually.
+  \item Expose behaviors of the system not normally exposed during traditional testing techniques.
+  \item Simulate use and abuse of the system more realistically and dynamically than would be attainable through traditional techniques.
+  \item Generate test scenarios that are not outside the realm of possibility or even probability due to the high-availability nature of modern software systems.
+\end{enumerate}
+\end{frame}
+
+%------------------
+\subsection{Anatomy}
+
+\begin{frame}
+  \frametitle{Generators}
+  \begin{itemize}
+    \item How test cases are generated
+    \item How the system is driven
+    \item An engineering consideration
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Interface}
+  \begin{itemize}
+    \item Black box or white box
+    \item Shades of grey, maybe hitting a private REST service instead of the UI directly
+    \item A consideration of engineering and testing goals
+  \end{itemize}
+  \citep{HoffmanTradeoffs}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Oracle}
+  \begin{itemize}
+    \item How to programmatically determine correctness of generated tests
+    \item Comparison of some sort
+    \begin{itemize}
+      \item To assertions in previously written code
+      \item To expectations from a formal Finite State Machine
+      \item To a previous version of the system
+      \item To a competitor's system
+      \item To systemic expectations, like not crashing
+      \item Room for research here
+    \end{itemize}
+    \item A consideration of engineering and testing goals
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Loggers and Diagnostics}
+  \begin{itemize}
+    \item Keeping track of test trace
+    \item Keeping track of system health during test
+    \item Possibly characterizing system degradation
+    \item A consideration of testing goals
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Context}
+  \begin{itemize}
+    \item Testing objectives regardless of engineering
+    \begin{itemize}
+      \item Surveying the system for new bugs
+      \item Determining system resillience through abuse
+      \item Cornering hard-to-replicate bugs in suspect modules
+      \item Characterizing system resource consuption over time
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Scalability}
+  \begin{itemize}
+    \item How volume in these tests is generated
+    \begin{itemize}
+      \item A single, long-running thread
+      \item A cluster of many threads
+      \item A swarm of many cheap cloud servers \citep{parveen2010migrate}
+      \item A virtualization service testing a breadth of configurations
+    \end{itemize}
+    \item A consideration of the testing context and engineering constraints
+  \end{itemize}
+\end{frame}
+
+%------------------
+\subsection{History}
+
+\begin{frame}
+  \frametitle{Purported Inventors}
+  \begin{itemize}
+    \item HP's ``evil''
+    \begin{itemize}
+      \item Oldest in my literature review from 1966
+    \end{itemize}
+    \item TI
+    \item Bell
+    \item AT\&T
+    \item Microsoft
+    \item Telenova
+    \item Rohm
+    \item FAA contractors
+    \item Automotive industry
+    \item \citet{miller1989TR830} with the Fuzz Tester
+    \begin{itemize}
+      \item First from academia, 1989 technical report and 1990 article.
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Industrial Inventors Are Reticent To Publish}
+  \begin{itemize}
+    \item HiVAT is perceived as a competititve advantage
+    \item Disclosing these practices would expose testers to risk of termination or legal retaliation
+    \item Swept away as part of efforts to minimize maintenance-related tasks
+    \item Perceived to not be transferrable from project to project
+    \begin{itemize}
+      \item ``This won't help anybody else.''
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+%------------------------
+\subsection{Family Tree}
+
+\begin{frame}
+  \frametitle{LSRT: Long Sequence Regression Testing}
+  \begin{itemize}
+    \item Accomplished by modifying exisiting test suites
+    \item Set tests to run continuously
+    \item Remove cleanup between test runs
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{State Model Testing}
+  \begin{itemize}
+    \item Build a detailed Finite State machine
+    \item Algorithmically exercise the machine to generate testable theorems about the system
+  \end{itemize}
+  \citep{lee1996principles}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Software Is A Finite State Machine}
+  \begin{itemize}
+    \item Software representable as a machine with states, state transitions, inputs, outputs, and other tuples
+    \item FSMs exactly describes the software's behavior
+    \item Technique is popular in Electrical Engineering and for testing protocols
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Exhaustive Testing}
+  \begin{itemize}
+    \item Lower level
+    \item Test every single possible parameter value to a function
+    \item Needs another implementation for an oracle
+    \item Gets prohibitively slow for multiple parameters
+    \item Analysis, using slicing for instance \citep{gallagher1991using}, can prove parameter independence and eliminate the need to test combinations of parameters
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{A Tale Of Two Exhaustive Tests}
+\begin{columns}[c]
+  \column{.5\textwidth}
+    \textbf{\citet{hoffman2003Exhausting}}
+    \begin{itemize}
+      \item Suspected a trig function of bugs
+      \item Used another implementation
+      \item Fed both functions every number in the range of a 32 bit float
+      \item Found two errors in a few minutes
+    \end{itemize}
+  \column{.5\textwidth} % Right column and width
+    \textbf{\citet{dawsonFourBillion}}
+    \begin{itemize}
+      \item Suspected a trig function of bugs
+      \item Used another implementation
+      \item Fed both functions every number in the range of a 32 bit float
+      \item Found one error 826k times in about 90 seconds
+    \end{itemize}
+\end{columns}
+\vspace{1.0em}
+(see thesis page 36, ``3.2 On The Recorded History of High Volume Test Automation'' for more)
+\end{frame}
+
+\begin{frame}
+  \frametitle{Fuzz Testing}
+  \begin{itemize}
+    \item Miller's tool generates streams of random bytes and feeds them as input to UNIX command line utilities. \citep{miller1990empirical}
+    \item A test fails if the program crashes.
+    \item Fuzz testing has grown into a diverse family of subtechniques, popular among security researchers.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Load/Performance Testing}
+  \begin{itemize}
+    \item API tests put into a massive thread pool
+    \item The ``accepted'' way to verify many users won't crash a system
+    \item Popular tool in this family: Locust \citep{heymanlocust}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Testing In Production}
+  \begin{itemize}
+    \item A practice at Microsoft \citep{AndrewsHeal}
+    \item Candidate builds of Bing fed actual user input
+    \item Output compared to current build
+    \item Enables automated, staged deployments
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{A/B Testing}
+  \begin{itemize}
+    \item A practice from the field of marketing
+    \item Release candidate revisions to a subset of users and monitor for desireable behavior
+    \item Promote the most effective revision to general availability
+    \item Email marketing, site homepages, search engine ads, (fictitious) news stories
+  \end{itemize}
+  \citep{HBR2017ABTest}
+\end{frame}
